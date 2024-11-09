@@ -9,4 +9,7 @@
     <!-- Settings Options -->
     <string name="bluetoothPerm">Enable Bluetooth Permissions</string>
     <string name="notifications">Enable Notifications</string>
+
+    <!-- Buttons -->
+    <string name="connectDevice">Connect to Device</string>
 </resources>
