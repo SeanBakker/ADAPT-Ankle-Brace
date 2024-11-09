@@ -14,6 +14,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
@@ -48,18 +49,9 @@ class MainActivity : AppCompatActivity() {
         val navigationView: NavigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_recovery_plan -> {
-                    // Start Recovery Plan Activity
-                    startActivity(Intent(this, RecoveryPlanActivity::class.java))
-                }
-                R.id.nav_recovery_progress -> {
-                    // Start Recovery Progress Activity
-                    startActivity(Intent(this, RecoveryProgressActivity::class.java))
-                }
-                R.id.nav_insights -> {
-                    // Start Insights Activity
-                    startActivity(Intent(this, InsightsActivity::class.java))
-                }
+                R.id.nav_recovery_plan -> startActivity(Intent(this, RecoveryPlanActivity::class.java))
+                R.id.nav_recovery_progress -> startActivity(Intent(this, RecoveryProgressActivity::class.java))
+                R.id.nav_insights -> startActivity(Intent(this, InsightsActivity::class.java))
             }
             drawerLayout.closeDrawers() // Close the sidebar
             true
@@ -80,6 +72,12 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
 
 
 
