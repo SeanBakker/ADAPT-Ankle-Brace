@@ -1,6 +1,12 @@
 <resources>
+    <!-- Headers -->
     <string name="app_name">A.D.A.P.T.</string>
     <string name="recovery_plan">Recovery Plan</string>
     <string name="recovery_progress">Recovery Progress</string>
     <string name="insights">Insights</string>
+    <string name="settings">Settings</string>
+
+    <!-- Settings Options -->
+    <string name="bluetoothPerm">Enable Bluetooth Permissions</string>
+    <string name="notifications">Enable Notifications</string>
 </resources>
