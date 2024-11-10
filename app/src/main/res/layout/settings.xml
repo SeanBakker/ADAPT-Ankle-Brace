@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="HardcodedText">
 
     <!-- Main Content -->
     <RelativeLayout
@@ -51,7 +52,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/bluetoothPerm"
+                    android:text="Enable Bluetooth Permissions"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 
@@ -71,7 +72,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/notifications"
+                    android:text="Enable Notifications"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 
@@ -133,7 +134,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/nightMode"
+                    android:text="Enable Night Mode"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 

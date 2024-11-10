@@ -36,6 +36,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // Handle the back button click
         toolbar.setNavigationOnClickListener {
+            @Suppress("DEPRECATION")
             onBackPressed() // Go back to the previous activity
         }
 

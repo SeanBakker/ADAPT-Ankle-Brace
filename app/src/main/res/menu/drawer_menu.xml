@@ -1,15 +1,23 @@
 <!-- res/menu/drawer_menu.xml -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/nav_common_exercises"
+        android:icon="@drawable/baseline_monitor_heart_24"
+        android:title="@string/common_exercises" />
+    <item
         android:id="@+id/nav_recovery_plan"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/baseline_assignment_24"
         android:title="@string/recovery_plan" />
     <item
         android:id="@+id/nav_recovery_progress"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/baseline_checklist_24"
         android:title="@string/recovery_progress" />
     <item
+        android:id="@+id/nav_notifications"
+        android:icon="@drawable/baseline_notifications_active_24"
+        android:title="@string/notifications" />
+    <item
         android:id="@+id/nav_insights"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/baseline_insights_24"
         android:title="@string/insights" />
 </menu>

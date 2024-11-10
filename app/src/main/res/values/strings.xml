@@ -1,17 +1,16 @@
 <resources>
     <!-- Headers -->
     <string name="app_name">A.D.A.P.T.</string>
+    <string name="common_exercises">Common Exercises</string>
     <string name="recovery_plan">Recovery Plan</string>
     <string name="recovery_progress">Recovery Progress</string>
     <string name="insights">Insights</string>
+    <string name="notifications">Notifications</string>
     <string name="settings">Settings</string>
 
     <!-- Settings Options -->
-    <string name="bluetoothPerm">Enable Bluetooth Permissions</string>
-    <string name="notifications">Enable Notifications</string>
     <string name="dailyGoalReminder">Daily Goal Reminder</string>
     <string name="workoutScheduleReminder">Workout Schedule Reminder</string>
-    <string name="nightMode">Enable Night Mode</string>
 
     <!-- Buttons -->
     <string name="connectDevice">Connect to Device</string>
