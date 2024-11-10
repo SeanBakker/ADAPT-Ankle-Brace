@@ -9,7 +9,9 @@
     <!-- Settings Options -->
     <string name="bluetoothPerm">Enable Bluetooth Permissions</string>
     <string name="notifications">Enable Notifications</string>
-    <string name="dailyGoalReminder">Enable Daily Goal Reminder</string>
+    <string name="dailyGoalReminder">Daily Goal Reminder</string>
+    <string name="workoutScheduleReminder">Workout Schedule Reminder</string>
+    <string name="nightMode">Enable Night Mode</string>
 
     <!-- Buttons -->
     <string name="connectDevice">Connect to Device</string>

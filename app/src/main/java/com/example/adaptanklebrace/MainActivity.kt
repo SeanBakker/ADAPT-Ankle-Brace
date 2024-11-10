@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothManager
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -29,9 +30,18 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var sharedPreferences: SharedPreferences
+
+    private var settingsActivity = SettingsActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize the app theme
+        // Check saved preference for night mode
+        sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE)
+        val isNightMode = settingsActivity.getPreference(sharedPreferences, "nightMode", false)
+        settingsActivity.changeAppTheme(isNightMode)
         setContentView(R.layout.activity_main)
 
         // Set up Toolbar
