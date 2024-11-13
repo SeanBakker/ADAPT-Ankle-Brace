@@ -21,6 +21,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
+                android:title="@string/settings"
+                app:titleTextColor="?attr/colorOnPrimary"
                 app:navigationIcon="@drawable/baseline_arrow_back_24"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
         </com.google.android.material.appbar.AppBarLayout>
@@ -53,6 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Enable Bluetooth Permissions"
+                    android:textAppearance="@style/TextAppearance"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 
@@ -73,6 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Enable Notifications"
+                    android:textAppearance="@style/TextAppearance"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 
@@ -94,6 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/dailyGoalReminder"
+                    android:textAppearance="@style/TextAppearance"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 
@@ -115,6 +120,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/workoutScheduleReminder"
+                    android:textAppearance="@style/TextAppearance"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 
@@ -135,6 +141,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Enable Night Mode"
+                    android:textAppearance="@style/TextAppearance"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 

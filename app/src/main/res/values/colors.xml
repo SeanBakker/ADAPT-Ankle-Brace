@@ -1,14 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_1">#FFBB86FC</color>
-    <color name="purple_2">#FF6200EE</color>
-    <color name="purple_3">#FF3700B3</color>
-    <color name="blue_1">#B6D7DA</color>
-    <color name="blue_2">#51989B</color>
-    <color name="blue_3">#3D6470</color>
-    <color name="blue_4">#0C2840</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <!-- Light Theme -->
+    <color name="lightPrimary">@color/blue_3</color>
+    <color name="lightPrimaryVariant">@color/blue_5</color>
+    <color name="lightOnPrimary">@color/blue_6</color>
+
+    <color name="lightSecondary">@color/purple_3</color>
+    <color name="lightSecondaryVariant">@color/purple_4</color>
+    <color name="lightOnSecondary">@color/black</color>
+
+    <color name="lightBackground">@color/blue_1</color>
+
+    <!-- Night Theme -->
+    <color name="nightPrimary">@color/purple_2</color>
+    <color name="nightPrimaryVariant">@color/purple_3</color>
+    <color name="nightOnPrimary">@color/purple_4</color>
+
+    <color name="nightSecondary">@color/blue_5</color>
+    <color name="nightSecondaryVariant">@color/blue_6</color>
+    <color name="nightOnSecondary">@color/black</color>
+
+    <color name="nightBackground">@color/purple_1</color>
+
+    <!-- Extra Colors -->
+    <color name="purple_1">#D3BAF6</color>
+    <color name="purple_2">#B88BF4</color>
+    <color name="purple_3">#9060F4</color>
+    <color name="purple_4">#D31D0052</color>
+    <color name="blue_1">#CFF3F8</color>
+    <color name="blue_2">#ADF0F4</color>
+    <color name="blue_3">#76D3D6</color>
+    <color name="blue_4">#36B7DB</color>
+    <color name="blue_5">#077BE4</color>
+    <color name="blue_6">#01215F</color>
+    <color name="green_1">#94D65B</color>
+    <color name="green_2">#6DB929</color>
+    <color name="green_3">#2B500B</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

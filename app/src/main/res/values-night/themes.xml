@@ -2,14 +2,21 @@
     <!-- Base application theme. -->
     <style name="Theme.AdaptAnkleBrace" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_2</item>
-        <item name="colorPrimaryVariant">@color/purple_1</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimary">@color/nightPrimary</item>
+        <item name="colorPrimaryVariant">@color/nightPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/nightOnPrimary</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/blue_2</item>
-        <item name="colorSecondaryVariant">@color/blue_3</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/nightSecondary</item>
+        <item name="colorSecondaryVariant">@color/nightSecondaryVariant</item>
+        <item name="colorOnSecondary">@color/nightOnSecondary</item>
+        <!-- Background color. -->
+        <item name="backgroundColor">@color/nightBackground</item>
+        <item name="android:colorBackground">?attr/backgroundColor</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/black</item>
+    </style>
+
+    <style name="TextAppearance" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/nightOnPrimary</item>
     </style>
 </resources>
