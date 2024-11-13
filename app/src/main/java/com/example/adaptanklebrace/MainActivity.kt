@@ -57,8 +57,10 @@ class MainActivity : AppCompatActivity() {
         val navigationView: NavigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
+                R.id.nav_common_exercises -> startActivity(Intent(this, CommonExercisesActivity::class.java))
                 R.id.nav_recovery_plan -> startActivity(Intent(this, RecoveryPlanActivity::class.java))
                 R.id.nav_recovery_progress -> startActivity(Intent(this, RecoveryProgressActivity::class.java))
+                R.id.nav_notifications -> startActivity(Intent(this, NotificationsActivity::class.java))
                 R.id.nav_insights -> startActivity(Intent(this, InsightsActivity::class.java))
             }
             drawerLayout.closeDrawers() // Close the sidebar
@@ -69,7 +71,12 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                drawerLayout.openDrawer(GravityCompat.START) // Open sidebar when home icon is clicked
+                // Toggle sidebar state
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START) // Close if it's open
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.START)  // Open if it's closed
+                }
                 true
             }
             R.id.action_settings -> {
