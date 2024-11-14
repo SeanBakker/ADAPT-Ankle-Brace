@@ -29,6 +29,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity" />
+        <activity android:name=".CommonExercisesActivity" />
+        <activity android:name=".RecoveryPlanActivity" />
+        <activity android:name=".RecoveryProgressActivity" />
+        <activity android:name=".NotificationsActivity" />
     </application>
 
 </manifest>

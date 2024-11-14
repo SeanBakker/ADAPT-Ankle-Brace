@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:ignore="RelativeOverlap">
+
+    <data>
+        <variable
+            name="exercise"
+            type="com.example.adaptanklebrace.data.Exercise" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <!-- Exercise Name -->
+        <TextView
+            android:id="@+id/exerciseName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{exercise.name}"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Exercise Description -->
+        <TextView
+            android:id="@+id/exerciseDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{exercise.description}"
+            android:layout_below="@id/exerciseName"
+            android:layout_marginTop="8dp" />
+
+        <!-- Exercise Steps -->
+        <TextView
+            android:id="@+id/exerciseSteps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{exercise.steps}"
+            android:layout_below="@id/exerciseDescription"
+            android:layout_marginTop="8dp" />
+
+        <!-- Exercise Image -->
+        <ImageView
+            android:id="@+id/exerciseImage"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:imageFromResourceId="@{exercise.imageId}"
+            android:layout_below="@id/exerciseSteps"
+            android:layout_marginTop="16dp" />
+
+        <!-- Previous Button -->
+        <Button
+            android:id="@+id/prevExerciseBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="16dp"
+            android:drawableTop="@drawable/baseline_keyboard_arrow_left_24"
+            android:onClick="onChangePageClick" />
+
+        <!-- Next Button -->
+        <Button
+            android:id="@+id/nextExerciseBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"
+            android:drawableTop="@drawable/baseline_keyboard_arrow_right_24"
+            android:onClick="onChangePageClick" />
+
+    </RelativeLayout>
+</layout>

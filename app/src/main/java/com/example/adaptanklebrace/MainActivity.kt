@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_recovery_plan -> startActivity(Intent(this, RecoveryPlanActivity::class.java))
                 R.id.nav_recovery_progress -> startActivity(Intent(this, RecoveryProgressActivity::class.java))
                 R.id.nav_notifications -> startActivity(Intent(this, NotificationsActivity::class.java))
-                R.id.nav_insights -> startActivity(Intent(this, InsightsActivity::class.java))
             }
             drawerLayout.closeDrawers() // Close the sidebar
             true
