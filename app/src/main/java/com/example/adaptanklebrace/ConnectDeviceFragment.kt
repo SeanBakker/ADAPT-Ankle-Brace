@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import com.example.adaptanklebrace.services.BluetoothService
 
 class ConnectDeviceFragment : DialogFragment() {
 
@@ -33,16 +36,24 @@ class ConnectDeviceFragment : DialogFragment() {
         val mainActivity = activity as? MainActivity
 
         mainActivity?.let {
-            // Check and request bluetooth permissions to ADAPT device
-            if (it.checkAndRequestBluetoothPermissions()) {
-                it.initBluetooth()
+            // Start the Bluetooth service
+            val serviceIntent = Intent(it, BluetoothService::class.java)
+            ContextCompat.startForegroundService(it, serviceIntent)
+            val bluetoothService = BluetoothService.instance
+            if (bluetoothService == null) {
+                Toast.makeText(it, "Bluetooth service not available", Toast.LENGTH_SHORT).show()
+                return
             }
 
-            val isConnected = it.connectToBluetoothDevice()
-
-            if (isConnected) {
-                dismiss() // Close the dialog
-                startActivity(Intent(context, ROMExerciseActivity::class.java))
+            // Check and request bluetooth permissions to ADAPT device
+            if (it.checkAndRequestBluetoothPermissions()) {
+                if (bluetoothService.connectToBluetoothDevice(it)) {
+                    bluetoothService.writeDeviceData("ready")
+                    dismiss() // Close the dialog
+                    startActivity(Intent(it, ROMExerciseActivity::class.java))
+                }
+            } else {
+                Toast.makeText(it, "Bluetooth permissions disabled", Toast.LENGTH_SHORT).show()
             }
         }
     }
