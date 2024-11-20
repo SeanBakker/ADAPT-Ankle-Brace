@@ -33,6 +33,7 @@
         <activity android:name=".RecoveryPlanActivity" />
         <activity android:name=".RecoveryProgressActivity" />
         <activity android:name=".NotificationsActivity" />
+        <activity android:name=".ROMExerciseActivity" />
     </application>
 
 </manifest>

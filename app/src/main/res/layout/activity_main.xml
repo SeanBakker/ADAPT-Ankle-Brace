@@ -36,12 +36,12 @@
             tools:ignore="NotSibling">
 
             <Button
-                android:id="@+id/connectBtn"
+                android:id="@+id/startExerciseBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:text="@string/connectDevice" />
+                android:text="@string/startROMTest" />
         </LinearLayout>
     </RelativeLayout>
 

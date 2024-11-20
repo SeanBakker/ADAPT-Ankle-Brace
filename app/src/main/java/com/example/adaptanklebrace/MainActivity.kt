@@ -17,6 +17,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     private var settingsActivity = SettingsActivity()
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -65,6 +67,13 @@ class MainActivity : AppCompatActivity() {
             drawerLayout.closeDrawers() // Close the sidebar
             true
         }
+
+        // Start exercise from button (triggers connection to device)
+        val startExerciseButton: Button = findViewById(R.id.startExerciseBtn)
+        startExerciseButton.setOnClickListener {
+            val connectDeviceFragment = ConnectDeviceFragment()
+            connectDeviceFragment.show(supportFragmentManager, "connect_device")
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -79,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_settings -> {
-                // Start Settings Activity
+                // Open settings activity
                 startActivity(Intent(this, SettingsActivity::class.java))
                 true
             }
@@ -97,43 +106,16 @@ class MainActivity : AppCompatActivity() {
 
 
     /*** BLUETOOTH INITIALIZATION  ***/
-
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var bluetoothGatt: BluetoothGatt? = null
     private var bluetoothDevice: BluetoothDevice? = null
 
-    private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private val BLUETOOTH_PERMISSION_REQUEST_CODE = 2
-
-    // Define the service and characteristic UUIDs
-    private val serviceUUID: UUID = UUID.fromString("f3b4f9a8-25b8-4ee1-8b69-0a61a964de15") // Change to your service UUID
-    private val characteristicUUID: UUID = UUID.fromString("f8c2f5f0-4e8c-4a95-b9c1-3c8c33b457c3") // Change to your characteristic UUID
-
-//    @RequiresApi(Build.VERSION_CODES.S)
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
-//
-//        // Check and request permissions
-//        if (checkAndRequestBluetoothPermissions()) {
-//            initBluetooth()
-//        }
-//
-//        val connectBtn: Button = findViewById(R.id.connectBtn)
-//        connectBtn.setOnClickListener {
-//            connectToBluetoothDevice()
-//        }
-//
-//        val sendBtn: Button = findViewById(R.id.sendDataBtn)
-//        sendBtn.setOnClickListener {
-//            val inputField: EditText = findViewById(R.id.inputField)
-//            val dataToSend = inputField.text.toString()
-//            writeData(dataToSend)
-//        }
-//    }
+    private val serviceUUID: UUID = UUID.fromString("f3b4f9a8-25b8-4ee1-8b69-0a61a964de15")
+    private val characteristicUUID: UUID = UUID.fromString("f8c2f5f0-4e8c-4a95-b9c1-3c8c33b457c3")
 
     @RequiresApi(Build.VERSION_CODES.S)
-    private fun checkAndRequestBluetoothPermissions(): Boolean {
+    fun checkAndRequestBluetoothPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||
             (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED)) {
             ActivityCompat.requestPermissions(this,
@@ -150,12 +132,12 @@ class MainActivity : AppCompatActivity() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 initBluetooth()
             } else {
-                Toast.makeText(this, "Bluetooth permission is required", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Bluetooth permissions are required", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun initBluetooth() {
+    fun initBluetooth() {
         val bluetoothManager = getSystemService(BluetoothManager::class.java)
         bluetoothAdapter = bluetoothManager.adapter
 
@@ -166,13 +148,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun connectToBluetoothDevice() {
+    fun connectToBluetoothDevice(): Boolean {
         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
-        bluetoothDevice = pairedDevices?.firstOrNull { it.name == "Nano33BLE" }
+        bluetoothDevice = pairedDevices?.firstOrNull { it.name == "ADAPT" }
 
         if (bluetoothDevice == null) {
-            Toast.makeText(this, "Nano33BLE device not found", Toast.LENGTH_SHORT).show()
-            return
+            Toast.makeText(this, "A.D.A.P.T. device not found", Toast.LENGTH_SHORT).show()
+            return false
         }
 
         // Connect to the GATT server
@@ -212,6 +194,7 @@ class MainActivity : AppCompatActivity() {
                 Log.i("Bluetooth", "Notification received: ${value?.contentToString()}")
             }
         })
+        return true
     }
 
     private fun readCharacteristic(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
@@ -222,6 +205,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun enableNotifications(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
             gatt.setCharacteristicNotification(characteristic, true)

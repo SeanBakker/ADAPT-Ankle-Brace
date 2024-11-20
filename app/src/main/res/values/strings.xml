@@ -7,10 +7,14 @@
     <string name="notifications">Notifications</string>
     <string name="settings">Settings</string>
 
+    <!-- Exercises -->
+    <string name="rom_exercise">Range of Motion (ROM) Exercise</string>
+
     <!-- Settings Options -->
     <string name="dailyGoalReminder">Daily Goal Reminder</string>
     <string name="workoutScheduleReminder">Workout Schedule Reminder</string>
 
     <!-- Buttons -->
     <string name="connectDevice">Connect to Device</string>
+    <string name="startROMTest">Start Range of Motion Exercise</string>
 </resources>
