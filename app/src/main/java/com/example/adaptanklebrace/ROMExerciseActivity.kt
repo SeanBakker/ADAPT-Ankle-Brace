@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -103,15 +104,17 @@ class ROMExerciseActivity : AppCompatActivity() {
     private val updateAngleTask = object : Runnable {
         override fun run() {
             // Read characteristic (device) data from MainActivity
-//            bluetoothService.readDeviceData()
-//            bluetoothService.deviceLiveData.value?.toInt().let {
-//                if (it != null) {
-//                    updateProgress(it)
-//                }
-//            }
-//            handler.postDelayed(this, 50)
+            bluetoothService.readDeviceData()
+            bluetoothService.deviceLiveData.value?.toInt().let {
+                if (it != null) {
+                    updateProgress(Pair(it.toDouble(), it.toDouble()))
+                    Log.i("ANGLE", "Angle data received: $it")
+                }
+            }
+            handler.postDelayed(this, 50)
 
             // Send demo data
+            /*
             GlobalScope.launch(Dispatchers.Main) {
                 delay(2000)
                 for (anglePair in angleDeviceData) {
@@ -120,6 +123,7 @@ class ROMExerciseActivity : AppCompatActivity() {
                 }
                 updateTotalROM(angleROMData)
             }
+            */
         }
     }
 

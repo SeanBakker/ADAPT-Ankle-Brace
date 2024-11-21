@@ -100,6 +100,7 @@ class BluetoothService : Service() {
                 }
             }
 
+            @Deprecated("Deprecated in Java")
             @Suppress("DEPRECATION")
             override fun onCharacteristicRead(
                 gatt: BluetoothGatt,
@@ -108,8 +109,16 @@ class BluetoothService : Service() {
             ) {
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     val byteArray = characteristic.value
-                    val value = String(byteArray, Charsets.UTF_8)
-                    Log.i("Bluetooth", "Characteristic read: ${value}")
+                    if (byteArray.isNotEmpty()) {
+                        // Convert the first byte to an integer
+                        val value = byteArray[0].toInt() and 0xFF // Convert to unsigned value
+                        _deviceLiveData.postValue(value)
+                        Log.i("Bluetooth", "Characteristic read: $value°")
+                    } else {
+                        Log.w("Bluetooth", "Characteristic read: no data received")
+                    }
+                } else {
+                    Log.e("Bluetooth", "Failed to read characteristic, status: $status")
                 }
             }
 
@@ -126,6 +135,7 @@ class BluetoothService : Service() {
                 }
             }
 
+            @Deprecated("Deprecated in Java")
             override fun onCharacteristicChanged(
                 gatt: BluetoothGatt,
                 characteristic: BluetoothGattCharacteristic
