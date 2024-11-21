@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -21,23 +22,148 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
-        android:id="@+id/percentageText"
-        android:layout_width="wrap_content"
+        android:id="@+id/flexionText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="0°"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/romExerciseToolbar"
+        android:layout_marginTop="100dp"
+        android:layout_marginStart="20dp"
+        android:text="Plantar Flexion &amp; Dorsiflexion Range:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:ignore="NotSibling" />
 
-    <ProgressBar
-        android:id="@+id/circularProgress"
+    <!-- Flexion Progress Bar with Text -->
+    <FrameLayout
+        android:id="@+id/flexionFrame"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_centerInParent="true"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:indeterminate="false"
-        android:max="360"
-        android:rotationX="180"
-        android:progressDrawable="@drawable/circular_progress_bar" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:layout_below="@id/romExerciseToolbar"
+        android:layout_marginTop="120dp"
+        tools:ignore="NotSibling">
+
+        <ProgressBar
+            android:id="@+id/flexionProgress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminate="false"
+            android:max="360"
+            android:rotationX="180"
+            android:progressDrawable="@drawable/circular_progress_bar" />
+
+        <TextView
+            android:id="@+id/flexionPercentageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="0°"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+    <!-- Flexion Total ROM -->
+    <RelativeLayout
+        android:id="@+id/flexionTotalFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/flexionFrame"
+        tools:ignore="NotSibling">
+
+        <TextView
+            android:id="@+id/flexionROMTotalText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total ROM:"
+            android:textSize="18sp"
+            tools:ignore="NotSibling" />
+
+        <TextView
+            android:id="@+id/flexionROMTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/flexionROMTotalText"
+            android:layout_marginStart="10dp"
+            android:text="---"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:ignore="NotSibling" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/inversionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/romExerciseToolbar"
+        android:layout_marginTop="400dp"
+        android:layout_marginStart="20dp"
+        android:text="Inversion &amp; Eversion Range:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:ignore="NotSibling" />
+
+    <!-- Inversion Progress Bar with Text -->
+    <FrameLayout
+        android:id="@+id/inversionFrame"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="420dp"
+        android:layout_below="@id/romExerciseToolbar"
+        tools:ignore="NotSibling">
+
+        <ProgressBar
+            android:id="@+id/inversionProgress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminate="false"
+            android:max="360"
+            android:rotationX="180"
+            android:progressDrawable="@drawable/circular_progress_bar" />
+
+        <TextView
+            android:id="@+id/inversionPercentageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="0°"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+    <!-- Inversion Total ROM -->
+    <RelativeLayout
+        android:id="@+id/inversionTotalFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/inversionFrame"
+        tools:ignore="NotSibling">
+
+        <TextView
+            android:id="@+id/inversionROMTotalText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total ROM:"
+            android:textSize="18sp"
+            tools:ignore="NotSibling" />
+
+        <TextView
+            android:id="@+id/inversionROMTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/inversionROMTotalText"
+            android:layout_marginStart="10dp"
+            android:text="---"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:ignore="NotSibling" />
+    </RelativeLayout>
 
 </RelativeLayout>

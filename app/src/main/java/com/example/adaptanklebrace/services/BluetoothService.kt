@@ -69,7 +69,7 @@ class BluetoothService : Service() {
     @SuppressLint("MissingPermission")
     fun connectToBluetoothDevice(context: Context): Boolean {
         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
-        bluetoothDevice = pairedDevices?.firstOrNull { it.name == "ADAPT" }
+        bluetoothDevice = pairedDevices?.firstOrNull { it.name == "ADAPT" } // Sometimes named: Arduino
 
         if (bluetoothDevice == null) {
             Toast.makeText(context, "A.D.A.P.T. device not found", Toast.LENGTH_SHORT).show()
@@ -93,21 +93,23 @@ class BluetoothService : Service() {
                     val characteristic: BluetoothGattCharacteristic? = gatt.getService(serviceUUID)?.getCharacteristic(characteristicUUID)
                     characteristic?.let {
                         enableNotifications(gatt, it)
-                        //readDeviceCharacteristic()
+                        writeDeviceData("ready")
                     }
                 } else {
                     Log.w("Bluetooth", "Service discovery failed: $status")
                 }
             }
 
+            @Suppress("DEPRECATION")
             override fun onCharacteristicRead(
                 gatt: BluetoothGatt,
                 characteristic: BluetoothGattCharacteristic,
                 status: Int
             ) {
                 if (status == BluetoothGatt.GATT_SUCCESS) {
-                    val value = characteristic.value
-                    Log.i("Bluetooth", "Characteristic read: ${value?.contentToString()}")
+                    val byteArray = characteristic.value
+                    val value = String(byteArray, Charsets.UTF_8)
+                    Log.i("Bluetooth", "Characteristic read: ${value}")
                 }
             }
 
@@ -188,12 +190,13 @@ class BluetoothService : Service() {
             val characteristic: BluetoothGattCharacteristic? = gatt.getService(serviceUUID)?.getCharacteristic(characteristicUUID)
             characteristic?.let {
                 it.value = data.toByteArray()
+                it.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
                     val status = gatt.writeCharacteristic(it)
                     if (status) {
                         Log.i("Bluetooth", "Data sent: $data")
                     } else {
-                        Log.w("Bluetooth", "Failed to write data: $data")
+                        Log.e("Bluetooth", "Failed to write data: $data")
                     }
                 } else {
                     Log.w("Bluetooth", "Bluetooth connect permission not granted.")
