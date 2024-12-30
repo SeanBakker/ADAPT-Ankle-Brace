@@ -46,8 +46,8 @@ class ConnectDeviceFragment : DialogFragment() {
             }
 
             // Check and request bluetooth permissions to ADAPT device
-            if (it.checkAndRequestBluetoothPermissions()) {
-                if (bluetoothService.connectToBluetoothDevice(it)) {
+            if (it.checkAndRequestBluetoothPermissions()) { //true
+                if (bluetoothService.connectToBluetoothDevice(it)) { //true
                     bluetoothService.writeDeviceData("ready")
                     dismiss() // Close the dialog
                     startActivity(Intent(it, ROMExerciseActivity::class.java))
