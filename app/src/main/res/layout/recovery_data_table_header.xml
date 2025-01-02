@@ -74,13 +74,13 @@
             android:gravity="center" />
 
         <TextView
-            android:id="@+id/frequency"
+            android:id="@+id/time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.2"
+            android:layout_weight="1.5"
             android:textSize="14sp"
             android:textColor="@color/black"
-            android:text="Freq."
+            android:text="Time of Completion"
             android:textStyle="bold"
             android:gravity="center" />
 

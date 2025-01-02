@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:stretchColumns="1"
+    android:gravity="center_horizontal">
+
+    <!-- Table row for exercise row items -->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <!-- Selection Checkbox -->
+        <CheckBox
+            android:id="@+id/selectRowCheckBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center" />
+
+        <!-- Exercise Name -->
+        <TextView
+            android:id="@+id/exerciseName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:text="Exercise Name"
+            android:gravity="center" />
+
+        <!-- Sets -->
+        <EditText
+            android:id="@+id/sets"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Sets"
+            android:inputType="number"
+            android:gravity="center" />
+
+        <!-- Reps -->
+        <EditText
+            android:id="@+id/reps"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Reps"
+            android:inputType="number"
+            android:gravity="center" />
+
+        <!-- Hold -->
+        <EditText
+            android:id="@+id/hold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Hold"
+            android:inputType="number"
+            android:gravity="center" />
+
+        <!-- Tension -->
+        <EditText
+            android:id="@+id/tension"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:hint="Tension"
+            android:inputType="number"
+            android:gravity="center" />
+
+        <!-- Frequency -->
+        <EditText
+            android:id="@+id/frequency"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:hint="Freq."
+            android:inputType="text"
+            android:gravity="center" />
+
+        <!-- Start Exercise Button -->
+        <Button
+            android:id="@+id/startExerciseBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:text="Start"
+            android:gravity="center" />
+
+        <!-- Comments -->
+        <EditText
+            android:id="@+id/comments"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:hint="Comments"
+            android:inputType="text"
+            android:gravity="center" />
+    </TableRow>
+
+</TableLayout>

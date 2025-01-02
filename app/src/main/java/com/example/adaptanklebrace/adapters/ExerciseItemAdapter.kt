@@ -19,7 +19,7 @@ class ExerciseItemAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         // Inflate the row item view
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.exercise_row_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.recovery_data_row_item, parent, false)
 
         // Get the exercise name TextView from the inflated layout
         val exerciseNameTextView: TextView = view.findViewById(R.id.exerciseName)

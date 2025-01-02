@@ -70,13 +70,13 @@
             android:inputType="number"
             android:gravity="center" />
 
-        <!-- Frequency -->
+        <!-- Completion Time -->
         <EditText
-            android:id="@+id/frequency"
+            android:id="@+id/time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.2"
-            android:hint="Freq."
+            android:layout_weight="1.5"
+            android:hint="Time"
             android:inputType="text"
             android:gravity="center" />
 

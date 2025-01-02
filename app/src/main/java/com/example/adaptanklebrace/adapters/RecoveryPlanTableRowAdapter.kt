@@ -1,11 +1,11 @@
 package com.example.adaptanklebrace.adapters
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.CheckBox
 import android.widget.TextView
@@ -15,11 +15,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.data.Exercise
 
-class ExerciseTableRowAdapter(
-    private val context: Context,
+class RecoveryPlanTableRowAdapter(
     private val exercises: MutableList<Exercise>,
     private val saveDataCallback: SaveDataCallback
-) : RecyclerView.Adapter<ExerciseTableRowAdapter.ExerciseViewHolder>() {
+) : RecyclerView.Adapter<RecoveryPlanTableRowAdapter.ExerciseViewHolder>() {
 
     // Define the callback interface
     interface SaveDataCallback {
@@ -35,7 +34,7 @@ class ExerciseTableRowAdapter(
         val hold: View = view.findViewById(R.id.hold)
         val tension: View = view.findViewById(R.id.tension)
         val frequency: View = view.findViewById(R.id.frequency)
-        val difficulty: View = view.findViewById(R.id.difficulty)
+        val startExerciseButton: View = view.findViewById(R.id.startExerciseBtn)
         val comments: View = view.findViewById(R.id.comments)
         val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
 
@@ -49,7 +48,7 @@ class ExerciseTableRowAdapter(
                 (hold as? TextView)?.text = "Hold"
                 (tension as? TextView)?.text = "Tension"
                 (frequency as? TextView)?.text = "Frequency"
-                (difficulty as? TextView)?.text = "Difficulty"
+                (startExerciseButton as? TextView)?.text = "Start Exercise"
                 (comments as? TextView)?.text = "Comments"
             } else {
                 // Bind editable fields for exercise data rows
@@ -59,7 +58,7 @@ class ExerciseTableRowAdapter(
                 (hold as? EditText)?.setText(exercise?.hold.toString())
                 (tension as? EditText)?.setText(exercise?.tension.toString())
                 (frequency as? EditText)?.setText(exercise?.frequency)
-                (difficulty as? EditText)?.setText(exercise?.difficulty.toString())
+                (startExerciseButton as? Button)?.text = "Start"
                 (comments as? EditText)?.setText(exercise?.comments)
                 (selectRowCheckBox as? CheckBox)?.isChecked = exercise?.isSelected ?: false
 
@@ -84,9 +83,8 @@ class ExerciseTableRowAdapter(
                     exercise?.frequency = it.toString()
                     markAsChanged()
                 }
-                (difficulty as? EditText)?.addTextChangedListener {
-                    exercise?.difficulty = it.toString().toIntOrNull() ?: 0
-                    markAsChanged()
+                (startExerciseButton as? Button)?.setOnClickListener {
+                    //todo: trigger workflow to start exercise, connect to device, then perform test rep
                 }
                 (comments as? EditText)?.addTextChangedListener {
                     exercise?.comments = it.toString()
@@ -101,7 +99,6 @@ class ExerciseTableRowAdapter(
 
         private fun markAsChanged() {
             // This can be used to flag that a change occurred and data needs saving.
-            // For example, update a variable that tracks changes or call the save function directly
             saveDataCallback.saveCurrentDateData()
         }
     }
@@ -109,9 +106,9 @@ class ExerciseTableRowAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         // Inflate either header or item row based on the view type
         val view: View = if (viewType == VIEW_TYPE_HEADER) {
-            LayoutInflater.from(parent.context).inflate(R.layout.exercise_table_header, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.recovery_plan_table_header, parent, false)
         } else {
-            LayoutInflater.from(parent.context).inflate(R.layout.exercise_row_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.recovery_plan_row_item, parent, false)
         }
         return ExerciseViewHolder(view)
     }

@@ -15,14 +15,16 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.adapters.ExerciseItemAdapter
-import com.example.adaptanklebrace.adapters.ExerciseTableRowAdapter
+import com.example.adaptanklebrace.adapters.RecoveryPlanTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import java.io.File
 import java.util.*
 
-class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDataCallback {
+@RequiresApi(Build.VERSION_CODES.Q)
+class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.SaveDataCallback,
+    DeleteRowFragment.OnDeleteListener {
 
     private lateinit var dateTextView: TextView
     private lateinit var datePickerButton: Button
@@ -34,10 +36,11 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
     private lateinit var addExerciseButton: Button
     private lateinit var deleteExerciseButton: Button
 
-    lateinit var exerciseAdapter: ExerciseTableRowAdapter
+    private lateinit var exerciseAdapter: RecoveryPlanTableRowAdapter
     private var exercises: MutableList<Exercise> = mutableListOf()
 
-    @RequiresApi(Build.VERSION_CODES.Q)
+    private val RECOVERY_PLAN_PREFERENCE = "RecoveryPlan"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recovery_plan)
@@ -69,7 +72,7 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
         deleteExerciseButton = findViewById(R.id.deleteExerciseButton)
 
         // Initialize the adapter and pass the activity as a callback
-        exerciseAdapter = ExerciseTableRowAdapter(this, exercises, this)
+        exerciseAdapter = RecoveryPlanTableRowAdapter(exercises, this)
 
         // Set up RecyclerView
         exerciseRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -99,16 +102,20 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
     override fun saveCurrentDateData() {
         val date = dateTextView.text.toString()
         val exercises = exerciseAdapter.getExercises()
-        ExerciseDataStore(this).saveExercisesForDate(date, exercises)
+        ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveExercisesForDate(date, exercises)
     }
 
-    fun deleteExerciseRow() {
+    override fun onDeleteRow() {
+        deleteExerciseRow()
+    }
+
+    private fun deleteExerciseRow() {
         exerciseAdapter.deleteExerciseRow()
         saveCurrentDateData() // Save data after deleting rows
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun addExerciseRow() {
+        //showAddExerciseDialog() //todo: fix errors
         exerciseAdapter.addExerciseRow("test")
         saveCurrentDateData() // Save data after adding new row
     }
@@ -144,12 +151,12 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
     }
 
     private fun loadDateData(date: String) {
-        val exercises = ExerciseDataStore(this).getExercisesForDate(date)
+        //todo: add difficulty/comments storage data for overall date
+        val exercises = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getExercisesForDate(date)
         exerciseAdapter.setExercises(exercises)
     }
 
     // Show pop-up dialog for choosing exercise type to add to the table
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun showAddExerciseDialog() {
         val builder = AlertDialog.Builder(this)
         val inflater = layoutInflater
@@ -242,7 +249,6 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
                         hold = columns[3].toInt(),
                         tension = columns[4].toInt(),
                         frequency = columns[5],
-                        difficulty = columns[6].toInt(),
                         comments = columns[7],
                         isSelected = columns[8].toBoolean()
                     )
