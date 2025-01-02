@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.nav_common_exercises -> startActivity(Intent(this, CommonExercisesActivity::class.java))
                 R.id.nav_recovery_plan -> startActivity(Intent(this, RecoveryPlanActivity::class.java))
-                R.id.nav_recovery_progress -> startActivity(Intent(this, RecoveryProgressActivity::class.java))
+                R.id.nav_recovery_data -> startActivity(Intent(this, RecoveryDataActivity::class.java))
                 R.id.nav_notifications -> startActivity(Intent(this, NotificationsActivity::class.java))
             }
             drawerLayout.closeDrawers() // Close the sidebar

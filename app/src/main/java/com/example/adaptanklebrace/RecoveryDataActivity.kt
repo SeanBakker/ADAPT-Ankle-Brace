@@ -1,4 +1,4 @@
 package com.example.adaptanklebrace
 
-class RecoveryProgressActivity {
+class RecoveryDataActivity {
 }

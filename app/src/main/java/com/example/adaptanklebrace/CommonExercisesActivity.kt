@@ -9,7 +9,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.BindingAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.adaptanklebrace.adapters.ExercisePagesAdapter
-import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.ExerciseType
 
 class CommonExercisesActivity : AppCompatActivity() {
@@ -20,7 +19,7 @@ class CommonExercisesActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.common_exercises)
+        setContentView(R.layout.activity_common_exercises)
 
         // Initialize viewPager and quickLinksLayout
         viewPager = findViewById(R.id.viewPager)

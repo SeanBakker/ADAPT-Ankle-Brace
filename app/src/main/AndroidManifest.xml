@@ -40,7 +40,7 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".CommonExercisesActivity" />
         <activity android:name=".RecoveryPlanActivity" />
-        <activity android:name=".RecoveryProgressActivity" />
+        <activity android:name=".RecoveryDataActivity" />
         <activity android:name=".NotificationsActivity" />
         <activity android:name=".ROMExerciseActivity" />
     </application>

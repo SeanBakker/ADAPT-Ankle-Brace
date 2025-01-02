@@ -40,10 +40,10 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.daily_recovery_plan)
+        setContentView(R.layout.activity_recovery_plan)
 
         // Set up the toolbar
-        val toolbar: Toolbar = findViewById(R.id.dailyRecoveryPlanToolbar)
+        val toolbar: Toolbar = findViewById(R.id.recoveryPlanToolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.title = getString(R.string.recovery_plan)
 
@@ -153,7 +153,7 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
     private fun showAddExerciseDialog() {
         val builder = AlertDialog.Builder(this)
         val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.dialog_add_exercise_row_item, null)
+        val dialogView = inflater.inflate(R.layout.add_exercise_row_fragment, null)
         builder.setView(dialogView)
 
         val customExerciseName: EditText = dialogView.findViewById(R.id.customExerciseName)

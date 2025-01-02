@@ -9,9 +9,9 @@
         android:icon="@drawable/baseline_assignment_24"
         android:title="@string/recovery_plan" />
     <item
-        android:id="@+id/nav_recovery_progress"
+        android:id="@+id/nav_recovery_data"
         android:icon="@drawable/baseline_checklist_24"
-        android:title="@string/recovery_progress" />
+        android:title="@string/recovery_data" />
     <item
         android:id="@+id/nav_notifications"
         android:icon="@drawable/baseline_notifications_active_24"

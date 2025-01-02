@@ -18,7 +18,7 @@ class DeleteRowFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.delete_row_fragment, container, false)
+        val view = inflater.inflate(R.layout.delete_exercise_row_fragment, container, false)
 
         val deleteDataButton: Button = view.findViewById(R.id.deleteDataBtn)
         deleteDataButton.setOnClickListener {
