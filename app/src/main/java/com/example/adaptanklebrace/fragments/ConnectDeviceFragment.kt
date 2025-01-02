@@ -1,4 +1,4 @@
-package com.example.adaptanklebrace
+package com.example.adaptanklebrace.fragments
 
 import android.content.Intent
 import android.os.Build
@@ -11,6 +11,9 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import com.example.adaptanklebrace.MainActivity
+import com.example.adaptanklebrace.R
+import com.example.adaptanklebrace.ROMExerciseActivity
 import com.example.adaptanklebrace.services.BluetoothService
 
 class ConnectDeviceFragment : DialogFragment() {
@@ -20,7 +23,7 @@ class ConnectDeviceFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.connecting_device, container, false)
+        val view = inflater.inflate(R.layout.connecting_device_fragment, container, false)
 
         val connectButton: Button = view.findViewById(R.id.connectDeviceBtn)
         connectButton.setOnClickListener {

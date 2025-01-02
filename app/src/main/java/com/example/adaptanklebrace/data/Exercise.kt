@@ -18,7 +18,7 @@ data class Exercise(
     var frequency: String = "",
     var difficulty: Int = 0,
     var comments: String = "",
-    var isStarted: Boolean = false
+    var isSelected: Boolean = false
 ) : Parcelable, Serializable {
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -50,7 +50,7 @@ data class Exercise(
         parcel.writeString(frequency)
         parcel.writeInt(difficulty)
         parcel.writeString(comments)
-        parcel.writeBoolean(isStarted)
+        parcel.writeBoolean(isSelected)
     }
 
     override fun describeContents(): Int {

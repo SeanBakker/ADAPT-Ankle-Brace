@@ -14,7 +14,7 @@
         android:layout_gravity="center" />
 
     <ImageView
-        android:id="@+id/exerciseImage"
+        android:id="@+id/loadingImage"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center"

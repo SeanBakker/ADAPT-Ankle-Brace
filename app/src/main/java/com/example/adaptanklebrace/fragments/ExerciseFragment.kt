@@ -1,4 +1,4 @@
-package com.example.adaptanklebrace
+package com.example.adaptanklebrace.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

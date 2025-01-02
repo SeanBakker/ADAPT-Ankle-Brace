@@ -11,6 +11,14 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
 
+        <!-- Selection Checkbox -->
+        <CheckBox
+            android:id="@+id/selectRowCheckBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center" />
+
         <!-- Exercise Name -->
         <TextView
             android:id="@+id/exerciseName"
@@ -90,14 +98,6 @@
             android:layout_weight="2"
             android:hint="Comments"
             android:inputType="text"
-            android:gravity="center" />
-
-        <!-- Start Checkbox -->
-        <CheckBox
-            android:id="@+id/startCheckBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="center" />
     </TableRow>
 

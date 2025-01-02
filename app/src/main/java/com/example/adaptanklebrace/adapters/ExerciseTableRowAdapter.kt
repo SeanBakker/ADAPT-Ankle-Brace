@@ -37,7 +37,7 @@ class ExerciseTableRowAdapter(
         val frequency: View = view.findViewById(R.id.frequency)
         val difficulty: View = view.findViewById(R.id.difficulty)
         val comments: View = view.findViewById(R.id.comments)
-        val startCheckBox: View = view.findViewById(R.id.startCheckBox)
+        val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
 
         // Bind method will update based on the view type
         fun bind(exercise: Exercise?, viewType: Int) {
@@ -51,9 +51,6 @@ class ExerciseTableRowAdapter(
                 (frequency as? TextView)?.text = "Frequency"
                 (difficulty as? TextView)?.text = "Difficulty"
                 (comments as? TextView)?.text = "Comments"
-                (startCheckBox as? TextView)?.text = "Started?"
-                // Disable startCheckBox in the header row
-                //(startCheckBox as? CheckBox)?.visibility = View.GONE
             } else {
                 // Bind editable fields for exercise data rows
                 (exerciseName as? TextView)?.text = exercise?.name
@@ -64,7 +61,7 @@ class ExerciseTableRowAdapter(
                 (frequency as? EditText)?.setText(exercise?.frequency)
                 (difficulty as? EditText)?.setText(exercise?.difficulty.toString())
                 (comments as? EditText)?.setText(exercise?.comments)
-                (startCheckBox as? CheckBox)?.isChecked = exercise?.isStarted ?: false
+                (selectRowCheckBox as? CheckBox)?.isChecked = exercise?.isSelected ?: false
 
                 // Set up listeners for editable fields
                 (sets as? EditText)?.addTextChangedListener {
@@ -95,8 +92,8 @@ class ExerciseTableRowAdapter(
                     exercise?.comments = it.toString()
                     markAsChanged()
                 }
-                (startCheckBox as? CheckBox)?.setOnCheckedChangeListener { _, isChecked ->
-                    exercise?.isStarted = isChecked
+                (selectRowCheckBox as? CheckBox)?.setOnCheckedChangeListener { _, isChecked ->
+                    exercise?.isSelected = isChecked
                     markAsChanged()
                 }
             }
@@ -150,6 +147,17 @@ class ExerciseTableRowAdapter(
         notifyItemInserted(exercises.size) // Insert the new exercise row
     }
 
+    // Delete exercise row from the list
+    @SuppressLint("NotifyDataSetChanged")
+    fun deleteExerciseRow() {
+        for (i in exercises.size - 1 downTo 0) {
+            if (exercises[i].isSelected) {
+                exercises.removeAt(i) // Remove the exercise
+            }
+        }
+        notifyDataSetChanged() // Notify adapter
+    }
+
     // Get the current list of exercises
     fun getExercises(): List<Exercise> {
         return exercises.toList() // Return a copy of the list to avoid external modifications
@@ -160,6 +168,6 @@ class ExerciseTableRowAdapter(
     fun setExercises(newExercises: List<Exercise>) {
         exercises.clear()
         exercises.addAll(newExercises)
-        notifyDataSetChanged() // Notify that data has changed
+        notifyDataSetChanged() // Notify adapter
     }
 }

@@ -104,6 +104,13 @@
             android:gravity="end">
 
             <Button
+                android:id="@+id/importButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="Import" />
+
+            <Button
                 android:id="@+id/exportButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,10 +118,18 @@
                 android:text="Export" />
 
             <Button
+                android:id="@+id/deleteExerciseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="Delete Row" />
+
+            <Button
                 android:id="@+id/addExerciseButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+" />
+                android:layout_marginEnd="10dp"
+                android:text="Add Row" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

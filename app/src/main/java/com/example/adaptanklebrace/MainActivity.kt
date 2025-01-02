@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.adaptanklebrace.fragments.ConnectDeviceFragment
 import com.example.adaptanklebrace.services.BluetoothService
 import com.google.android.material.navigation.NavigationView
 

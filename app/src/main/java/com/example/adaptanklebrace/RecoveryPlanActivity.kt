@@ -1,7 +1,5 @@
 package com.example.adaptanklebrace
 
-class RecoveryPlanActivity {
-}
 import android.app.DatePickerDialog
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +18,7 @@ import com.example.adaptanklebrace.adapters.ExerciseItemAdapter
 import com.example.adaptanklebrace.adapters.ExerciseTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.ExerciseType
+import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import java.io.File
 import java.util.*
 
@@ -31,9 +30,11 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
     private lateinit var commentsEditText: EditText
     private lateinit var exerciseRecyclerView: RecyclerView
     private lateinit var exportButton: Button
+    private lateinit var importButton: Button
     private lateinit var addExerciseButton: Button
+    private lateinit var deleteExerciseButton: Button
 
-    private lateinit var exerciseAdapter: ExerciseTableRowAdapter
+    lateinit var exerciseAdapter: ExerciseTableRowAdapter
     private var exercises: MutableList<Exercise> = mutableListOf()
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -53,7 +54,7 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
         // Handle the back button click
         toolbar.setNavigationOnClickListener {
             @Suppress("DEPRECATION")
-            onBackPressed() // Go back to the previous activity
+            onBackPressed()
         }
 
         // Initialize views
@@ -63,7 +64,9 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
         commentsEditText = findViewById(R.id.commentsEditText)
         exerciseRecyclerView = findViewById(R.id.exerciseRecyclerView)
         exportButton = findViewById(R.id.exportButton)
+        importButton = findViewById(R.id.importButton)
         addExerciseButton = findViewById(R.id.addExerciseButton)
+        deleteExerciseButton = findViewById(R.id.deleteExerciseButton)
 
         // Initialize the adapter and pass the activity as a callback
         exerciseAdapter = ExerciseTableRowAdapter(this, exercises, this)
@@ -78,13 +81,36 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
         // Handle export button click
         exportButton.setOnClickListener { exportDataToExcel() }
 
+        // Handle import button click
+        importButton.setOnClickListener { importDataFromExcel() }
+
         // Handle add exercise button click
-        addExerciseButton.setOnClickListener { addNewExerciseRow() }
+        addExerciseButton.setOnClickListener { addExerciseRow() }
+
+        // Handle delete exercise button click
+        deleteExerciseButton.setOnClickListener { showDeleteExerciseDialog() }
 
         // Load data for today's date on activity start
         val currentDate = getCurrentDate()
         dateTextView.text = currentDate
         loadDateData(currentDate)
+    }
+
+    override fun saveCurrentDateData() {
+        val date = dateTextView.text.toString()
+        val exercises = exerciseAdapter.getExercises()
+        ExerciseDataStore(this).saveExercisesForDate(date, exercises)
+    }
+
+    fun deleteExerciseRow() {
+        exerciseAdapter.deleteExerciseRow()
+        saveCurrentDateData() // Save data after deleting rows
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun addExerciseRow() {
+        exerciseAdapter.addExerciseRow("test")
+        saveCurrentDateData() // Save data after adding new row
     }
 
     private fun showDatePicker() {
@@ -115,19 +141,6 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
         val month = calendar.get(Calendar.MONTH) + 1
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         return "$day/$month/$year"
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun addNewExerciseRow() {
-        exerciseAdapter.addExerciseRow("test")
-        saveCurrentDateData() // Save data after adding new row
-    }
-
-
-    override fun saveCurrentDateData() {
-        val date = dateTextView.text.toString()
-        val exercises = exerciseAdapter.getExercises()
-        ExerciseDataStore(this).saveExercisesForDate(date, exercises)
     }
 
     private fun loadDateData(date: String) {
@@ -174,6 +187,12 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
         builder.show()
     }
 
+    // Show pop-up dialog for deleting an exercise row from the table
+    private fun showDeleteExerciseDialog() {
+        val deleteRowFragment = DeleteRowFragment()
+        deleteRowFragment.show(supportFragmentManager, "delete_row")
+    }
+
     // Function to export table data to Excel
     private fun exportDataToExcel() {
         val date = dateTextView.text.toString()
@@ -188,7 +207,7 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
             exercises.forEach { exercise ->
                 writer.write("${exercise.name},${exercise.sets},${exercise.reps},${exercise.hold}," +
                         "${exercise.tension},${exercise.frequency},${exercise.difficulty}," +
-                        "${exercise.comments},${exercise.isStarted}\n")
+                        "${exercise.comments},${exercise.isSelected}\n")
             }
 
             writer.close()
@@ -225,7 +244,7 @@ class RecoveryPlanActivity : AppCompatActivity(), ExerciseTableRowAdapter.SaveDa
                         frequency = columns[5],
                         difficulty = columns[6].toInt(),
                         comments = columns[7],
-                        isStarted = columns[8].toBoolean()
+                        isSelected = columns[8].toBoolean()
                     )
                 )
             }
