@@ -20,6 +20,7 @@ import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -93,10 +94,10 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
         // Handle delete exercise button click
         deleteExerciseButton.setOnClickListener { showDeleteExerciseDialog() }
 
-        // Load data for today's date on activity start
-        val currentDate = getCurrentDate()
-        dateTextView.text = currentDate
-        loadDateData(currentDate)
+        // Load data for current week on activity start
+        val currentWeek = calculateWeekRange(Calendar.getInstance())
+        dateTextView.text = currentWeek
+        loadWeekData(currentWeek)
     }
 
     override fun saveCurrentDateData() {
@@ -121,6 +122,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
     }
 
     private fun showDatePicker() {
+        // Get current date
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
@@ -129,11 +131,15 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
         val datePickerDialog = DatePickerDialog(
             this,
             { _, selectedYear, selectedMonth, selectedDay ->
-                val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-                dateTextView.text = selectedDate
+                // Set the calendar to the selected date
+                val selectedCalendar = Calendar.getInstance()
+                selectedCalendar.set(selectedYear, selectedMonth, selectedDay)
 
-                // Load data for the selected date
-                loadDateData(selectedDate)
+                val chosenWeek = calculateWeekRange(selectedCalendar)
+                dateTextView.text = chosenWeek
+
+                // Load data for the selected week
+                loadWeekData(chosenWeek)
             },
             year,
             month,
@@ -142,17 +148,28 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
         datePickerDialog.show()
     }
 
-    private fun getCurrentDate(): String {
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        return "$day/$month/$year"
+    private fun calculateWeekRange(calendar: Calendar): String {
+        // Adjust to the Sunday of the selected week
+        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+        val daysToSubtract = dayOfWeek - Calendar.SUNDAY
+        calendar.add(Calendar.DATE, -daysToSubtract) // Move to the start of the week (Sunday)
+        val startOfWeek = calendar.time
+
+        // Calculate the Saturday of the same week
+        calendar.add(Calendar.DATE, 6)
+        val endOfWeek = calendar.time
+
+        // Format dates into strings
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val startDateString = dateFormat.format(startOfWeek)
+        val endDateString = dateFormat.format(endOfWeek)
+
+        // Display the date range in the TextView
+        return "$startDateString - $endDateString"
     }
 
-    private fun loadDateData(date: String) {
-        //todo: add difficulty/comments storage data for overall date
-        val exercises = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getExercisesForDate(date)
+    private fun loadWeekData(week: String) {
+        val exercises = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getExercisesForDate(week)
         exerciseAdapter.setExercises(exercises)
     }
 

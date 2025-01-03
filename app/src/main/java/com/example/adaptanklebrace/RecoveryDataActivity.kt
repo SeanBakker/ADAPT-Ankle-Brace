@@ -153,6 +153,7 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Sa
     }
 
     private fun loadDateData(date: String) {
+        //todo: add difficulty/comments storage data for overall date
         val exercises = ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).getExercisesForDate(date)
         exerciseAdapter.setExercises(exercises)
     }
