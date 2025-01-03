@@ -16,7 +16,8 @@
             android:id="@+id/selectRowCheckBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="0.5"
+            android:gravity="center" />
 
         <TextView
             android:id="@+id/exerciseName"
@@ -58,7 +59,7 @@
             android:layout_weight="1"
             android:textSize="14sp"
             android:textColor="@color/black"
-            android:text="Hold"
+            android:text="Hold (secs)"
             android:textStyle="bold"
             android:gravity="center" />
 
@@ -66,7 +67,7 @@
             android:id="@+id/tension"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.2"
+            android:layout_weight="1"
             android:textSize="14sp"
             android:textColor="@color/black"
             android:text="Tension"
@@ -77,7 +78,7 @@
             android:id="@+id/frequency"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.2"
+            android:layout_weight="1.5"
             android:textSize="14sp"
             android:textColor="@color/black"
             android:text="Freq."
@@ -88,7 +89,9 @@
             android:id="@+id/startExerciseBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.5"
+            android:layout_weight="1"
+            android:padding="0dp"
+            android:layout_marginHorizontal="10dp"
             android:textSize="14sp"
             android:textColor="@color/black"
             android:text="Start Exercise"
@@ -99,7 +102,7 @@
             android:id="@+id/comments"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:textSize="14sp"
             android:textColor="@color/black"
             android:text="Comments"

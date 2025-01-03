@@ -48,7 +48,7 @@ class RecoveryDataTableRowAdapter(
                 (exerciseName as? TextView)?.text = "Exercise Name"
                 (sets as? TextView)?.text = "Sets"
                 (reps as? TextView)?.text = "Reps"
-                (hold as? TextView)?.text = "Hold"
+                (hold as? TextView)?.text = "Hold (secs)"
                 (tension as? TextView)?.text = "Tension"
                 (time as? TextView)?.text = "Time of Completion"
                 (difficulty as? TextView)?.text = "Difficulty"

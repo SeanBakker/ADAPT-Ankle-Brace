@@ -16,7 +16,7 @@
             android:id="@+id/selectRowCheckBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.5"
             android:gravity="center" />
 
         <!-- Exercise Name -->
@@ -65,7 +65,7 @@
             android:id="@+id/tension"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.2"
+            android:layout_weight="1"
             android:hint="Tension"
             android:inputType="number"
             android:gravity="center" />
@@ -75,7 +75,7 @@
             android:id="@+id/frequency"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.2"
+            android:layout_weight="1.5"
             android:hint="Freq."
             android:inputType="text"
             android:gravity="center" />
@@ -85,7 +85,9 @@
             android:id="@+id/startExerciseBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.5"
+            android:layout_weight="1"
+            android:padding="0dp"
+            android:layout_marginHorizontal="10dp"
             android:text="Start"
             android:gravity="center" />
 
@@ -94,7 +96,7 @@
             android:id="@+id/comments"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:hint="Comments"
             android:inputType="text"
             android:gravity="center" />

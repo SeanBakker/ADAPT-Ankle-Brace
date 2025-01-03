@@ -58,7 +58,7 @@
             android:layout_weight="1"
             android:textSize="14sp"
             android:textColor="@color/black"
-            android:text="Hold"
+            android:text="Hold (secs)"
             android:textStyle="bold"
             android:gravity="center" />
 

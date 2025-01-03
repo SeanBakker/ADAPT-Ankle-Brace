@@ -45,9 +45,9 @@ class RecoveryPlanTableRowAdapter(
                 (exerciseName as? TextView)?.text = "Exercise Name"
                 (sets as? TextView)?.text = "Sets"
                 (reps as? TextView)?.text = "Reps"
-                (hold as? TextView)?.text = "Hold"
+                (hold as? TextView)?.text = "Hold (secs)"
                 (tension as? TextView)?.text = "Tension"
-                (frequency as? TextView)?.text = "Frequency"
+                (frequency as? TextView)?.text = "Freq."
                 (startExerciseButton as? TextView)?.text = "Start Exercise"
                 (comments as? TextView)?.text = "Comments"
             } else {
@@ -139,9 +139,9 @@ class RecoveryPlanTableRowAdapter(
 
     // Add exercise row to the list
     @RequiresApi(Build.VERSION_CODES.Q)
-    fun addExerciseRow(exerciseName: String) {
-        exercises.add(Exercise(name = exerciseName)) // Add a blank row with default values
-        notifyItemInserted(exercises.size) // Insert the new exercise row
+    fun addExerciseRow(exercise: Exercise) {
+        exercises.add(exercise)
+        notifyItemInserted(exercises.size) // Notify adapter
     }
 
     // Delete exercise row from the list

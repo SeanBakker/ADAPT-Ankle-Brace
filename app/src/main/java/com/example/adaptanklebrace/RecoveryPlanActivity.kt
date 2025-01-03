@@ -9,15 +9,13 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.adaptanklebrace.adapters.ExerciseItemAdapter
 import com.example.adaptanklebrace.adapters.RecoveryPlanTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
-import com.example.adaptanklebrace.enums.ExerciseType
+import com.example.adaptanklebrace.fragments.AddExerciseGoalRowFragment
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import java.io.File
 import java.text.SimpleDateFormat
@@ -89,7 +87,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
         importButton.setOnClickListener { importDataFromExcel() }
 
         // Handle add exercise button click
-        addExerciseButton.setOnClickListener { addExerciseRow() }
+        addExerciseButton.setOnClickListener { showAddExerciseDialog() }
 
         // Handle delete exercise button click
         deleteExerciseButton.setOnClickListener { showDeleteExerciseDialog() }
@@ -110,14 +108,17 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
         deleteExerciseRow()
     }
 
+    fun onAddRow(exercise: Exercise) {
+        addExerciseRow(exercise)
+    }
+
     private fun deleteExerciseRow() {
         exerciseAdapter.deleteExerciseRow()
         saveCurrentDateData() // Save data after deleting rows
     }
 
-    private fun addExerciseRow() {
-        //showAddExerciseDialog() //todo: fix errors
-        exerciseAdapter.addExerciseRow("test")
+    private fun addExerciseRow(exercise: Exercise) {
+        exerciseAdapter.addExerciseRow(exercise)
         saveCurrentDateData() // Save data after adding new row
     }
 
@@ -173,42 +174,10 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
         exerciseAdapter.setExercises(exercises)
     }
 
-    // Show pop-up dialog for choosing exercise type to add to the table
+    // Show pop-up dialog for adding exercise goal row to the table
     private fun showAddExerciseDialog() {
-        val builder = AlertDialog.Builder(this)
-        val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.add_exercise_row_fragment, null)
-        builder.setView(dialogView)
-
-        val customExerciseName: EditText = dialogView.findViewById(R.id.customExerciseName)
-
-        // Set up RecyclerView for the exercise list
-        val recyclerView: RecyclerView = dialogView.findViewById(R.id.exerciseRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-        // List of exercises (can be customized)
-        val exerciseNames = ExerciseType.values().map { it.name }
-
-        // Set up adapter for RecyclerView
-        val adapter = ExerciseItemAdapter(exerciseNames) { selectedExercise ->
-            // Handle exercise selection
-            customExerciseName.setText(selectedExercise)
-        }
-        recyclerView.adapter = adapter
-
-        builder.setPositiveButton("Add") { _, _ ->
-            val selectedExercise = if (customExerciseName.text.isNotEmpty()) {
-                customExerciseName.text.toString()
-            } else {
-                // Fallback to the first item in the list if none is selected
-                exerciseNames.firstOrNull() ?: ""
-            }
-
-            exerciseAdapter.addExerciseRow(selectedExercise)
-        }
-
-        builder.setNegativeButton("Cancel", null)
-        builder.show()
+        val addExerciseGoalRowFragment = AddExerciseGoalRowFragment()
+        addExerciseGoalRowFragment.show(supportFragmentManager, "add_exercise_goal_row")
     }
 
     // Show pop-up dialog for deleting an exercise row from the table

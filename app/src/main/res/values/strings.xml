@@ -17,4 +17,9 @@
     <!-- Buttons -->
     <string name="connectDevice">Connect to Device</string>
     <string name="startROMTest">Start Range of Motion Exercise</string>
+
+    <string-array name="frequency_categories">
+        <item>day</item>
+        <item>week</item>
+    </string-array>
 </resources>

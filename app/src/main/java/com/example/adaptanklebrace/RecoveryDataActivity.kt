@@ -162,7 +162,7 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Sa
     private fun showAddExerciseDialog() {
         val builder = AlertDialog.Builder(this)
         val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.add_exercise_row_fragment, null)
+        val dialogView = inflater.inflate(R.layout.add_exercise_data_row_fragment, null)
         builder.setView(dialogView)
 
         val customExerciseName: EditText = dialogView.findViewById(R.id.customExerciseName)
