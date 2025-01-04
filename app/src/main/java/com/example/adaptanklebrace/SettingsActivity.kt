@@ -18,6 +18,10 @@ class SettingsActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
 
+    companion object {
+        var nightMode: Boolean = false
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -70,6 +74,7 @@ class SettingsActivity : AppCompatActivity() {
         nightModeCheckbox.setOnCheckedChangeListener { _, isChecked ->
             savePreference("nightMode", isChecked)
             changeAppTheme(isChecked)
+            nightMode = isChecked
         }
     }
 
