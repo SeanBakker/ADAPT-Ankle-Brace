@@ -118,6 +118,13 @@
                 android:text="Export" />
 
             <Button
+                android:id="@+id/updatePercentagesButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="Update Percentages" />
+
+            <Button
                 android:id="@+id/deleteExerciseButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

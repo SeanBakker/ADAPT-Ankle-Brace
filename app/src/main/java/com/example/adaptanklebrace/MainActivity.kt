@@ -1,6 +1,7 @@
 package com.example.adaptanklebrace
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -13,6 +14,8 @@ import android.os.IBinder
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -21,16 +24,22 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.adaptanklebrace.RecoveryPlanActivity.Companion.RECOVERY_PLAN_PREFERENCE
 import com.example.adaptanklebrace.fragments.ConnectDeviceFragment
 import com.example.adaptanklebrace.services.BluetoothService
 import com.google.android.material.navigation.NavigationView
+import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var weeklyProgressBar: ProgressBar
+    private lateinit var weeklyProgressText: TextView
 
     private var settingsActivity = SettingsActivity()
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private var recoveryPlanActivity = RecoveryPlanActivity()
     private lateinit var bluetoothService: BluetoothService
     private var isBluetoothServiceBound = false
 
@@ -89,6 +98,21 @@ class MainActivity : AppCompatActivity() {
             val connectDeviceFragment = ConnectDeviceFragment()
             connectDeviceFragment.show(supportFragmentManager, "connect_device")
         }
+
+        // Setup the progress bar and text
+        weeklyProgressBar = findViewById(R.id.weeklyGoalProgress)
+        weeklyProgressText = findViewById(R.id.weeklyPercentageText)
+        calculateWeeklyProgress()
+
+        //todo: add overview of uncompleted exercise goals
+    }
+
+    // Call calculateWeeklyProgress() whenever the activity is resumed
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun onResume() {
+        super.onResume()
+        // Ensure progress is updated when the activity comes to the foreground
+        calculateWeeklyProgress()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -123,6 +147,21 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    @SuppressLint("DefaultLocale")
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun calculateWeeklyProgress() {
+
+        val currentWeek = recoveryPlanActivity.calculateWeekRange(Calendar.getInstance())
+        val exerciseGoalsForCurrentWeek = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getExercisesForDate(currentWeek)
+
+        // Get reference to RecoveryPlanActivity
+        val weeklyProgress = recoveryPlanActivity.calculateWeeklyProgress(this, exerciseGoalsForCurrentWeek, currentWeek)
+        val truncatedWeeklyProgress = String.format("%.2f", weeklyProgress)
+
+        // Update progress bar and text
+        weeklyProgressBar.progress = weeklyProgress.toInt()
+        weeklyProgressText.text = "$truncatedWeeklyProgress%"
+    }
 
 
 

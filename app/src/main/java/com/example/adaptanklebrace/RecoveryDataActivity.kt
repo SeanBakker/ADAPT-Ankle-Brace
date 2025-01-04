@@ -21,6 +21,7 @@ import com.example.adaptanklebrace.data.Exercise.CREATOR.formatter
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import java.io.File
+import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.util.*
 
@@ -41,7 +42,9 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Sa
     private lateinit var exerciseAdapter: RecoveryDataTableRowAdapter
     private var exercises: MutableList<Exercise> = mutableListOf()
 
-    private val RECOVERY_DATA_PREFERENCE = "RecoveryData"
+    companion object {
+        const val RECOVERY_DATA_PREFERENCE = "RecoveryData"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,11 +134,17 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Sa
         val datePickerDialog = DatePickerDialog(
             this,
             { _, selectedYear, selectedMonth, selectedDay ->
-                val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-                dateTextView.text = selectedDate
+                // Set the calendar to the selected date
+                val selectedCalendar = Calendar.getInstance()
+                selectedCalendar.set(selectedYear, selectedMonth, selectedDay)
+                val selectedDate = selectedCalendar.time
+
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val formattedDate = dateFormat.format(selectedDate)
+                dateTextView.text = formattedDate
 
                 // Load data for the selected date
-                loadDateData(selectedDate)
+                loadDateData(formattedDate)
             },
             year,
             month,
@@ -146,10 +155,11 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Sa
 
     private fun getCurrentDate(): String {
         val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        return "$day/$month/$year"
+        val selectedDate = calendar.time
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val formattedDate = dateFormat.format(selectedDate)
+
+        return formattedDate
     }
 
     private fun loadDateData(date: String) {

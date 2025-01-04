@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
+import com.example.adaptanklebrace.SettingsActivity
 import com.example.adaptanklebrace.data.Exercise
 
 class RecoveryPlanTableRowAdapter(
@@ -34,11 +35,13 @@ class RecoveryPlanTableRowAdapter(
         val hold: View = view.findViewById(R.id.hold)
         val tension: View = view.findViewById(R.id.tension)
         val frequency: View = view.findViewById(R.id.frequency)
+        val percentageCompleted: View = view.findViewById(R.id.percentageCompleted)
         val startExerciseButton: View = view.findViewById(R.id.startExerciseBtn)
         val comments: View = view.findViewById(R.id.comments)
         val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
 
         // Bind method will update based on the view type
+        @SuppressLint("DefaultLocale")
         fun bind(exercise: Exercise?, viewType: Int) {
             if (viewType == VIEW_TYPE_HEADER) {
                 // Cast to TextView for header
@@ -48,6 +51,7 @@ class RecoveryPlanTableRowAdapter(
                 (hold as? TextView)?.text = "Hold (secs)"
                 (tension as? TextView)?.text = "Tension"
                 (frequency as? TextView)?.text = "Freq."
+                (percentageCompleted as? TextView)?.text = "% Completed"
                 (startExerciseButton as? TextView)?.text = "Start Exercise"
                 (comments as? TextView)?.text = "Comments"
             } else {
@@ -58,9 +62,27 @@ class RecoveryPlanTableRowAdapter(
                 (hold as? EditText)?.setText(exercise?.hold.toString())
                 (tension as? EditText)?.setText(exercise?.tension.toString())
                 (frequency as? EditText)?.setText(exercise?.frequency)
+                (percentageCompleted as? TextView)?.text = String.format("%.2f%%", exercise?.percentageCompleted)
                 (startExerciseButton as? Button)?.text = "Start"
                 (comments as? EditText)?.setText(exercise?.comments)
                 (selectRowCheckBox as? CheckBox)?.isChecked = exercise?.isSelected ?: false
+
+                // Update color of startExerciseButton based on percentageCompleted field
+                if (exercise != null) {
+                    if (exercise.percentageCompleted >= 100) {
+                        (startExerciseButton as? Button)?.apply {
+                            setBackgroundColor(context.getColor(R.color.grey_1))
+                        }
+                    } else {
+                        (startExerciseButton as? Button)?.apply {
+                            if (SettingsActivity.nightMode) {
+                                setBackgroundColor(context.getColor(R.color.nightPrimary))
+                            } else {
+                                setBackgroundColor(context.getColor(R.color.lightPrimary))
+                            }
+                        }
+                    }
+                }
 
                 // Set up listeners for editable fields
                 (sets as? EditText)?.addTextChangedListener {
@@ -85,6 +107,7 @@ class RecoveryPlanTableRowAdapter(
                 }
                 (startExerciseButton as? Button)?.setOnClickListener {
                     //todo: trigger workflow to start exercise, connect to device, then perform test rep
+                    //todo: add warning when percentageCompleted is >= 100%
                 }
                 (comments as? EditText)?.addTextChangedListener {
                     exercise?.comments = it.toString()

@@ -23,7 +23,7 @@
             android:id="@+id/exerciseName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="2.5"
             android:textSize="14sp"
             android:textColor="@color/black"
             android:text="Exercise Name"
@@ -86,6 +86,17 @@
             android:gravity="center" />
 
         <TextView
+            android:id="@+id/percentageCompleted"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.6"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:text="% Completed"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
             android:id="@+id/startExerciseBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -102,7 +113,7 @@
             android:id="@+id/comments"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="2.5"
             android:textSize="14sp"
             android:textColor="@color/black"
             android:text="Comments"
