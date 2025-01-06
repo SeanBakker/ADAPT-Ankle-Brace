@@ -56,8 +56,52 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
                 android:text="&lt;Exercise 2&gt;"
+                android:textSize="10sp"
+                android:onClick="onQuickLinkClick" />
+
+            <Button
+                android:id="@+id/btn_exercise_3"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&lt;Exercise 3&gt;"
+                android:textSize="10sp"
+                android:onClick="onQuickLinkClick" />
+
+            <Button
+                android:id="@+id/btn_exercise_4"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&lt;Exercise 4&gt;"
+                android:textSize="10sp"
+                android:onClick="onQuickLinkClick" />
+
+            <Button
+                android:id="@+id/btn_exercise_5"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&lt;Exercise 5&gt;"
+                android:textSize="10sp"
+                android:onClick="onQuickLinkClick" />
+
+            <Button
+                android:id="@+id/btn_exercise_6"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&lt;Exercise 6&gt;"
+                android:textSize="10sp"
+                android:onClick="onQuickLinkClick" />
+
+            <Button
+                android:id="@+id/btn_exercise_7"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&lt;Exercise 7&gt;"
                 android:textSize="10sp"
                 android:onClick="onQuickLinkClick" />
 
