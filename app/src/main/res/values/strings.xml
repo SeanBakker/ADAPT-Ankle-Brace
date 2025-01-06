@@ -18,6 +18,10 @@
     <string name="connectDevice">Connect to Device</string>
     <string name="startROMTest">Start Range of Motion Exercise</string>
 
+    <!-- Fragments -->
+    <string name="requiredFieldsFormText">Fields marked with * are required.</string>
+    <string name="asteriskSymbol">*</string>
+
     <string-array name="frequency_categories">
         <item>day</item>
         <item>week</item>

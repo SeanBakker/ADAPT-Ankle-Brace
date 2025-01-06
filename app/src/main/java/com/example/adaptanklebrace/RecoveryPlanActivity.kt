@@ -94,7 +94,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
 
         // Handle update percentages button click
         updatePercentagesButton.setOnClickListener {
-            calculateExerciseCompletionForAllRows(this, exerciseAdapter.getExercises(), dateTextView.text.toString())
+            calculateExerciseCompletionForAllRows(this, getExerciseGoals(), dateTextView.text.toString())
         }
 
         // Handle add exercise button click
@@ -109,7 +109,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
         loadWeekData(currentWeek)
 
         // Get the list of all exercise goals from the adapter
-        val exerciseGoals = exerciseAdapter.getExercises()
+        val exerciseGoals = getExerciseGoals()
 
         // Load data for exercise goal completion percentages
         calculateExerciseCompletionForAllRows(this, exerciseGoals, currentWeek)
@@ -117,7 +117,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
 
     override fun saveCurrentDateData() {
         val week = dateTextView.text.toString()
-        val exercises = exerciseAdapter.getExercises()
+        val exercises = getExerciseGoals()
         ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveExercisesForDate(week, exercises)
     }
 
@@ -129,8 +129,32 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
         addExerciseRow(exercise)
     }
 
+    fun getExerciseGoals(): List<Exercise> {
+        return exerciseAdapter.getExercises()
+    }
+
     fun calculateWeeklyProgress(context: Context, exerciseGoals: List<Exercise>, week: String): Double {
         return calculateExerciseCompletionForAllRows(context, exerciseGoals, week, false)
+    }
+
+    fun calculateWeekRange(calendar: Calendar): String {
+        // Adjust to the Sunday of the selected week
+        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+        val daysToSubtract = dayOfWeek - Calendar.SUNDAY
+        calendar.add(Calendar.DATE, -daysToSubtract) // Move to the start of the week (Sunday)
+        val startOfWeek = calendar.time
+
+        // Calculate the Saturday of the same week
+        calendar.add(Calendar.DATE, 6)
+        val endOfWeek = calendar.time
+
+        // Format dates into strings
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val startDateString = dateFormat.format(startOfWeek)
+        val endDateString = dateFormat.format(endOfWeek)
+
+        // Display the date range in the TextView
+        return "$startDateString - $endDateString"
     }
 
     private fun deleteExerciseRow() {
@@ -174,26 +198,6 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
         datePickerDialog.show()
     }
 
-    fun calculateWeekRange(calendar: Calendar): String {
-        // Adjust to the Sunday of the selected week
-        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-        val daysToSubtract = dayOfWeek - Calendar.SUNDAY
-        calendar.add(Calendar.DATE, -daysToSubtract) // Move to the start of the week (Sunday)
-        val startOfWeek = calendar.time
-
-        // Calculate the Saturday of the same week
-        calendar.add(Calendar.DATE, 6)
-        val endOfWeek = calendar.time
-
-        // Format dates into strings
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val startDateString = dateFormat.format(startOfWeek)
-        val endDateString = dateFormat.format(endOfWeek)
-
-        // Display the date range in the TextView
-        return "$startDateString - $endDateString"
-    }
-
     private fun loadWeekData(week: String) {
         val exercises = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getExercisesForDate(week)
         exerciseAdapter.setExercises(exercises)
@@ -225,7 +229,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
             totalPercentageCompleted += percentageCompleted
         }
 
-        return (totalPercentageCompleted / exerciseGoals.size)
+        return if (exerciseGoals.isEmpty()) 0.0 else (totalPercentageCompleted / exerciseGoals.size)
     }
 
     // Calculate the % completed value for a single exercise goal row
@@ -302,7 +306,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
     // Function to export table data to Excel
     private fun exportDataToExcel() {
         val date = dateTextView.text.toString()
-        val exercises = exerciseAdapter.getExercises()
+        val exercises = getExerciseGoals()
 
         try {
             val fileName = "RecoveryPlan_$date.csv"

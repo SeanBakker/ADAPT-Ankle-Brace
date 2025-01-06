@@ -60,7 +60,7 @@ class RecoveryDataTableRowAdapter(
                 (reps as? EditText)?.setText(exercise?.reps.toString())
                 (hold as? EditText)?.setText(exercise?.hold.toString())
                 (tension as? EditText)?.setText(exercise?.tension.toString())
-                (time as? EditText)?.setText(exercise?.time?.let { it.format(formatter) } ?: LocalTime.now().format(formatter))
+                (time as? EditText)?.setText(exercise?.timeCompleted?.let { it.format(formatter) } ?: LocalTime.now().format(formatter))
                 (difficulty as? EditText)?.setText(exercise?.difficulty.toString())
                 (comments as? EditText)?.setText(exercise?.comments)
                 (selectRowCheckBox as? CheckBox)?.isChecked = exercise?.isSelected ?: false
@@ -84,21 +84,21 @@ class RecoveryDataTableRowAdapter(
                 }
                 (time as? EditText)?.apply {
                     // Store the original time before editing
-                    var originalTime = exercise?.time?.format(formatter) ?: "00:00"
+                    var originalTime = exercise?.timeCompleted?.format(formatter) ?: "00:00"
 
                     // Handle the focus change (when the user clicks away from the EditText)
                     setOnFocusChangeListener { _, hasFocus ->
                         if (hasFocus) {
-                            originalTime = exercise?.time?.format(formatter) ?: "00:00"
+                            originalTime = exercise?.timeCompleted?.format(formatter) ?: "00:00"
                         } else {
                             try {
                                 // Only parse when focus is lost
-                                exercise?.time = LocalTime.parse(text.toString(), formatter)
+                                exercise?.timeCompleted = LocalTime.parse(text.toString(), formatter)
                                 markAsChanged()
                             } catch (e: Exception) {
                                 // Handle parsing errors
                                 Toast.makeText(context, "Time format invalid, please enter time as 'HH:mm'", Toast.LENGTH_SHORT).show()
-                                exercise?.time = LocalTime.parse(originalTime, formatter)
+                                exercise?.timeCompleted = LocalTime.parse(originalTime, formatter)
                                 setText(originalTime)
                                 markAsChanged()
                             }
@@ -164,9 +164,9 @@ class RecoveryDataTableRowAdapter(
 
     // Add exercise row to the list
     @RequiresApi(Build.VERSION_CODES.Q)
-    fun addExerciseRow(exerciseName: String) {
-        exercises.add(Exercise(name = exerciseName)) // Add a blank row with default values
-        notifyItemInserted(exercises.size) // Insert the new exercise row
+    fun addExerciseRow(exercise: Exercise) {
+        exercises.add(exercise)
+        notifyItemInserted(exercises.size) // Notify adapter
     }
 
     // Delete exercise row from the list

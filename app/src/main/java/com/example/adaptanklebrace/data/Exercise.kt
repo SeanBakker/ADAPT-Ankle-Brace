@@ -18,7 +18,7 @@ data class Exercise(
     var reps: Int = 0,
     var hold: Int = 0,
     var tension: Int = 0,
-    var time: LocalTime = LocalTime.now(),
+    var timeCompleted: LocalTime = LocalTime.now(),
     var frequency: String = "",
     var difficulty: Int = 0,
     var comments: String = "",
@@ -52,7 +52,7 @@ data class Exercise(
         parcel.writeInt(reps)
         parcel.writeInt(hold)
         parcel.writeInt(tension)
-        parcel.writeString(time.format(formatter))
+        parcel.writeString(timeCompleted.format(formatter))
         parcel.writeString(frequency)
         parcel.writeInt(difficulty)
         parcel.writeString(comments)

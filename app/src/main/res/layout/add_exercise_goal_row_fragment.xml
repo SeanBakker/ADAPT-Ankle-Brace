@@ -24,29 +24,66 @@
             android:layout_height="wrap_content"
             android:text="Fill out the details below to add an exercise goal."
             android:textSize="14sp"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/requiredFieldsFormText"
+            android:textSize="14sp"
+            android:textColor="@color/red_1"
             android:layout_gravity="center"
             android:paddingBottom="20dp" />
 
         <!-- Exercise Name -->
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Exercise Name:"
-            android:textSize="16sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Exercise Name:"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asteriskSymbol"
+                android:textSize="16sp"
+                android:paddingHorizontal="5dp"
+                android:textColor="@color/red_1" />
+        </LinearLayout>
 
         <AutoCompleteTextView
             android:id="@+id/exerciseNameDropdown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Select or type exercise name"
-            android:inputType="text" />
+            android:inputType="text"
+            android:completionThreshold="0" />
 
         <!-- Number of Sets -->
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Number of Sets:"
-            android:textSize="16sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Number of Sets:"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asteriskSymbol"
+                android:textSize="16sp"
+                android:paddingHorizontal="5dp"
+                android:textColor="@color/red_1" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/numSetsInput"
@@ -56,11 +93,25 @@
             android:inputType="number" />
 
         <!-- Number of Reps -->
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Number of Reps:"
-            android:textSize="16sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Number of Reps:"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asteriskSymbol"
+                android:textSize="16sp"
+                android:paddingHorizontal="5dp"
+                android:textColor="@color/red_1" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/numRepsInput"
@@ -70,11 +121,25 @@
             android:inputType="number" />
 
         <!-- Hold Duration -->
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hold Duration (in seconds):"
-            android:textSize="16sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hold Duration (in seconds):"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asteriskSymbol"
+                android:textSize="16sp"
+                android:paddingHorizontal="5dp"
+                android:textColor="@color/red_1" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/holdDurationInput"
@@ -84,11 +149,25 @@
             android:inputType="number" />
 
         <!-- Tension Level -->
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tension Level (1-10):"
-            android:textSize="16sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tension Level (1-10):"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asteriskSymbol"
+                android:textSize="16sp"
+                android:paddingHorizontal="5dp"
+                android:textColor="@color/red_1" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/tensionLevelInput"
@@ -107,8 +186,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="20dp">
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/freqNumberInput"
@@ -133,13 +211,28 @@
                 android:entries="@array/frequency_categories" />
         </LinearLayout>
 
+        <!-- Comments -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comments:"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/commentsInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g., any additional comments"
+            android:inputType="text" />
+
         <!-- Submit Button -->
         <Button
             android:id="@+id/addExerciseGoalBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Add Exercise Goal"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp" />
 
     </LinearLayout>
 </ScrollView>
