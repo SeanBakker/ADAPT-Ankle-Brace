@@ -12,11 +12,8 @@
         <!-- Background color. -->
         <item name="backgroundColor">@color/lightBackground</item>
         <item name="android:colorBackground">?attr/backgroundColor</item>
+        <item name="colorOnBackground">@color/lightOnBackground</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/black</item>
-    </style>
-
-    <style name="TextAppearance" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:textColor">@color/lightOnPrimary</item>
     </style>
 </resources>

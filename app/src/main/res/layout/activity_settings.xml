@@ -55,7 +55,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Enable Bluetooth Permissions"
-                    android:textAppearance="@style/TextAppearance"
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textStyle="bold"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 
@@ -76,7 +78,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Enable Notifications"
-                    android:textAppearance="@style/TextAppearance"
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textStyle="bold"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 
@@ -98,7 +102,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/dailyGoalReminder"
-                    android:textAppearance="@style/TextAppearance"
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textStyle="bold"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 
@@ -120,7 +126,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/workoutScheduleReminder"
-                    android:textAppearance="@style/TextAppearance"
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textStyle="bold"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 
@@ -141,7 +149,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Enable Night Mode"
-                    android:textAppearance="@style/TextAppearance"
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textStyle="bold"
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 

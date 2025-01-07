@@ -5,11 +5,12 @@
     <color name="lightPrimaryVariant">@color/blue_5</color>
     <color name="lightOnPrimary">@color/blue_6</color>
 
-    <color name="lightSecondary">@color/purple_3</color>
-    <color name="lightSecondaryVariant">@color/purple_4</color>
+    <color name="lightSecondary">@color/blue_5</color>
+    <color name="lightSecondaryVariant">@color/blue_6</color>
     <color name="lightOnSecondary">@color/black</color>
 
     <color name="lightBackground">@color/blue_1</color>
+    <color name="lightOnBackground">@color/blue_6</color>
 
     <!-- Night Theme -->
     <color name="nightPrimary">@color/purple_2</color>
@@ -20,7 +21,8 @@
     <color name="nightSecondaryVariant">@color/blue_6</color>
     <color name="nightOnSecondary">@color/black</color>
 
-    <color name="nightBackground">@color/purple_1</color>
+    <color name="nightBackground">@color/purple_4</color>
+    <color name="nightOnBackground">@color/purple_1</color>
 
     <!-- Extra Colors -->
     <color name="purple_1">#D3BAF6</color>

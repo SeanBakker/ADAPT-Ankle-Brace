@@ -12,11 +12,8 @@
         <!-- Background color. -->
         <item name="backgroundColor">@color/nightBackground</item>
         <item name="android:colorBackground">?attr/backgroundColor</item>
+        <item name="colorOnBackground">@color/nightOnBackground</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/black</item>
-    </style>
-
-    <style name="TextAppearance" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:textColor">@color/nightOnPrimary</item>
     </style>
 </resources>
