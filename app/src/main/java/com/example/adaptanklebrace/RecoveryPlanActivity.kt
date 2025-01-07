@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.RecoveryDataActivity.Companion.RECOVERY_DATA_PREFERENCE
 import com.example.adaptanklebrace.adapters.RecoveryPlanTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
+import com.example.adaptanklebrace.fragments.AddExerciseGoalFreqFragment
 import com.example.adaptanklebrace.fragments.AddExerciseGoalRowFragment
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import java.io.File
@@ -24,7 +25,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.Q)
-class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.SaveDataCallback,
+class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.RecoveryPlanCallback,
     DeleteRowFragment.OnDeleteListener {
 
     private lateinit var dateTextView: TextView
@@ -121,6 +122,10 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
         ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveExercisesForDate(week, exercises)
     }
 
+    override fun onFocusFrequencyText(exercise: Exercise) {
+        showSetExerciseFrequencyDialog(exercise)
+    }
+
     override fun onDeleteRow() {
         deleteExerciseRow()
     }
@@ -213,6 +218,12 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Sa
     private fun showDeleteExerciseDialog() {
         val deleteRowFragment = DeleteRowFragment()
         deleteRowFragment.show(supportFragmentManager, "delete_row")
+    }
+
+    // Show pop-up dialog for setting exercise goal frequency for a row
+    private fun showSetExerciseFrequencyDialog(exercise: Exercise) {
+        val addExerciseGoalFreqFragment = AddExerciseGoalFreqFragment(exerciseAdapter, exercise)
+        addExerciseGoalFreqFragment.show(supportFragmentManager, "add_exercise_goal_freq")
     }
 
     // Calculate the % completed value for all exercise goal rows

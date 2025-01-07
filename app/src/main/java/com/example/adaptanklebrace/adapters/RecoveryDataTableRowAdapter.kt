@@ -78,9 +78,41 @@ class RecoveryDataTableRowAdapter(
                     exercise?.hold = it.toString().toIntOrNull() ?: 0
                     markAsChanged()
                 }
-                (tension as? EditText)?.addTextChangedListener {
-                    exercise?.tension = it.toString().toIntOrNull() ?: 0
-                    markAsChanged()
+                (tension as? EditText)?.apply {
+                    var initialTension: Int? = null  // Variable to store the original tension value
+
+                    // Add TextChangedListener to handle real-time changes to the text
+                    addTextChangedListener {
+                        val currentTension = text.toString().toIntOrNull()
+
+                        // Restrict tension level between 1-10
+                        if (currentTension == null || currentTension !in 1..10) {
+                            Toast.makeText(itemView.context, "Please enter a tension level between 1 and 10.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            exercise?.tension = currentTension
+                        }
+                        markAsChanged()
+                    }
+
+                    // Add OnFocusChangeListener to handle focus loss and reset value if invalid
+                    setOnFocusChangeListener { _, hasFocus ->
+                        if (hasFocus) {
+                            // Store the original tension value when the field gains focus
+                            initialTension = exercise?.tension
+                        } else {
+                            val currentTension = text.toString().toIntOrNull()
+
+                            // If the input is invalid, reset to the original tension value
+                            if (currentTension !in 1..10) {
+                                // Use the initial value when focus was first gained
+                                initialTension?.let {
+                                    exercise?.tension = it
+                                    setText(it.toString())  // Reset the text to the original tension
+                                }
+                            }
+                            markAsChanged()
+                        }
+                    }
                 }
                 (time as? EditText)?.apply {
                     // Store the original time before editing

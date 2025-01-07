@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.CheckBox
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
@@ -18,12 +19,13 @@ import com.example.adaptanklebrace.data.Exercise
 
 class RecoveryPlanTableRowAdapter(
     private val exercises: MutableList<Exercise>,
-    private val saveDataCallback: SaveDataCallback
+    private val recoveryPlanCallback: RecoveryPlanCallback
 ) : RecyclerView.Adapter<RecoveryPlanTableRowAdapter.ExerciseViewHolder>() {
 
     // Define the callback interface
-    interface SaveDataCallback {
+    interface RecoveryPlanCallback {
         fun saveCurrentDateData()
+        fun onFocusFrequencyText(exercise: Exercise)
     }
 
     // ViewHolder for both header and item rows
@@ -97,13 +99,50 @@ class RecoveryPlanTableRowAdapter(
                     exercise?.hold = it.toString().toIntOrNull() ?: 0
                     markAsChanged()
                 }
-                (tension as? EditText)?.addTextChangedListener {
-                    exercise?.tension = it.toString().toIntOrNull() ?: 0
-                    markAsChanged()
+                (tension as? EditText)?.apply {
+                    var initialTension: Int? = null  // Variable to store the original tension value
+
+                    // Add TextChangedListener to handle real-time changes to the text
+                    addTextChangedListener {
+                        val currentTension = text.toString().toIntOrNull()
+
+                        // Restrict tension level between 1-10
+                        if (currentTension == null || currentTension !in 1..10) {
+                            Toast.makeText(itemView.context, "Please enter a tension level between 1 and 10.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            exercise?.tension = currentTension
+                        }
+                        markAsChanged()
+                    }
+
+                    // Add OnFocusChangeListener to handle focus loss and reset value if invalid
+                    setOnFocusChangeListener { _, hasFocus ->
+                        if (hasFocus) {
+                            // Store the original tension value when the field gains focus
+                            initialTension = exercise?.tension
+                        } else {
+                            val currentTension = text.toString().toIntOrNull()
+
+                            // If the input is invalid, reset to the original tension value
+                            if (currentTension !in 1..10) {
+                                // Use the initial value when focus was first gained
+                                initialTension?.let {
+                                    exercise?.tension = it
+                                    setText(it.toString())  // Reset the text to the original tension
+                                }
+                            }
+                            markAsChanged()
+                        }
+                    }
                 }
-                (frequency as? EditText)?.addTextChangedListener {
-                    exercise?.frequency = it.toString()
-                    markAsChanged()
+                (frequency as? EditText)?.apply {
+                    setOnFocusChangeListener { _, hasFocus ->
+                        if (hasFocus) {
+                            exercise?.let {
+                                recoveryPlanCallback.onFocusFrequencyText(it)
+                            }
+                        }
+                    }
                 }
                 (startExerciseButton as? Button)?.setOnClickListener {
                     //todo: trigger workflow to start exercise, connect to device, then perform test rep
@@ -122,7 +161,7 @@ class RecoveryPlanTableRowAdapter(
 
         private fun markAsChanged() {
             // This can be used to flag that a change occurred and data needs saving.
-            saveDataCallback.saveCurrentDateData()
+            recoveryPlanCallback.saveCurrentDateData()
         }
     }
 
@@ -168,14 +207,13 @@ class RecoveryPlanTableRowAdapter(
     }
 
     // Delete exercise row from the list
-    @SuppressLint("NotifyDataSetChanged")
     fun deleteExerciseRow() {
         for (i in exercises.size - 1 downTo 0) {
             if (exercises[i].isSelected) {
                 exercises.removeAt(i) // Remove the exercise
             }
         }
-        notifyDataSetChanged() // Notify adapter
+        refreshTable()
     }
 
     // Get the current list of exercises
@@ -184,10 +222,14 @@ class RecoveryPlanTableRowAdapter(
     }
 
     // Set a new list of exercises
-    @SuppressLint("NotifyDataSetChanged")
     fun setExercises(newExercises: List<Exercise>) {
         exercises.clear()
         exercises.addAll(newExercises)
+        refreshTable()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun refreshTable() {
         notifyDataSetChanged() // Notify adapter
     }
 }
