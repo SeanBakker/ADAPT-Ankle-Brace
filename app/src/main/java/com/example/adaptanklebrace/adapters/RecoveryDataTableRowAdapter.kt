@@ -24,7 +24,7 @@ class RecoveryDataTableRowAdapter(
 
     // Define the callback interface
     interface SaveDataCallback {
-        fun saveCurrentDateData()
+        fun saveCurrentDateExerciseData()
     }
 
     // ViewHolder for both header and item rows
@@ -154,7 +154,7 @@ class RecoveryDataTableRowAdapter(
 
         private fun markAsChanged() {
             // This can be used to flag that a change occurred and data needs saving.
-            saveDataCallback.saveCurrentDateData()
+            saveDataCallback.saveCurrentDateExerciseData()
         }
     }
 

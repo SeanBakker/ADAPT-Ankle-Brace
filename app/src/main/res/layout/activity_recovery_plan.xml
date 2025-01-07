@@ -68,16 +68,33 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
                         android:layout_marginEnd="10dp"
+                        android:textSize="20sp"
                         android:text="Difficulty:" />
 
                     <ProgressBar
                         android:id="@+id/difficultyProgressBar"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="6"
+                        android:layout_marginEnd="12dp"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:max="10"
+                        android:progress="1" />
+
+                    <TextView
+                        android:id="@+id/difficultyText"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        style="?android:attr/progressBarStyleHorizontal" />
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="10dp"
+                        android:textSize="20sp"
+                        android:text="1/10" />
                 </LinearLayout>
 
                 <EditText

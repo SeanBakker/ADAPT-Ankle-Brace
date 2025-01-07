@@ -24,7 +24,7 @@ class RecoveryPlanTableRowAdapter(
 
     // Define the callback interface
     interface RecoveryPlanCallback {
-        fun saveCurrentDateData()
+        fun saveCurrentDateExerciseData()
         fun onFocusFrequencyText(exercise: Exercise)
     }
 
@@ -161,7 +161,7 @@ class RecoveryPlanTableRowAdapter(
 
         private fun markAsChanged() {
             // This can be used to flag that a change occurred and data needs saving.
-            recoveryPlanCallback.saveCurrentDateData()
+            recoveryPlanCallback.saveCurrentDateExerciseData()
         }
     }
 

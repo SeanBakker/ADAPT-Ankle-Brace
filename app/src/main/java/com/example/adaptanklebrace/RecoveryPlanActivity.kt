@@ -1,9 +1,12 @@
 package com.example.adaptanklebrace
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
+import android.view.MotionEvent
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -12,6 +15,8 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.RecoveryDataActivity.Companion.RECOVERY_DATA_PREFERENCE
@@ -31,6 +36,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
     private lateinit var dateTextView: TextView
     private lateinit var datePickerButton: Button
     private lateinit var difficultyProgressBar: ProgressBar
+    private lateinit var difficultyTextView: TextView
     private lateinit var commentsEditText: EditText
     private lateinit var exerciseRecyclerView: RecyclerView
     private lateinit var exportButton: Button
@@ -46,6 +52,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         const val RECOVERY_PLAN_PREFERENCE = "RecoveryPlan"
     }
 
+    @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recovery_plan)
@@ -69,6 +76,8 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         dateTextView = findViewById(R.id.dateText)
         datePickerButton = findViewById(R.id.datePickerButton)
         difficultyProgressBar = findViewById(R.id.difficultyProgressBar)
+        difficultyProgressBar.progressTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.red_1))
+        difficultyTextView = findViewById(R.id.difficultyText)
         commentsEditText = findViewById(R.id.commentsEditText)
         exerciseRecyclerView = findViewById(R.id.exerciseRecyclerView)
         exportButton = findViewById(R.id.exportButton)
@@ -86,6 +95,36 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
         // Set up date picker
         datePickerButton.setOnClickListener { showDatePicker() }
+
+        difficultyProgressBar.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN || event.action == MotionEvent.ACTION_MOVE) {
+                // Get the width of the progress bar
+                val progressBarWidth = v.width
+
+                // Calculate the touched position as a fraction of the progress bar's width
+                val touchX = event.x.coerceIn(0f, progressBarWidth.toFloat()) // Ensure it stays within bounds
+                val progressFraction = touchX / progressBarWidth
+
+                // Map the fraction to the range of 1-10
+                val progressValue = (progressFraction * 10).toInt().coerceIn(1, 10)
+
+                // Update the progress bar
+                difficultyProgressBar.progress = progressValue
+                difficultyTextView.text = "$progressValue/10"
+                v.performClick()
+                saveDifficultyAndCommentsDateData()
+
+                // Return true to indicate the event has been handled
+                true
+            } else {
+                false
+            }
+        }
+
+        // Handle saving general comments text
+        commentsEditText.addTextChangedListener {
+            saveDifficultyAndCommentsDateData()
+        }
 
         // Handle import button click
         importButton.setOnClickListener { importDataFromExcel() }
@@ -116,7 +155,8 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         calculateExerciseCompletionForAllRows(this, exerciseGoals, currentWeek)
     }
 
-    override fun saveCurrentDateData() {
+    // Save exercise data for the selected date to the apps storage
+    override fun saveCurrentDateExerciseData() {
         val week = dateTextView.text.toString()
         val exercises = getExerciseGoals()
         ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveExercisesForDate(week, exercises)
@@ -164,12 +204,12 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
     private fun deleteExerciseRow() {
         exerciseAdapter.deleteExerciseRow()
-        saveCurrentDateData() // Save data after deleting rows
+        saveCurrentDateExerciseData() // Save data after deleting rows
     }
 
     private fun addExerciseRow(exercise: Exercise) {
         exerciseAdapter.addExerciseRow(exercise)
-        saveCurrentDateData() // Save data after adding new row
+        saveCurrentDateExerciseData() // Save data after adding new row
 
         // Fill details of exercise completion
         val week = dateTextView.text.toString()
@@ -203,9 +243,26 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         datePickerDialog.show()
     }
 
+    // Load data from the selected week from the apps storage
+    @SuppressLint("SetTextI18n")
     private fun loadWeekData(week: String) {
+        // Load the general difficulty & comments for the week
+        val difficultyAndCommentsPair = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getDifficultyAndCommentsPairForDate(week)
+        difficultyProgressBar.progress = difficultyAndCommentsPair.first
+        difficultyTextView.text = "${difficultyAndCommentsPair.first}/10"
+        commentsEditText.setText(difficultyAndCommentsPair.second)
+
+        // Load the exercises for the week
         val exercises = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getExercisesForDate(week)
         exerciseAdapter.setExercises(exercises)
+    }
+
+    // Save difficulty & comments data for the selected week to the apps storage
+    private fun saveDifficultyAndCommentsDateData() {
+        val week = dateTextView.text.toString()
+        val difficulty = difficultyProgressBar.progress
+        val comments = commentsEditText.text.toString()
+        ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveDifficultyAndCommentsPairForDate(week, difficulty, comments)
     }
 
     // Show pop-up dialog for adding exercise goal row to the table
