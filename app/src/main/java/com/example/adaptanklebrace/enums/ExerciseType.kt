@@ -3,6 +3,7 @@ package com.example.adaptanklebrace.enums
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.adaptanklebrace.data.Exercise
+import com.example.adaptanklebrace.data.ExerciseInfo
 
 enum class ExerciseType(val exerciseName: String, val description: String, val steps: String, val imageId: Int) {
     PLANTAR_FLEXION(
@@ -96,10 +97,10 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
 
         // Convert the enum values to a list of Exercise objects
         @RequiresApi(Build.VERSION_CODES.Q)
-        fun getAllExercises(): List<Exercise> = values()
+        fun getAllExercises(): List<ExerciseInfo> = values()
             .filter { it.exerciseName != ERROR.exerciseName }
             .map {
-                Exercise(
+                ExerciseInfo(
                     name = it.exerciseName,
                     description = it.description,
                     steps = it.steps,
@@ -108,10 +109,10 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
             }
 
         @RequiresApi(Build.VERSION_CODES.Q)
-        fun getExerciseByName(name: String): Exercise? = values()
+        fun getExerciseInfoByName(name: String): ExerciseInfo? = values()
             .firstOrNull { it.exerciseName == name }
             ?.let {
-                Exercise(
+                ExerciseInfo(
                     name = it.exerciseName,
                     description = it.description,
                     steps = it.steps,
@@ -120,12 +121,19 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
             }
 
         @RequiresApi(Build.VERSION_CODES.Q)
-        fun getExerciseError(): Exercise {
-            return Exercise(
+        fun getErrorExerciseInfo(): ExerciseInfo {
+            return ExerciseInfo(
                 name = ERROR.exerciseName,
                 description = ERROR.description,
                 steps = ERROR.steps,
                 imageId = ERROR.imageId
+            )
+        }
+
+        @RequiresApi(Build.VERSION_CODES.Q)
+        fun getErrorExercise(): Exercise {
+            return Exercise(
+                name = ERROR.exerciseName,
             )
         }
 

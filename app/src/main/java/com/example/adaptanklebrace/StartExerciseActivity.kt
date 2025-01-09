@@ -6,14 +6,18 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.viewpager2.widget.ViewPager2
-import com.example.adaptanklebrace.adapters.ExercisePagesAdapter
+import com.example.adaptanklebrace.adapters.ExerciseDataAdapter
+import com.example.adaptanklebrace.adapters.ExerciseInfoAdapter
 import com.example.adaptanklebrace.data.Exercise
+import com.example.adaptanklebrace.data.ExerciseInfo
 import com.example.adaptanklebrace.enums.ExerciseType
 
 class StartExerciseActivity : AppCompatActivity() {
 
-    private lateinit var viewPager: ViewPager2
-    private lateinit var exercisePagesAdapter: ExercisePagesAdapter
+    private lateinit var viewPagerInfo: ViewPager2
+    private lateinit var viewPagerData: ViewPager2
+    private lateinit var exerciseInfoAdapter: ExerciseInfoAdapter
+    private lateinit var exerciseDataAdapter: ExerciseDataAdapter
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,18 +41,31 @@ class StartExerciseActivity : AppCompatActivity() {
 
         // Retrieve the passed Exercise object with the intent
         @Suppress("DEPRECATION")
-        val exercise: Exercise? = intent.getParcelableExtra(Exercise.EXERCISE_KEY)
+        val exercise: Exercise? = intent.getParcelableExtra(ExerciseInfo.EXERCISE_KEY)
+        var exerciseInfo: ExerciseInfo? = null
 
-        // Set the adapter using the passed exercise or fallback to an error page
-        exercisePagesAdapter = if (exercise != null) {
-            ExercisePagesAdapter(this, listOf(exercise))
+        // Retrieve the exercise info for the chosen exercise & set the exercise data adapter
+        if (exercise != null) {
+            exerciseInfo = ExerciseType.getExerciseInfoByName(exercise.name)
+            exerciseDataAdapter = ExerciseDataAdapter(this, listOf(exercise))
         } else {
-            ExercisePagesAdapter(this, listOf(ExerciseType.getExerciseError()))
+            exerciseDataAdapter = ExerciseDataAdapter(this, listOf(ExerciseType.getErrorExercise()))
         }
 
-        // Initialize and set up the ViewPager with an adapter
-        viewPager = findViewById(R.id.viewPager)
-        viewPager.adapter = exercisePagesAdapter
+        // Set the exercise info adapter using the passed exercise or fallback to an error page
+        exerciseInfoAdapter = if (exerciseInfo != null) {
+            ExerciseInfoAdapter(this, listOf(exerciseInfo))
+        } else {
+            ExerciseInfoAdapter(this, listOf(ExerciseType.getErrorExerciseInfo()))
+        }
+
+        // Initialize and set up the ViewPagerInfo with an adapter
+        viewPagerInfo = findViewById(R.id.viewPagerInfo)
+        viewPagerInfo.adapter = exerciseInfoAdapter
+
+        // Initialize and set up the ViewPagerData with an adapter
+        viewPagerData = findViewById(R.id.viewPagerData)
+        viewPagerData.adapter = exerciseDataAdapter
 
         //todo: implement connect to device button
     }

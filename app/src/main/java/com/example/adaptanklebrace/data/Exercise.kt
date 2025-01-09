@@ -11,9 +11,6 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.Q)
 data class Exercise(
     val name: String = "",
-    var description: String = "",
-    var steps: String = "",
-    var imageId: Int = 0,
     var sets: Int = 0,
     var reps: Int = 0,
     var hold: Int = 0,
@@ -28,9 +25,6 @@ data class Exercise(
 
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readInt(),
         parcel.readInt(),
         parcel.readInt(),
         parcel.readInt(),
@@ -45,9 +39,6 @@ data class Exercise(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
-        parcel.writeString(description)
-        parcel.writeString(steps)
-        parcel.writeInt(imageId)
         parcel.writeInt(sets)
         parcel.writeInt(reps)
         parcel.writeInt(hold)
@@ -65,8 +56,6 @@ data class Exercise(
     }
 
     companion object CREATOR : Parcelable.Creator<Exercise> {
-        const val EXERCISE_KEY = "exercise_key"
-
         // Define a formatter for LocalTime
         val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 

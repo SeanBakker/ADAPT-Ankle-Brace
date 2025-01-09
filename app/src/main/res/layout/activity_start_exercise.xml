@@ -22,7 +22,7 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- LinearLayout for ViewPager and Button -->
+    <!-- LinearLayout for ViewPagers and Button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,9 +30,16 @@
         android:padding="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- ViewPager for exercise details -->
+        <!-- ViewPagerInfo for exercise info details -->
         <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewPager"
+            android:id="@+id/viewPagerInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+        <!-- ViewPagerData for exercise data details -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPagerData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp" />

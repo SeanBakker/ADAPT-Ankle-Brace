@@ -6,21 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.adaptanklebrace.data.Exercise
-import com.example.adaptanklebrace.databinding.ItemExerciseBinding
+import com.example.adaptanklebrace.databinding.ItemExerciseDataFragmentBinding
 
-class ExerciseFragment : Fragment() {
+class ExerciseDataFragment : Fragment() {
 
-    private var _binding: ItemExerciseBinding? = null
+    private var _binding: ItemExerciseDataFragmentBinding? = null
     private val binding get() = _binding!!
 
-    // Create a new instance of ExerciseFragment and pass in the exercise data as arguments
+    // Create a new instance of ExerciseDataFragment and pass in the exercise data as arguments
     companion object {
-        private const val ARG_EXERCISE = "exercise"
+        private const val ARG_EXERCISE = "exerciseData"
 
-        fun newInstance(exercise: Exercise): ExerciseFragment {
-            val fragment = ExerciseFragment()
+        fun newInstance(exercise: Exercise): ExerciseDataFragment {
+            val fragment = ExerciseDataFragment()
             val bundle = Bundle()
-            bundle.putSerializable(ARG_EXERCISE, exercise) // Pass the exercise object
+            bundle.putSerializable(ARG_EXERCISE, exercise) // Pass the exercise data object
             fragment.arguments = bundle
             return fragment
         }
@@ -30,14 +30,14 @@ class ExerciseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = ItemExerciseBinding.inflate(inflater, container, false)
+        _binding = ItemExerciseDataFragmentBinding.inflate(inflater, container, false)
 
-        // Retrieve the exercise passed through arguments
+        // Retrieve the exercise data passed through arguments
         @Suppress("DEPRECATION")
         val exercise = arguments?.getSerializable(ARG_EXERCISE) as? Exercise
 
         // Bind the exercise data to the layout
-        binding.exercise = exercise
+        binding.exerciseData = exercise
 
         return binding.root
     }

@@ -10,14 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.BindingAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.example.adaptanklebrace.adapters.ExercisePagesAdapter
+import com.example.adaptanklebrace.adapters.ExerciseInfoAdapter
 import com.example.adaptanklebrace.enums.ExerciseType
 
 class CommonExercisesActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var quickLinksLayout: LinearLayout
-    private lateinit var exercisePagesAdapter: ExercisePagesAdapter
+    private lateinit var exerciseInfoAdapter: ExerciseInfoAdapter
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +44,8 @@ class CommonExercisesActivity : AppCompatActivity() {
         quickLinksLayout = findViewById(R.id.quick_links_layout)
 
         // Set up the ViewPager with an adapter
-        exercisePagesAdapter = ExercisePagesAdapter(this, ExerciseType.getAllExercises())
-        viewPager.adapter = exercisePagesAdapter
+        exerciseInfoAdapter = ExerciseInfoAdapter(this, ExerciseType.getAllExercises())
+        viewPager.adapter = exerciseInfoAdapter
     }
 
     // This method is triggered when a quick link button is clicked

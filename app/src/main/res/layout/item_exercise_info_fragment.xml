@@ -6,8 +6,8 @@
 
     <data>
         <variable
-            name="exercise"
-            type="com.example.adaptanklebrace.data.Exercise" />
+            name="exerciseInfo"
+            type="com.example.adaptanklebrace.data.ExerciseInfo" />
     </data>
 
     <RelativeLayout
@@ -21,7 +21,7 @@
             android:id="@+id/exerciseName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{exercise.name}"
+            android:text="@{exerciseInfo.name}"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -30,7 +30,7 @@
             android:id="@+id/exerciseDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{exercise.description}"
+            android:text="@{exerciseInfo.description}"
             android:layout_below="@id/exerciseName"
             android:layout_marginTop="8dp" />
 
@@ -39,7 +39,7 @@
             android:id="@+id/exerciseSteps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{exercise.steps}"
+            android:text="@{exerciseInfo.steps}"
             android:layout_below="@id/exerciseDescription"
             android:layout_marginTop="8dp" />
 
@@ -48,7 +48,7 @@
             android:id="@+id/exerciseImage"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            app:imageFromResourceId="@{exercise.imageId}"
+            app:imageFromResourceId="@{exerciseInfo.imageId}"
             android:layout_below="@id/exerciseSteps"
             android:layout_marginTop="16dp" />
     </RelativeLayout>

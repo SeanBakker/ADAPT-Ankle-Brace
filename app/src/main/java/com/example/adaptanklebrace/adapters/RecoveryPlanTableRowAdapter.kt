@@ -20,7 +20,7 @@ import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.SettingsActivity
 import com.example.adaptanklebrace.StartExerciseActivity
 import com.example.adaptanklebrace.data.Exercise
-import com.example.adaptanklebrace.enums.ExerciseType
+import com.example.adaptanklebrace.data.ExerciseInfo
 
 class RecoveryPlanTableRowAdapter(
     private val exercises: MutableList<Exercise>,
@@ -154,7 +154,7 @@ class RecoveryPlanTableRowAdapter(
                     //todo: add warning when percentageCompleted is >= 100%
                     val startExerciseIntent = Intent(itemView.context, StartExerciseActivity::class.java)
                     val parcelableExercise = exercise as Parcelable
-                    startExerciseIntent.putExtra(Exercise.EXERCISE_KEY, parcelableExercise)
+                    startExerciseIntent.putExtra(ExerciseInfo.EXERCISE_KEY, parcelableExercise)
                     startActivity(itemView.context, startExerciseIntent, null)
                 }
                 (comments as? EditText)?.addTextChangedListener {
@@ -212,8 +212,7 @@ class RecoveryPlanTableRowAdapter(
     // Add exercise row to the list
     @RequiresApi(Build.VERSION_CODES.Q)
     fun addExerciseRow(exercise: Exercise) {
-        val updatedExercise = setDefaultExerciseValues(exercise)
-        exercises.add(updatedExercise)
+        exercises.add(exercise)
         notifyItemInserted(exercises.size) // Notify adapter
     }
 
@@ -242,21 +241,5 @@ class RecoveryPlanTableRowAdapter(
     @SuppressLint("NotifyDataSetChanged")
     fun refreshTable() {
         notifyDataSetChanged() // Notify adapter
-    }
-
-    // Set the default values for the description, steps, and imageId of the exercise type
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun setDefaultExerciseValues(exercise: Exercise): Exercise {
-        // Get the corresponding exercise type
-        var defaultExercise = ExerciseType.getExerciseByName(exercise.name)
-        if (defaultExercise == null) {
-            defaultExercise = ExerciseType.getExerciseError()
-        }
-
-        exercise.description = defaultExercise.description
-        exercise.steps = defaultExercise.steps
-        exercise.imageId = defaultExercise.imageId
-
-        return exercise
     }
 }
