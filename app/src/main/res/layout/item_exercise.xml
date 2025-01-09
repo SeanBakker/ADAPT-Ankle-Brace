@@ -51,28 +51,5 @@
             app:imageFromResourceId="@{exercise.imageId}"
             android:layout_below="@id/exerciseSteps"
             android:layout_marginTop="16dp" />
-
-        <!-- Previous Button -->
-        <Button
-            android:id="@+id/prevExerciseBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="42dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_margin="16dp"
-            android:drawableTop="@drawable/baseline_keyboard_arrow_left_24"
-            android:onClick="onChangePageClick" />
-
-        <!-- Next Button -->
-        <Button
-            android:id="@+id/nextExerciseBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="42dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="16dp"
-            android:drawableTop="@drawable/baseline_keyboard_arrow_right_24"
-            android:onClick="onChangePageClick" />
-
     </RelativeLayout>
 </layout>

@@ -24,10 +24,6 @@ class CommonExercisesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_common_exercises)
 
-        // Initialize viewPager and quickLinksLayout
-        viewPager = findViewById(R.id.viewPager)
-        quickLinksLayout = findViewById(R.id.quick_links_layout)
-
         // Set up the toolbar
         val toolbar: Toolbar = findViewById(R.id.commonExerciseToolbar)
         setSupportActionBar(toolbar)
@@ -42,6 +38,10 @@ class CommonExercisesActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             onBackPressed()
         }
+
+        // Initialize viewPager and quickLinksLayout
+        viewPager = findViewById(R.id.viewPager)
+        quickLinksLayout = findViewById(R.id.quick_links_layout)
 
         // Set up the ViewPager with an adapter
         exercisePagesAdapter = ExercisePagesAdapter(this, ExerciseType.getAllExercises())
@@ -91,11 +91,11 @@ class CommonExercisesActivity : AppCompatActivity() {
                 val drawableResId = when (it) {
                     1 -> R.drawable.baseline_directions_walk_24 // exercise #1
                     2 -> R.drawable.baseline_directions_run_24 // exercise #2
-                    3 -> R.drawable.baseline_error_24 // exercise #3
-                    4 -> R.drawable.baseline_error_24 // exercise #4
-                    5 -> R.drawable.baseline_error_24 // exercise #5
-                    6 -> R.drawable.baseline_error_24 // exercise #6
-                    7 -> R.drawable.baseline_error_24 // exercise #7
+                    3 -> R.drawable.baseline_healing_24 // exercise #3
+                    4 -> R.drawable.baseline_healing_24 // exercise #4
+                    5 -> R.drawable.baseline_healing_24 // exercise #5
+                    6 -> R.drawable.baseline_healing_24 // exercise #6
+                    7 -> R.drawable.baseline_healing_24 // exercise #7
                     else -> R.drawable.baseline_error_24 // error
                 }
                 view.setImageResource(drawableResId)

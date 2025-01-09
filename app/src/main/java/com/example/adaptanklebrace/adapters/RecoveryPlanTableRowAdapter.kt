@@ -1,7 +1,9 @@
 package com.example.adaptanklebrace.adapters
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +13,14 @@ import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.SettingsActivity
+import com.example.adaptanklebrace.StartExerciseActivity
 import com.example.adaptanklebrace.data.Exercise
+import com.example.adaptanklebrace.enums.ExerciseType
 
 class RecoveryPlanTableRowAdapter(
     private val exercises: MutableList<Exercise>,
@@ -43,6 +48,7 @@ class RecoveryPlanTableRowAdapter(
         val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
 
         // Bind method will update based on the view type
+        @RequiresApi(Build.VERSION_CODES.Q)
         @SuppressLint("DefaultLocale")
         fun bind(exercise: Exercise?, viewType: Int) {
             if (viewType == VIEW_TYPE_HEADER) {
@@ -145,8 +151,11 @@ class RecoveryPlanTableRowAdapter(
                     }
                 }
                 (startExerciseButton as? Button)?.setOnClickListener {
-                    //todo: trigger workflow to start exercise, connect to device, then perform test rep
                     //todo: add warning when percentageCompleted is >= 100%
+                    val startExerciseIntent = Intent(itemView.context, StartExerciseActivity::class.java)
+                    val parcelableExercise = exercise as Parcelable
+                    startExerciseIntent.putExtra(Exercise.EXERCISE_KEY, parcelableExercise)
+                    startActivity(itemView.context, startExerciseIntent, null)
                 }
                 (comments as? EditText)?.addTextChangedListener {
                     exercise?.comments = it.toString()
@@ -183,6 +192,7 @@ class RecoveryPlanTableRowAdapter(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         if (position == 0) {
             holder.bind(null, VIEW_TYPE_HEADER) // No exercise data for header
@@ -202,7 +212,8 @@ class RecoveryPlanTableRowAdapter(
     // Add exercise row to the list
     @RequiresApi(Build.VERSION_CODES.Q)
     fun addExerciseRow(exercise: Exercise) {
-        exercises.add(exercise)
+        val updatedExercise = setDefaultExerciseValues(exercise)
+        exercises.add(updatedExercise)
         notifyItemInserted(exercises.size) // Notify adapter
     }
 
@@ -231,5 +242,21 @@ class RecoveryPlanTableRowAdapter(
     @SuppressLint("NotifyDataSetChanged")
     fun refreshTable() {
         notifyDataSetChanged() // Notify adapter
+    }
+
+    // Set the default values for the description, steps, and imageId of the exercise type
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun setDefaultExerciseValues(exercise: Exercise): Exercise {
+        // Get the corresponding exercise type
+        var defaultExercise = ExerciseType.getExerciseByName(exercise.name)
+        if (defaultExercise == null) {
+            defaultExercise = ExerciseType.getExerciseError()
+        }
+
+        exercise.description = defaultExercise.description
+        exercise.steps = defaultExercise.steps
+        exercise.imageId = defaultExercise.imageId
+
+        return exercise
     }
 }

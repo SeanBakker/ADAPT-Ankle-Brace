@@ -81,22 +81,52 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
         4. After a short break, repeat for the specified number of sets.
         """.trimIndent(),
         7
+    ),
+    ERROR(
+    "ERROR",
+    "An unexpected error occurred when trying to retrieve exercise data.",
+        "",
+    0
     );
 
     companion object {
-        // Convert the enum values to a list of Exercise objects
-        @RequiresApi(Build.VERSION_CODES.Q)
-        fun getAllExercises(): List<Exercise> = values().map {
-            Exercise(
-                name = it.exerciseName,
-                description = it.description,
-                steps = it.steps,
-                imageId = it.imageId
-            )
-        }
-
         fun getAllExerciseNames(): List<String> {
             return values().map { it.exerciseName }
+        }
+
+        // Convert the enum values to a list of Exercise objects
+        @RequiresApi(Build.VERSION_CODES.Q)
+        fun getAllExercises(): List<Exercise> = values()
+            .filter { it.exerciseName != ERROR.exerciseName }
+            .map {
+                Exercise(
+                    name = it.exerciseName,
+                    description = it.description,
+                    steps = it.steps,
+                    imageId = it.imageId
+                )
+            }
+
+        @RequiresApi(Build.VERSION_CODES.Q)
+        fun getExerciseByName(name: String): Exercise? = values()
+            .firstOrNull { it.exerciseName == name }
+            ?.let {
+                Exercise(
+                    name = it.exerciseName,
+                    description = it.description,
+                    steps = it.steps,
+                    imageId = it.imageId
+                )
+            }
+
+        @RequiresApi(Build.VERSION_CODES.Q)
+        fun getExerciseError(): Exercise {
+            return Exercise(
+                name = ERROR.exerciseName,
+                description = ERROR.description,
+                steps = ERROR.steps,
+                imageId = ERROR.imageId
+            )
         }
 
         fun getSize(): Int = values().size
