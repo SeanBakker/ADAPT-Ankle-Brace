@@ -33,6 +33,7 @@ class ExerciseFragment : Fragment() {
         _binding = ItemExerciseBinding.inflate(inflater, container, false)
 
         // Retrieve the exercise passed through arguments
+        @Suppress("DEPRECATION")
         val exercise = arguments?.getSerializable(ARG_EXERCISE) as? Exercise
 
         // Bind the exercise data to the layout

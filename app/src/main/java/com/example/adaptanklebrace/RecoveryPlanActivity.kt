@@ -371,6 +371,8 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         return exercises
     }
 
+    //todo: fix export/import functions for the table
+
     // Function to export table data to Excel
     private fun exportDataToExcel() {
         val date = dateTextView.text.toString()

@@ -237,6 +237,8 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Sa
         deleteRowFragment.show(supportFragmentManager, "delete_row")
     }
 
+    //todo: fix export/import functions for the table
+
     // Function to export table data to Excel
     private fun exportDataToExcel() {
         val date = dateTextView.text.toString()

@@ -46,13 +46,16 @@
             </intent-filter>
         </activity>
 
+        <!-- Exercise Item Activities -->
+        <activity android:name=".ROMExerciseActivity" />
+
         <!-- Other Activities -->
         <activity android:name=".SettingsActivity" />
         <activity android:name=".CommonExercisesActivity" />
         <activity android:name=".RecoveryPlanActivity" />
         <activity android:name=".RecoveryDataActivity" />
         <activity android:name=".NotificationsActivity" />
-        <activity android:name=".ROMExerciseActivity" />
+        <activity android:name=".StartExerciseActivity" />
     </application>
 
 </manifest>
