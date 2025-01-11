@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.os.IBinder
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -25,7 +24,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.adaptanklebrace.RecoveryPlanActivity.Companion.RECOVERY_PLAN_PREFERENCE
-import com.example.adaptanklebrace.fragments.ConnectDeviceFragment
 import com.example.adaptanklebrace.services.BluetoothService
 import com.google.android.material.navigation.NavigationView
 import java.util.Calendar
@@ -91,13 +89,6 @@ class MainActivity : AppCompatActivity() {
         val serviceIntent = Intent(this, BluetoothService::class.java)
         ContextCompat.startForegroundService(this, serviceIntent)
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-
-        // Start exercise from button (triggers connection to device)
-        val startExerciseButton: Button = findViewById(R.id.startExerciseBtn)
-        startExerciseButton.setOnClickListener {
-            val connectDeviceFragment = ConnectDeviceFragment()
-            connectDeviceFragment.show(supportFragmentManager, "connect_device")
-        }
 
         // Setup the progress bar and text
         weeklyProgressBar = findViewById(R.id.weeklyGoalProgress)
@@ -166,6 +157,7 @@ class MainActivity : AppCompatActivity() {
 
 
     /*** BLUETOOTH INITIALIZATION  ***/
+    // todo: add this initialization to other activities that can start exercises
     private val BLUETOOTH_PERMISSION_REQUEST_CODE = 2
 
     @RequiresApi(Build.VERSION_CODES.S)

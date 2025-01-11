@@ -19,7 +19,7 @@ class AddExerciseGoalFreqFragment(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.add_exercise_goal_freq_fragment, container, false)
+        val view = inflater.inflate(R.layout.fragment_add_exercise_goal_freq, container, false)
 
         // References to fields
         val freqNumberInput: EditText = view.findViewById(R.id.freqNumberInput)

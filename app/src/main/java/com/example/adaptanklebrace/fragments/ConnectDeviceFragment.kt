@@ -30,7 +30,7 @@ class ConnectDeviceFragment(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.connecting_device_fragment, container, false)
+        val view = inflater.inflate(R.layout.fragment_connecting_device, container, false)
 
         val tensionText: TextView = view.findViewById(R.id.tension)
         tensionText.text = exercise.tension.toString()

@@ -142,6 +142,7 @@ class BluetoothService : Service() {
                 characteristic: BluetoothGattCharacteristic
             ) {
                 // Handle notifications from the device
+                @Suppress("DEPRECATION")
                 val value = characteristic.value?.firstOrNull()?.toInt() ?: 0
                 Log.i("Bluetooth", "Notification received: $value")
                 _deviceLiveData.postValue(value)

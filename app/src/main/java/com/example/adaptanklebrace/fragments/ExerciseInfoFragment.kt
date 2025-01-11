@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.adaptanklebrace.data.ExerciseInfo
-import com.example.adaptanklebrace.databinding.ItemExerciseInfoFragmentBinding
+import com.example.adaptanklebrace.databinding.FragmentItemExerciseInfoBinding
 
 class ExerciseInfoFragment : Fragment() {
 
-    private var _binding: ItemExerciseInfoFragmentBinding? = null
+    private var _binding: FragmentItemExerciseInfoBinding? = null
     private val binding get() = _binding!!
 
     // Create a new instance of ExerciseInfoFragment and pass in the exercise data as arguments
@@ -30,7 +30,7 @@ class ExerciseInfoFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = ItemExerciseInfoFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentItemExerciseInfoBinding.inflate(inflater, container, false)
 
         // Retrieve the exercise info passed through arguments
         @Suppress("DEPRECATION")

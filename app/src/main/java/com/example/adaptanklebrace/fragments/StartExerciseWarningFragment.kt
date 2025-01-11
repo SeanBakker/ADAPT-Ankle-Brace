@@ -25,7 +25,7 @@ class StartExerciseWarningFragment(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.start_exercise_warning_fragment, container, false)
+        val view = inflater.inflate(R.layout.fragment_start_exercise_warning, container, false)
 
         val startExerciseButton: Button = view.findViewById(R.id.startExerciseBtn)
         startExerciseButton.setOnClickListener {

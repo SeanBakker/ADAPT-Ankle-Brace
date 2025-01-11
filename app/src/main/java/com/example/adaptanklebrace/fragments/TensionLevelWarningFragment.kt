@@ -19,7 +19,7 @@ class TensionLevelWarningFragment(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.tension_level_warning_fragment, container, false)
+        val view = inflater.inflate(R.layout.fragment_tension_level_warning, container, false)
 
         val expectedTensionText: TextView = view.findViewById(R.id.expectedTension)
         expectedTensionText.text = exercise.tension.toString()

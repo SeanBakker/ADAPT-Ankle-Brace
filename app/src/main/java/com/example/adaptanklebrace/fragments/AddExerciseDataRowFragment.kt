@@ -29,7 +29,7 @@ class AddExerciseDataRowFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.add_exercise_data_row_fragment, container, false)
+        val view = inflater.inflate(R.layout.fragment_add_exercise_data_row, container, false)
 
         // References to fields
         val exerciseNameDropdown: AutoCompleteTextView = view.findViewById(R.id.exerciseNameDropdown)

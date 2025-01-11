@@ -20,7 +20,7 @@ class AddExerciseGoalRowFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.add_exercise_goal_row_fragment, container, false)
+        val view = inflater.inflate(R.layout.fragment_add_exercise_goal_row, container, false)
 
         // References to fields
         val exerciseNameDropdown: AutoCompleteTextView = view.findViewById(R.id.exerciseNameDropdown)
@@ -60,6 +60,8 @@ class AddExerciseGoalRowFragment : DialogFragment() {
 
             // Get the list of exercise goals currently in the table
             val exerciseGoals = recoveryPlanActivity?.getExerciseGoals() ?: listOf()
+
+            //todo: add option to add goal for current week or all future weeks or choose weeks
 
             if (exerciseName.isEmpty()) {
                 showToast("Please enter an exercise name.")
