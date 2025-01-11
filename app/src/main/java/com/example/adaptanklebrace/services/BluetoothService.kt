@@ -110,6 +110,7 @@ class BluetoothService : Service() {
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     val byteArray = characteristic.value
                     if (byteArray.isNotEmpty()) {
+                        // todo: accept all required data types for reading data from the device
                         // Convert the first byte to an integer
                         val value = byteArray[0].toInt() and 0xFF // Convert to unsigned value
                         _deviceLiveData.postValue(value)

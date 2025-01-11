@@ -16,15 +16,6 @@
         android:padding="16dp"
         android:layout_marginTop="?attr/actionBarSize">
 
-        <!-- Exercise Name -->
-        <TextView
-            android:id="@+id/exerciseName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{exerciseData.name}"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
         <!-- Exercise Goal Data -->
 
         <!-- Sets -->
@@ -32,8 +23,7 @@
             android:id="@+id/exerciseSetsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_below="@id/exerciseName">
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -49,8 +39,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="@{exerciseData.sets}"
+                app:intToStringText="@{exerciseData.sets}"
                 android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/red_1"
                 android:layout_marginTop="8dp" />
         </LinearLayout>
 
@@ -76,8 +68,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="@{exerciseData.reps}"
+                app:intToStringText="@{exerciseData.reps}"
                 android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/red_1"
                 android:layout_marginTop="8dp" />
         </LinearLayout>
 
@@ -103,8 +97,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="@{exerciseData.hold}"
+                app:intToStringText="@{exerciseData.hold}"
                 android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/red_1"
                 android:layout_marginTop="8dp" />
         </LinearLayout>
 
@@ -130,8 +126,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="@{exerciseData.tension}"
+                app:intToStringText="@{exerciseData.tension}"
                 android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/red_1"
                 android:layout_marginTop="8dp" />
         </LinearLayout>
     </RelativeLayout>

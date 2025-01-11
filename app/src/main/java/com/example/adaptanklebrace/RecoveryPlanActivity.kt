@@ -3,9 +3,11 @@ package com.example.adaptanklebrace
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.MotionEvent
 import android.widget.Button
 import android.widget.EditText
@@ -22,16 +24,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.RecoveryDataActivity.Companion.RECOVERY_DATA_PREFERENCE
 import com.example.adaptanklebrace.adapters.RecoveryPlanTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
+import com.example.adaptanklebrace.data.ExerciseInfo
 import com.example.adaptanklebrace.fragments.AddExerciseGoalFreqFragment
 import com.example.adaptanklebrace.fragments.AddExerciseGoalRowFragment
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
+import com.example.adaptanklebrace.fragments.StartExerciseWarningFragment
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.Q)
 class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.RecoveryPlanCallback,
-    DeleteRowFragment.OnDeleteListener {
+    DeleteRowFragment.OnDeleteListener, StartExerciseWarningFragment.OnStartExerciseListener {
 
     private lateinit var dateTextView: TextView
     private lateinit var datePickerButton: Button
@@ -166,6 +170,21 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         showSetExerciseFrequencyDialog(exercise)
     }
 
+    override fun onClickStartExerciseWithWarning(exercise: Exercise) {
+        showStartExerciseWarningDialog(exercise)
+    }
+
+    override fun onClickStartExerciseWithoutWarning(exercise: Exercise) {
+        onStartExerciseActivity(exercise)
+    }
+
+    override fun onStartExerciseActivity(exercise: Exercise) {
+        val startExerciseIntent = Intent(this, StartExerciseActivity::class.java)
+        val parcelableExercise = exercise as Parcelable
+        startExerciseIntent.putExtra(ExerciseInfo.EXERCISE_KEY, parcelableExercise)
+        ContextCompat.startActivity(this, startExerciseIntent, null)
+    }
+
     override fun onDeleteRow() {
         deleteExerciseRow()
     }
@@ -281,6 +300,12 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
     private fun showSetExerciseFrequencyDialog(exercise: Exercise) {
         val addExerciseGoalFreqFragment = AddExerciseGoalFreqFragment(exerciseAdapter, exercise)
         addExerciseGoalFreqFragment.show(supportFragmentManager, "add_exercise_goal_freq")
+    }
+
+    // Show pop-up dialog for warning of starting an exercise that has above 100% completion
+    private fun showStartExerciseWarningDialog(exercise: Exercise) {
+        val startExerciseWarningFragment = StartExerciseWarningFragment(exercise)
+        startExerciseWarningFragment.show(supportFragmentManager, "start_exercise_warning")
     }
 
     // Calculate the % completed value for all exercise goal rows

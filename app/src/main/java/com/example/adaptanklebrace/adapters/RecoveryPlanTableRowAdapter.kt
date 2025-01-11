@@ -1,9 +1,7 @@
 package com.example.adaptanklebrace.adapters
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Build
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,14 +11,11 @@ import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.SettingsActivity
-import com.example.adaptanklebrace.StartExerciseActivity
 import com.example.adaptanklebrace.data.Exercise
-import com.example.adaptanklebrace.data.ExerciseInfo
 
 class RecoveryPlanTableRowAdapter(
     private val exercises: MutableList<Exercise>,
@@ -31,6 +26,8 @@ class RecoveryPlanTableRowAdapter(
     interface RecoveryPlanCallback {
         fun saveCurrentDateExerciseData()
         fun onFocusFrequencyText(exercise: Exercise)
+        fun onClickStartExerciseWithWarning(exercise: Exercise)
+        fun onClickStartExerciseWithoutWarning(exercise: Exercise)
     }
 
     // ViewHolder for both header and item rows
@@ -77,6 +74,7 @@ class RecoveryPlanTableRowAdapter(
 
                 // Update color of startExerciseButton based on percentageCompleted field
                 if (exercise != null) {
+                    // todo: if the exercise name does not exist in the catalog of exercise types, then start button should be hidden
                     if (exercise.percentageCompleted >= 100) {
                         (startExerciseButton as? Button)?.apply {
                             setBackgroundColor(context.getColor(R.color.grey_1))
@@ -151,11 +149,13 @@ class RecoveryPlanTableRowAdapter(
                     }
                 }
                 (startExerciseButton as? Button)?.setOnClickListener {
-                    //todo: add warning when percentageCompleted is >= 100%
-                    val startExerciseIntent = Intent(itemView.context, StartExerciseActivity::class.java)
-                    val parcelableExercise = exercise as Parcelable
-                    startExerciseIntent.putExtra(ExerciseInfo.EXERCISE_KEY, parcelableExercise)
-                    startActivity(itemView.context, startExerciseIntent, null)
+                    exercise?.let {
+                        if (it.percentageCompleted >= 100) {
+                            recoveryPlanCallback.onClickStartExerciseWithWarning(it)
+                        } else {
+                            recoveryPlanCallback.onClickStartExerciseWithoutWarning(it)
+                        }
+                    }
                 }
                 (comments as? EditText)?.addTextChangedListener {
                     exercise?.comments = it.toString()

@@ -56,6 +56,7 @@
         <activity android:name=".RecoveryDataActivity" />
         <activity android:name=".NotificationsActivity" />
         <activity android:name=".StartExerciseActivity" />
+        <activity android:name=".StartSetActivity" />
     </application>
 
 </manifest>

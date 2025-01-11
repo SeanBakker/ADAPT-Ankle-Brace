@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal">
+
+    <!-- Table row for header -->
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_marginTop="10dp">
+
+        <!-- Set # -->
+        <TextView
+            android:id="@+id/setNumber"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:textColor="?attr/colorOnBackground"
+            android:text="Set #"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <!-- Reps Count -->
+        <TextView
+            android:id="@+id/repsCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:textColor="?attr/colorOnBackground"
+            android:text="Reps"
+            android:textStyle="bold"
+            android:gravity="center" />
+    </TableRow>
+</TableLayout>

@@ -3,12 +3,10 @@ package com.example.adaptanklebrace
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.databinding.BindingAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.adaptanklebrace.adapters.ExerciseInfoAdapter
 import com.example.adaptanklebrace.enums.ExerciseType
@@ -78,27 +76,6 @@ class CommonExercisesActivity : AppCompatActivity() {
                 } else {
                     viewPager.currentItem++
                 }
-            }
-        }
-    }
-
-    companion object {
-        @BindingAdapter("imageFromResourceId")
-        @JvmStatic
-        fun setImageFromResourceId(view: ImageView, imageId: Int?) {
-            imageId?.let {
-                //todo: add exercise images
-                val drawableResId = when (it) {
-                    1 -> R.drawable.baseline_directions_walk_24 // exercise #1
-                    2 -> R.drawable.baseline_directions_run_24 // exercise #2
-                    3 -> R.drawable.baseline_healing_24 // exercise #3
-                    4 -> R.drawable.baseline_healing_24 // exercise #4
-                    5 -> R.drawable.baseline_healing_24 // exercise #5
-                    6 -> R.drawable.baseline_healing_24 // exercise #6
-                    7 -> R.drawable.baseline_healing_24 // exercise #7
-                    else -> R.drawable.baseline_error_24 // error
-                }
-                view.setImageResource(drawableResId)
             }
         }
     }

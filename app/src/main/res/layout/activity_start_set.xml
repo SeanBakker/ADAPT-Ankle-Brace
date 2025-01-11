@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StartExerciseActivity">
+    tools:context=".StartSetActivity">
 
     <!-- AppBarLayout with Toolbar for back button -->
     <com.google.android.material.appbar.AppBarLayout
@@ -12,17 +12,17 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/startExerciseToolbar"
+            android:id="@+id/startSetToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            android:title="@string/start_exercise"
+            android:title="@string/start_set"
             app:titleTextColor="?attr/colorOnPrimary"
             app:navigationIcon="@drawable/baseline_arrow_back_24"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- LinearLayout for ViewPagers and Button -->
+    <!-- LinearLayout for ViewPagers and Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -44,14 +44,44 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp" />
 
-        <!-- Connect to Device Button -->
-        <Button
-            android:id="@+id/connectDeviceBtn"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:gravity="center">
+
+            <!-- Start Set -->
+            <Button
+                android:id="@+id/startSetBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:text="@string/startSetBtn" />
+
+            <!-- End Set -->
+            <Button
+                android:id="@+id/endSetBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:text="@string/endSetBtn" />
+        </LinearLayout>
+
+        <!-- Exercise Sets & Reps Tracking Table -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/setsRecyclerView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/connectDeviceBtn"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp" />
+            android:scrollbars="vertical" />
+
+        <!-- Finish Exercise -->
+        <Button
+            android:id="@+id/finishExerciseBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/finishExerciseBtn"
+            android:layout_gravity="center"/>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
