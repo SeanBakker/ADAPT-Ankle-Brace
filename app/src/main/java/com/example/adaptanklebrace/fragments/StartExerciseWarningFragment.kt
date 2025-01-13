@@ -16,7 +16,7 @@ class StartExerciseWarningFragment(
 
     // Define an interface to communicate with the activity
     interface OnStartExerciseListener {
-        fun onStartExerciseActivity(exercise: Exercise)
+        fun onStartExerciseActivity(context: Context, exercise: Exercise)
     }
 
     private var listener: OnStartExerciseListener? = null
@@ -37,7 +37,7 @@ class StartExerciseWarningFragment(
 
     private fun startExercise() {
         // Call back to the activity through the interface
-        listener?.onStartExerciseActivity(exercise)
+        listener?.onStartExerciseActivity(requireContext(), exercise)
         dismiss() // Close the dialog
     }
 

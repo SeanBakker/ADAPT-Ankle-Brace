@@ -23,17 +23,25 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.RecoveryPlanActivity.Companion.RECOVERY_PLAN_PREFERENCE
+import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewTableRowAdapter
+import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.services.BluetoothService
 import com.google.android.material.navigation.NavigationView
 import java.util.Calendar
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.MainActivityCallback {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var weeklyProgressBar: ProgressBar
     private lateinit var weeklyProgressText: TextView
+    private lateinit var exerciseRecyclerView: RecyclerView
+
+    private lateinit var exerciseAdapter: RecoveryPlanOverviewTableRowAdapter
+    private var exercises: MutableList<Exercise> = mutableListOf()
 
     private var settingsActivity = SettingsActivity()
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -90,20 +98,40 @@ class MainActivity : AppCompatActivity() {
         ContextCompat.startForegroundService(this, serviceIntent)
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
 
+        // todo: add overview of uncompleted exercise goals (add missing features)
+        // todo: if there are no goals set for that week, show button to set goals which shows the add goals fragment
+        // todo: add edit exercise goals button below table (which redirects to Recovery Plan activity)
+        // todo: fix bug with row percentage completed not updating & add update percentages button
+
+        // Setup exercise recovery plan table overview
+        exerciseRecyclerView = findViewById(R.id.exerciseRecyclerView)
+        exerciseRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        // Setup the adapter
+        exerciseAdapter = RecoveryPlanOverviewTableRowAdapter(exercises, this)
+        exerciseRecyclerView.adapter = exerciseAdapter
+
+        // Load data for current week on activity start
+        val currentWeek = recoveryPlanActivity.calculateWeekRange(Calendar.getInstance())
+        recoveryPlanActivity.loadExerciseWeekData(this, exerciseAdapter, currentWeek)
+
         // Setup the progress bar and text
         weeklyProgressBar = findViewById(R.id.weeklyGoalProgress)
         weeklyProgressText = findViewById(R.id.weeklyPercentageText)
-        calculateWeeklyProgress()
-
-        //todo: add overview of uncompleted exercise goals
+        calculateWeeklyProgress(currentWeek)
     }
 
     // Call calculateWeeklyProgress() whenever the activity is resumed
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onResume() {
         super.onResume()
+        val currentWeek = recoveryPlanActivity.calculateWeekRange(Calendar.getInstance())
+
+        // Load weekly exercise data
+        recoveryPlanActivity.loadExerciseWeekData(this, exerciseAdapter, currentWeek)
+
         // Ensure progress is updated when the activity comes to the foreground
-        calculateWeeklyProgress()
+        calculateWeeklyProgress(currentWeek)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -138,15 +166,33 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    @SuppressLint("DefaultLocale")
+    // Save exercise data for the selected date to the apps storage
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun calculateWeeklyProgress() {
+    override fun saveCurrentDateExerciseData() {
+        val week = recoveryPlanActivity.calculateWeekRange(Calendar.getInstance())
+        val exercises = recoveryPlanActivity.getExerciseGoals(exerciseAdapter)
+        ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveExercisesForDate(week, exercises)
+    }
 
-        val currentWeek = recoveryPlanActivity.calculateWeekRange(Calendar.getInstance())
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun onFocusFrequencyText(exercise: Exercise) {
+        recoveryPlanActivity.showSetExerciseFrequencyDialog(supportFragmentManager, exerciseAdapter, exercise)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun onClickStartExerciseWithoutWarning(exercise: Exercise) {
+        recoveryPlanActivity.onStartExerciseActivity(this, exercise)
+    }
+
+
+
+    @SuppressLint("DefaultLocale", "SetTextI18n")
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun calculateWeeklyProgress(currentWeek: String) {
         val exerciseGoalsForCurrentWeek = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getExercisesForDate(currentWeek)
 
         // Get reference to RecoveryPlanActivity
-        val weeklyProgress = recoveryPlanActivity.calculateWeeklyProgress(this, exerciseGoalsForCurrentWeek, currentWeek)
+        val weeklyProgress = recoveryPlanActivity.calculateWeeklyProgress(this, exerciseAdapter, exerciseGoalsForCurrentWeek, currentWeek)
         val truncatedWeeklyProgress = String.format("%.2f", weeklyProgress)
 
         // Update progress bar and text

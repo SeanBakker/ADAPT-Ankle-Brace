@@ -34,7 +34,7 @@
             android:layout_below="@id/homeToolbar"
             android:layout_marginTop="80dp"
             android:layout_marginStart="20dp"
-            android:text="Weekly Goal Progress"
+            android:text="Weekly Goal Progress:"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="?attr/colorOnBackground"
@@ -78,12 +78,28 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="100dp"
-            android:layout_marginTop="250dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:ignore="NotSibling">
+            android:padding="16dp"
+            android:layout_marginTop="320dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <!-- todo: add Recovery Plan table overview -->
+            <TextView
+                android:id="@+id/recoveryPlanOverviewText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Overview of Recovery Plan Exercise Goals:"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnBackground"
+                android:gravity="center" />
+
+            <!-- Exercise Plan Table Overview -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/exerciseRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:scrollbars="vertical" />
         </LinearLayout>
     </RelativeLayout>
 

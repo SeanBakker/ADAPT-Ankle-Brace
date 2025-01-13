@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:text="Weekly Exercise Goal Form"
+            android:text="Add Weekly Exercise Goal Form"
             android:textSize="18sp"
             android:layout_gravity="center"
             android:paddingBottom="10dp" />
@@ -177,11 +177,25 @@
             android:inputType="number" />
 
         <!-- Frequency -->
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Frequency:"
-            android:textSize="16sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Frequency:"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asteriskSymbol"
+                android:textSize="16sp"
+                android:paddingHorizontal="5dp"
+                android:textColor="@color/red_1" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

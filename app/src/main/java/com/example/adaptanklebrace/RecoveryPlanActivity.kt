@@ -19,9 +19,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.RecoveryDataActivity.Companion.RECOVERY_DATA_PREFERENCE
+import com.example.adaptanklebrace.adapters.RecoveryPlanAdapter
 import com.example.adaptanklebrace.adapters.RecoveryPlanTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
@@ -138,7 +140,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
         // Handle update percentages button click
         updatePercentagesButton.setOnClickListener {
-            calculateExerciseCompletionForAllRows(this, getExerciseGoals(), dateTextView.text.toString())
+            calculateExerciseCompletionForAllRows(this, exerciseAdapter, getExerciseGoals(exerciseAdapter), dateTextView.text.toString())
         }
 
         // Handle add exercise button click
@@ -153,21 +155,21 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         loadWeekData(currentWeek)
 
         // Get the list of all exercise goals from the adapter
-        val exerciseGoals = getExerciseGoals()
+        val exerciseGoals = getExerciseGoals(exerciseAdapter)
 
         // Load data for exercise goal completion percentages
-        calculateExerciseCompletionForAllRows(this, exerciseGoals, currentWeek)
+        calculateExerciseCompletionForAllRows(this, exerciseAdapter, exerciseGoals, currentWeek)
     }
 
     // Save exercise data for the selected date to the apps storage
     override fun saveCurrentDateExerciseData() {
         val week = dateTextView.text.toString()
-        val exercises = getExerciseGoals()
+        val exercises = getExerciseGoals(exerciseAdapter)
         ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveExercisesForDate(week, exercises)
     }
 
     override fun onFocusFrequencyText(exercise: Exercise) {
-        showSetExerciseFrequencyDialog(exercise)
+        showSetExerciseFrequencyDialog(supportFragmentManager, exerciseAdapter, exercise)
     }
 
     override fun onClickStartExerciseWithWarning(exercise: Exercise) {
@@ -175,14 +177,14 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
     }
 
     override fun onClickStartExerciseWithoutWarning(exercise: Exercise) {
-        onStartExerciseActivity(exercise)
+        onStartExerciseActivity(this, exercise)
     }
 
-    override fun onStartExerciseActivity(exercise: Exercise) {
-        val startExerciseIntent = Intent(this, StartExerciseActivity::class.java)
+    override fun onStartExerciseActivity(context: Context, exercise: Exercise) {
+        val startExerciseIntent = Intent(context, StartExerciseActivity::class.java)
         val parcelableExercise = exercise as Parcelable
         startExerciseIntent.putExtra(ExerciseInfo.EXERCISE_KEY, parcelableExercise)
-        ContextCompat.startActivity(this, startExerciseIntent, null)
+        ContextCompat.startActivity(context, startExerciseIntent, null)
     }
 
     override fun onDeleteRow() {
@@ -193,12 +195,12 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         addExerciseRow(exercise)
     }
 
-    fun getExerciseGoals(): List<Exercise> {
-        return exerciseAdapter.getExercises()
+    fun getExerciseGoals(adapter: RecoveryPlanAdapter): List<Exercise> {
+        return adapter.getExercises()
     }
 
-    fun calculateWeeklyProgress(context: Context, exerciseGoals: List<Exercise>, week: String): Double {
-        return calculateExerciseCompletionForAllRows(context, exerciseGoals, week, false)
+    fun calculateWeeklyProgress(context: Context, adapter: RecoveryPlanAdapter, exerciseGoals: List<Exercise>, week: String): Double {
+        return calculateExerciseCompletionForAllRows(context, adapter, exerciseGoals, week)
     }
 
     fun calculateWeekRange(calendar: Calendar): String {
@@ -221,6 +223,12 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         return "$startDateString - $endDateString"
     }
 
+    // Load exercise data for the selected week from the apps storage
+    fun loadExerciseWeekData(context: Context, adapter: RecoveryPlanAdapter, week: String) {
+        val exercises = ExerciseDataStore(context, RECOVERY_PLAN_PREFERENCE).getExercisesForDate(week)
+        adapter.setExercises(exercises)
+    }
+
     private fun deleteExerciseRow() {
         exerciseAdapter.deleteExerciseRow()
         saveCurrentDateExerciseData() // Save data after deleting rows
@@ -232,7 +240,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
         // Fill details of exercise completion
         val week = dateTextView.text.toString()
-        calculateExerciseCompletionForRow(this, exercise, week)
+        calculateExerciseCompletionForRow(this, exerciseAdapter, exercise, week)
     }
 
     private fun showDatePicker() {
@@ -272,8 +280,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         commentsEditText.setText(difficultyAndCommentsPair.second)
 
         // Load the exercises for the week
-        val exercises = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getExercisesForDate(week)
-        exerciseAdapter.setExercises(exercises)
+        loadExerciseWeekData(this, exerciseAdapter, week)
     }
 
     // Save difficulty & comments data for the selected week to the apps storage
@@ -286,7 +293,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
     // Show pop-up dialog for adding exercise goal row to the table
     private fun showAddExerciseDialog() {
-        val addExerciseGoalRowFragment = AddExerciseGoalRowFragment()
+        val addExerciseGoalRowFragment = AddExerciseGoalRowFragment(exerciseAdapter)
         addExerciseGoalRowFragment.show(supportFragmentManager, "add_exercise_goal_row")
     }
 
@@ -297,9 +304,9 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
     }
 
     // Show pop-up dialog for setting exercise goal frequency for a row
-    private fun showSetExerciseFrequencyDialog(exercise: Exercise) {
-        val addExerciseGoalFreqFragment = AddExerciseGoalFreqFragment(exerciseAdapter, exercise)
-        addExerciseGoalFreqFragment.show(supportFragmentManager, "add_exercise_goal_freq")
+    fun showSetExerciseFrequencyDialog(fragmentManager: FragmentManager, adapter: RecoveryPlanAdapter, exercise: Exercise) {
+        val addExerciseGoalFreqFragment = AddExerciseGoalFreqFragment(adapter, exercise)
+        addExerciseGoalFreqFragment.show(fragmentManager, "add_exercise_goal_freq")
     }
 
     // Show pop-up dialog for warning of starting an exercise that has above 100% completion
@@ -309,12 +316,12 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
     }
 
     // Calculate the % completed value for all exercise goal rows
-    private fun calculateExerciseCompletionForAllRows(context: Context, exerciseGoals: List<Exercise>, week: String, notifyAdapter: Boolean = true): Double {
+    private fun calculateExerciseCompletionForAllRows(context: Context, adapter: RecoveryPlanAdapter, exerciseGoals: List<Exercise>, week: String): Double {
         var totalPercentageCompleted = 0.0
 
         // Loop through each exercise in the Recovery Plan table
         for (exercise in exerciseGoals) {
-            var percentageCompleted = calculateExerciseCompletionForRow(context, exercise, week, notifyAdapter)
+            var percentageCompleted = calculateExerciseCompletionForRow(context, adapter, exercise, week)
 
             if (percentageCompleted > 100) {
                 percentageCompleted = 100.0
@@ -326,7 +333,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
     }
 
     // Calculate the % completed value for a single exercise goal row
-    private fun calculateExerciseCompletionForRow(context: Context, exerciseGoal: Exercise, week: String, notifyAdapter: Boolean = true): Double {
+    private fun calculateExerciseCompletionForRow(context: Context, adapter: RecoveryPlanAdapter, exerciseGoal: Exercise, week: String): Double {
         val exerciseName = exerciseGoal.name
 
         // Fetch the completed data for this exercise from the Recovery Data table
@@ -359,9 +366,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         exerciseGoal.percentageCompleted = percentageCompleted
 
         // Notify the adapter to update the UI for the row
-        if (notifyAdapter) {
-            exerciseAdapter.notifyItemChanged(exercises.indexOf(exerciseGoal) + 1) // +1 to account for the header
-        }
+        adapter.notifyItemChangedAndRefresh(exercises.indexOf(exerciseGoal) + 1) // +1 to account for the header
 
         return percentageCompleted
     }
@@ -401,7 +406,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
     // Function to export table data to Excel
     private fun exportDataToExcel() {
         val date = dateTextView.text.toString()
-        val exercises = getExerciseGoals()
+        val exercises = getExerciseGoals(exerciseAdapter)
 
         try {
             val fileName = "RecoveryPlan_$date.csv"

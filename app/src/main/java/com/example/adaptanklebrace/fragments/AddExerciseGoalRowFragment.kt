@@ -10,11 +10,14 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.RecoveryPlanActivity
+import com.example.adaptanklebrace.adapters.RecoveryPlanAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.ExerciseType
 
 @RequiresApi(Build.VERSION_CODES.Q)
-class AddExerciseGoalRowFragment : DialogFragment() {
+class AddExerciseGoalRowFragment(
+    private val exerciseAdapter: RecoveryPlanAdapter
+) : DialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +62,7 @@ class AddExerciseGoalRowFragment : DialogFragment() {
             val recoveryPlanActivity = activity as? RecoveryPlanActivity
 
             // Get the list of exercise goals currently in the table
-            val exerciseGoals = recoveryPlanActivity?.getExerciseGoals() ?: listOf()
+            val exerciseGoals = recoveryPlanActivity?.getExerciseGoals(exerciseAdapter) ?: listOf()
 
             //todo: add option to add goal for current week or all future weeks or choose weeks
 

@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.DialogFragment
 import com.example.adaptanklebrace.R
-import com.example.adaptanklebrace.adapters.RecoveryPlanTableRowAdapter
+import com.example.adaptanklebrace.adapters.RecoveryPlanAdapter
 import com.example.adaptanklebrace.data.Exercise
 
 class AddExerciseGoalFreqFragment(
-    private val exerciseAdapter: RecoveryPlanTableRowAdapter,
+    private val exerciseAdapter: RecoveryPlanAdapter,
     private val exercise: Exercise
 ) : DialogFragment() {
 

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -17,16 +16,15 @@ import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.SettingsActivity
 import com.example.adaptanklebrace.data.Exercise
 
-class RecoveryPlanTableRowAdapter(
+class RecoveryPlanOverviewTableRowAdapter(
     private val exercises: MutableList<Exercise>,
-    private val recoveryPlanCallback: RecoveryPlanCallback
-) : RecyclerView.Adapter<RecoveryPlanTableRowAdapter.ExerciseViewHolder>(), RecoveryPlanAdapter {
+    private val mainActivityCallback: MainActivityCallback
+) : RecyclerView.Adapter<RecoveryPlanOverviewTableRowAdapter.ExerciseViewHolder>(), RecoveryPlanAdapter {
 
     // Define the callback interface
-    interface RecoveryPlanCallback {
+    interface MainActivityCallback {
         fun saveCurrentDateExerciseData()
         fun onFocusFrequencyText(exercise: Exercise)
-        fun onClickStartExerciseWithWarning(exercise: Exercise)
         fun onClickStartExerciseWithoutWarning(exercise: Exercise)
     }
 
@@ -41,8 +39,6 @@ class RecoveryPlanTableRowAdapter(
         val frequency: View = view.findViewById(R.id.frequency)
         val percentageCompleted: View = view.findViewById(R.id.percentageCompleted)
         val startExerciseButton: View = view.findViewById(R.id.startExerciseBtn)
-        val comments: View = view.findViewById(R.id.comments)
-        val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
 
         // Bind method will update based on the view type
         @RequiresApi(Build.VERSION_CODES.Q)
@@ -58,7 +54,6 @@ class RecoveryPlanTableRowAdapter(
                 (frequency as? TextView)?.text = "Freq."
                 (percentageCompleted as? TextView)?.text = "% Completed"
                 (startExerciseButton as? TextView)?.text = "Start Exercise"
-                (comments as? TextView)?.text = "Comments"
             } else {
                 // Bind editable fields for exercise data rows
                 (exerciseName as? TextView)?.text = exercise?.name
@@ -69,8 +64,6 @@ class RecoveryPlanTableRowAdapter(
                 (frequency as? EditText)?.setText(exercise?.frequency)
                 (percentageCompleted as? TextView)?.text = String.format("%.2f%%", exercise?.percentageCompleted)
                 (startExerciseButton as? Button)?.text = "Start"
-                (comments as? EditText)?.setText(exercise?.comments)
-                (selectRowCheckBox as? CheckBox)?.isChecked = exercise?.isSelected ?: false
 
                 // Update color of startExerciseButton based on percentageCompleted field
                 if (exercise != null) {
@@ -143,7 +136,7 @@ class RecoveryPlanTableRowAdapter(
                     setOnFocusChangeListener { _, hasFocus ->
                         if (hasFocus) {
                             exercise?.let {
-                                recoveryPlanCallback.onFocusFrequencyText(it)
+                                mainActivityCallback.onFocusFrequencyText(it)
                             }
                         }
                     }
@@ -151,35 +144,27 @@ class RecoveryPlanTableRowAdapter(
                 (startExerciseButton as? Button)?.setOnClickListener {
                     exercise?.let {
                         if (it.percentageCompleted >= 100) {
-                            recoveryPlanCallback.onClickStartExerciseWithWarning(it)
+                            // todo: hide the row in the table
                         } else {
-                            recoveryPlanCallback.onClickStartExerciseWithoutWarning(it)
+                            mainActivityCallback.onClickStartExerciseWithoutWarning(it)
                         }
                     }
-                }
-                (comments as? EditText)?.addTextChangedListener {
-                    exercise?.comments = it.toString()
-                    markAsChanged()
-                }
-                (selectRowCheckBox as? CheckBox)?.setOnCheckedChangeListener { _, isChecked ->
-                    exercise?.isSelected = isChecked
-                    markAsChanged()
                 }
             }
         }
 
         private fun markAsChanged() {
             // This can be used to flag that a change occurred and data needs saving.
-            recoveryPlanCallback.saveCurrentDateExerciseData()
+            mainActivityCallback.saveCurrentDateExerciseData()
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         // Inflate either header or item row based on the view type
         val view: View = if (viewType == VIEW_TYPE_HEADER) {
-            LayoutInflater.from(parent.context).inflate(R.layout.recovery_plan_table_header, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.recovery_plan_overview_table_header, parent, false)
         } else {
-            LayoutInflater.from(parent.context).inflate(R.layout.recovery_plan_row_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.recovery_plan_overview_row_item, parent, false)
         }
         return ExerciseViewHolder(view)
     }
@@ -214,16 +199,6 @@ class RecoveryPlanTableRowAdapter(
     override fun addExerciseRow(exercise: Exercise) {
         exercises.add(exercise)
         notifyItemInserted(exercises.size) // Notify adapter
-    }
-
-    // Delete exercise row from the list
-    fun deleteExerciseRow() {
-        for (i in exercises.size - 1 downTo 0) {
-            if (exercises[i].isSelected) {
-                exercises.removeAt(i) // Remove the exercise
-            }
-        }
-        refreshTable()
     }
 
     // Get the current list of exercises

@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:text="Completed Exercise Data Form"
+            android:text="Add Completed Exercise Data Form"
             android:textSize="18sp"
             android:layout_gravity="center"
             android:paddingBottom="10dp" />
