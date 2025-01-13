@@ -73,10 +73,12 @@ class StartSetActivity : AppCompatActivity() {
         // Initialize and set up the ViewPagerInfo with an adapter
         viewPagerInfo = findViewById(R.id.viewPagerInfo)
         viewPagerInfo.adapter = exerciseInfoAdapter
+        viewPagerInfo.isUserInputEnabled = false // Disable user input (swiping)
 
         // Initialize and set up the ViewPagerData with an adapter
         viewPagerData = findViewById(R.id.viewPagerData)
         viewPagerData.adapter = exerciseDataAdapter
+        viewPagerData.isUserInputEnabled = false // Disable user input (swiping)
 
         // Initialize the adapter
         setsAdapter = ExerciseSetsTableRowAdapter(sets)

@@ -49,6 +49,7 @@
                 android:layout_height="wrap_content"
                 android:text="&lt;Exercise 1&gt;"
                 android:textSize="10sp"
+                android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
 
             <Button
@@ -58,6 +59,7 @@
                 android:layout_height="wrap_content"
                 android:text="&lt;Exercise 2&gt;"
                 android:textSize="10sp"
+                android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
 
             <Button
@@ -67,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:text="&lt;Exercise 3&gt;"
                 android:textSize="10sp"
+                android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
 
             <Button
@@ -76,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:text="&lt;Exercise 4&gt;"
                 android:textSize="10sp"
+                android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
 
             <Button
@@ -85,6 +89,7 @@
                 android:layout_height="wrap_content"
                 android:text="&lt;Exercise 5&gt;"
                 android:textSize="10sp"
+                android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
 
             <Button
@@ -94,6 +99,7 @@
                 android:layout_height="wrap_content"
                 android:text="&lt;Exercise 6&gt;"
                 android:textSize="10sp"
+                android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
 
             <Button
@@ -103,29 +109,28 @@
                 android:layout_height="wrap_content"
                 android:text="&lt;Exercise 7&gt;"
                 android:textSize="10sp"
+                android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
-
-            <!-- Add more quick links as needed -->
         </LinearLayout>
 
         <!-- ViewPager for exercises below quick links layout -->
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/quick_links_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/navigation_buttons_layout" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <RelativeLayout
             android:id="@+id/navigation_buttons_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewPager"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_min="100dp"
             android:padding="16dp">
 
             <!-- Previous Button -->
