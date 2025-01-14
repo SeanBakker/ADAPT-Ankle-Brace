@@ -135,6 +135,7 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
         @RequiresApi(Build.VERSION_CODES.Q)
         fun getErrorExercise(): Exercise {
             return Exercise(
+                id = -1,
                 name = ERROR.exerciseName,
             )
         }

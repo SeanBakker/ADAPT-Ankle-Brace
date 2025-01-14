@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.Q)
 data class Exercise(
+    val id: Int, // Unique identifier for tables
     val name: String = "",
     var sets: Int = 0,
     var reps: Int = 0,
@@ -24,6 +25,7 @@ data class Exercise(
 ) : Parcelable, Serializable {
 
     constructor(parcel: Parcel) : this(
+        parcel.readInt(),
         parcel.readString() ?: "",
         parcel.readInt(),
         parcel.readInt(),
@@ -38,6 +40,7 @@ data class Exercise(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
         parcel.writeString(name)
         parcel.writeInt(sets)
         parcel.writeInt(reps)

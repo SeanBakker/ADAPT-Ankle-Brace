@@ -28,6 +28,20 @@ class RecoveryDataTableRowAdapter(
         fun saveCurrentDateExerciseData()
     }
 
+    init {
+        // Enable stable IDs useful for the RecyclerView to uniquely identify each row
+        setHasStableIds(true)
+    }
+
+    override fun getItemId(position: Int): Long {
+        // Header row has a fixed ID of 0, while exercise rows use their unique IDs
+        return if (position == 0) {
+            Long.MIN_VALUE
+        } else {
+            exercises[position - 1].id.toLong() // Use the `id` property of an exercise as the stable ID
+        }
+    }
+
     // ViewHolder for both header and item rows
     @RequiresApi(Build.VERSION_CODES.Q)
     inner class ExerciseViewHolder(view: View) : RecyclerView.ViewHolder(view) {

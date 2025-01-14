@@ -32,6 +32,20 @@ class RecoveryPlanTableRowAdapter(
         fun onClickStartExerciseWithoutWarning(exercise: Exercise)
     }
 
+    init {
+        // Enable stable IDs useful for the RecyclerView to uniquely identify each row
+        setHasStableIds(true)
+    }
+
+    override fun getItemId(position: Int): Long {
+        // Header row has a fixed ID of 0, while exercise rows use their unique IDs
+        return if (position == 0) {
+            Long.MIN_VALUE
+        } else {
+            exercises[position - 1].id.toLong() // Use the `id` property of an exercise as the stable ID
+        }
+    }
+
     // ViewHolder for both header and item rows
     inner class ExerciseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         // These will be either EditText or TextView based on row type
@@ -50,8 +64,7 @@ class RecoveryPlanTableRowAdapter(
         @RequiresApi(Build.VERSION_CODES.Q)
         @SuppressLint("DefaultLocale")
         fun bind(exercise: Exercise?, position: Int, viewType: Int) {
-            //todo: fix bug with data being set incorrectly
-            // - when clicking frequency text, it already overwrites other rows later in the table before the frequency is even set
+            //todo: fix bug with data being set incorrectly (seems to happen when there are enough exercises to scroll)
             val context = itemView.context
             if (viewType == VIEW_TYPE_HEADER) {
                 // Cast to TextView for header

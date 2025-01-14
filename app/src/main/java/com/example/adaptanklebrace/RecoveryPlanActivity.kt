@@ -30,6 +30,7 @@ import com.example.adaptanklebrace.fragments.AddExerciseGoalFreqFragment
 import com.example.adaptanklebrace.fragments.AddExerciseGoalRowFragment
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import com.example.adaptanklebrace.fragments.StartExerciseWarningFragment
+import com.example.adaptanklebrace.utils.ExerciseUtil
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -445,6 +446,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
                 exercises.add(
                     Exercise(
+                        id = ExerciseUtil.generateNewId(exercises),
                         name = columns[0],
                         sets = columns[1].toInt(),
                         reps = columns[2].toInt(),

@@ -13,6 +13,7 @@ import com.example.adaptanklebrace.RecoveryPlanActivity
 import com.example.adaptanklebrace.adapters.RecoveryPlanAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.ExerciseType
+import com.example.adaptanklebrace.utils.ExerciseUtil
 
 @RequiresApi(Build.VERSION_CODES.Q)
 class AddExerciseGoalRowFragment(
@@ -87,6 +88,7 @@ class AddExerciseGoalRowFragment(
             } else {
                 // Create the exercise object
                 val exercise = Exercise(
+                    id = ExerciseUtil.generateNewId(exerciseGoals),
                     name = exerciseName,
                     sets = numSets,
                     reps = numReps,

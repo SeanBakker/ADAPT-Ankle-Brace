@@ -24,6 +24,20 @@ class RecoveryPlanOverviewTableRowAdapter(
         fun onClickStartExerciseWithoutWarning(exercise: Exercise)
     }
 
+    init {
+        // Enable stable IDs useful for the RecyclerView to uniquely identify each row
+        setHasStableIds(true)
+    }
+
+    override fun getItemId(position: Int): Long {
+        // Header row has a fixed ID of 0, while exercise rows use their unique IDs
+        return if (position == 0) {
+            Long.MIN_VALUE
+        } else {
+            exercises[position - 1].id.toLong() // Use the `id` property of an exercise as the stable ID
+        }
+    }
+
     // ViewHolder for both header and item rows
     inner class ExerciseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         // These will be either EditText or TextView based on row type
@@ -33,8 +47,8 @@ class RecoveryPlanOverviewTableRowAdapter(
         val hold: View = view.findViewById(R.id.hold)
         val tension: View = view.findViewById(R.id.tension)
         val frequency: View = view.findViewById(R.id.frequency)
-        val percentageCompleted: View = view.findViewById(R.id.percentageCompleted)
-        val startExerciseButton: View = view.findViewById(R.id.startExerciseBtn)
+        private val percentageCompleted: View = view.findViewById(R.id.percentageCompleted)
+        private val startExerciseButton: View = view.findViewById(R.id.startExerciseBtn)
 
         // Bind method will update based on the view type
         @RequiresApi(Build.VERSION_CODES.Q)

@@ -11,16 +11,20 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.RecoveryDataActivity
+import com.example.adaptanklebrace.adapters.RecoveryPlanAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.Exercise.CREATOR.formatter
 import com.example.adaptanklebrace.enums.ExerciseType
+import com.example.adaptanklebrace.utils.ExerciseUtil
 import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.util.Calendar
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.Q)
-class AddExerciseDataRowFragment : DialogFragment() {
+class AddExerciseDataRowFragment(
+    private val exerciseAdapter: RecoveryPlanAdapter
+) : DialogFragment() {
 
     private lateinit var timeInput: TextView
     private val calendar: Calendar = Calendar.getInstance()
@@ -88,8 +92,11 @@ class AddExerciseDataRowFragment : DialogFragment() {
             } else if (difficultyLevel != null && difficultyLevel !in 1..10) {
                 showToast("Please enter a difficulty level between 1 and 10, or leave it blank.")
             } else {
+                val exercises = exerciseAdapter.getExercises()
+
                 // Create the exercise object
                 val exercise = Exercise(
+                    id = ExerciseUtil.generateNewId(exercises),
                     name = exerciseName,
                     sets = numSets,
                     reps = numReps,

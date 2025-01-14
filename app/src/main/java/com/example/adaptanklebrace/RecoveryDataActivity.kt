@@ -23,6 +23,7 @@ import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.Exercise.CREATOR.formatter
 import com.example.adaptanklebrace.fragments.AddExerciseDataRowFragment
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
+import com.example.adaptanklebrace.utils.ExerciseUtil
 import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalTime
@@ -227,7 +228,7 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Sa
 
     // Show pop-up dialog for adding exercise data row to the table
     private fun showAddExerciseDialog() {
-        val addExerciseDataRowFragment = AddExerciseDataRowFragment()
+        val addExerciseDataRowFragment = AddExerciseDataRowFragment(exerciseAdapter)
         addExerciseDataRowFragment.show(supportFragmentManager, "add_exercise_data_row")
     }
 
@@ -282,6 +283,7 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Sa
 
                 exercises.add(
                     Exercise(
+                        id = ExerciseUtil.generateNewId(exercises),
                         name = columns[0],
                         sets = columns[1].toInt(),
                         reps = columns[2].toInt(),
