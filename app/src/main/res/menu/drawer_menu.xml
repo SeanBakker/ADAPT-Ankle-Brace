@@ -1,5 +1,6 @@
 <!-- res/menu/drawer_menu.xml -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- todo: add Instructions item -->
     <item
         android:id="@+id/nav_common_exercises"
         android:icon="@drawable/baseline_monitor_heart_24"

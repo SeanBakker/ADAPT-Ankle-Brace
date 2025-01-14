@@ -2,6 +2,7 @@ package com.example.adaptanklebrace.adapters
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.getString
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
@@ -25,7 +27,7 @@ class RecoveryPlanTableRowAdapter(
     // Define the callback interface
     interface RecoveryPlanCallback {
         fun saveCurrentDateExerciseData()
-        fun onFocusFrequencyText(exercise: Exercise)
+        fun onFocusFrequencyText(exercise: Exercise, position: Int)
         fun onClickStartExerciseWithWarning(exercise: Exercise)
         fun onClickStartExerciseWithoutWarning(exercise: Exercise)
     }
@@ -39,26 +41,31 @@ class RecoveryPlanTableRowAdapter(
         val hold: View = view.findViewById(R.id.hold)
         val tension: View = view.findViewById(R.id.tension)
         val frequency: View = view.findViewById(R.id.frequency)
-        val percentageCompleted: View = view.findViewById(R.id.percentageCompleted)
-        val startExerciseButton: View = view.findViewById(R.id.startExerciseBtn)
+        private val percentageCompleted: View = view.findViewById(R.id.percentageCompleted)
+        private val startExerciseButton: View = view.findViewById(R.id.startExerciseBtn)
         val comments: View = view.findViewById(R.id.comments)
-        val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
+        private val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
 
         // Bind method will update based on the view type
         @RequiresApi(Build.VERSION_CODES.Q)
         @SuppressLint("DefaultLocale")
-        fun bind(exercise: Exercise?, viewType: Int) {
+        fun bind(exercise: Exercise?, position: Int, viewType: Int) {
+            //todo: fix bug with data being set incorrectly
+            // - when clicking frequency text, it already overwrites other rows later in the table before the frequency is even set
+            val context = itemView.context
             if (viewType == VIEW_TYPE_HEADER) {
                 // Cast to TextView for header
-                (exerciseName as? TextView)?.text = "Exercise Name"
-                (sets as? TextView)?.text = "Sets"
-                (reps as? TextView)?.text = "Reps"
-                (hold as? TextView)?.text = "Hold (secs)"
-                (tension as? TextView)?.text = "Tension"
-                (frequency as? TextView)?.text = "Freq."
-                (percentageCompleted as? TextView)?.text = "% Completed"
-                (startExerciseButton as? TextView)?.text = "Start Exercise"
-                (comments as? TextView)?.text = "Comments"
+                (exerciseName as? TextView)?.text = getString(context, R.string.exerciseName)
+                (sets as? TextView)?.text = getString(context, R.string.sets)
+                (reps as? TextView)?.text = getString(context, R.string.reps)
+                (hold as? TextView)?.text = getString(context, R.string.holdSecs)
+                (tension as? TextView)?.text = getString(context, R.string.tension)
+                (frequency as? TextView)?.text = getString(context, R.string.freq)
+                (percentageCompleted as? TextView)?.text =
+                    getString(context, R.string.percentCompleted)
+                (startExerciseButton as? TextView)?.text =
+                    getString(context, R.string.startExerciseBtn)
+                (comments as? TextView)?.text = getString(context, R.string.comments)
             } else {
                 // Bind editable fields for exercise data rows
                 (exerciseName as? TextView)?.text = exercise?.name
@@ -67,8 +74,9 @@ class RecoveryPlanTableRowAdapter(
                 (hold as? EditText)?.setText(exercise?.hold.toString())
                 (tension as? EditText)?.setText(exercise?.tension.toString())
                 (frequency as? EditText)?.setText(exercise?.frequency)
-                (percentageCompleted as? TextView)?.text = String.format("%.2f%%", exercise?.percentageCompleted)
-                (startExerciseButton as? Button)?.text = "Start"
+                (percentageCompleted as? TextView)?.text =
+                    String.format("%.2f%%", exercise?.percentageCompleted)
+                (startExerciseButton as? Button)?.text = getString(context, R.string.startBtn)
                 (comments as? EditText)?.setText(exercise?.comments)
                 (selectRowCheckBox as? CheckBox)?.isChecked = exercise?.isSelected ?: false
 
@@ -112,7 +120,11 @@ class RecoveryPlanTableRowAdapter(
 
                         // Restrict tension level between 1-10
                         if (currentTension == null || currentTension !in 1..10) {
-                            Toast.makeText(itemView.context, "Please enter a tension level between 1 and 10.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                itemView.context,
+                                "Please enter a tension level between 1 and 10.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } else {
                             exercise?.tension = currentTension
                         }
@@ -143,7 +155,7 @@ class RecoveryPlanTableRowAdapter(
                     setOnFocusChangeListener { _, hasFocus ->
                         if (hasFocus) {
                             exercise?.let {
-                                recoveryPlanCallback.onFocusFrequencyText(it)
+                                recoveryPlanCallback.onFocusFrequencyText(it, position)
                             }
                         }
                     }
@@ -157,9 +169,18 @@ class RecoveryPlanTableRowAdapter(
                         }
                     }
                 }
-                (comments as? EditText)?.addTextChangedListener {
-                    exercise?.comments = it.toString()
-                    markAsChanged()
+                (comments as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
+                    val newWatcher = addTextChangedListener {
+                        exercise?.comments = it.toString()
+                        markAsChanged()
+                    }
+                    tag = newWatcher
                 }
                 (selectRowCheckBox as? CheckBox)?.setOnCheckedChangeListener { _, isChecked ->
                     exercise?.isSelected = isChecked
@@ -177,9 +198,11 @@ class RecoveryPlanTableRowAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         // Inflate either header or item row based on the view type
         val view: View = if (viewType == VIEW_TYPE_HEADER) {
-            LayoutInflater.from(parent.context).inflate(R.layout.recovery_plan_table_header, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.recovery_plan_table_header, parent, false)
         } else {
-            LayoutInflater.from(parent.context).inflate(R.layout.recovery_plan_row_item, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.recovery_plan_row_item, parent, false)
         }
         return ExerciseViewHolder(view)
     }
@@ -195,9 +218,9 @@ class RecoveryPlanTableRowAdapter(
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         if (position == 0) {
-            holder.bind(null, VIEW_TYPE_HEADER) // No exercise data for header
-        } else {
-            holder.bind(exercises[position - 1], VIEW_TYPE_ITEM) // Bind data for exercise rows
+            holder.bind(null, 0, VIEW_TYPE_HEADER) // No exercise data for header
+        } else if (position != RecyclerView.NO_POSITION) {
+            holder.bind(exercises[position - 1], position, VIEW_TYPE_ITEM) // Bind data for exercise rows
         }
     }
 
@@ -221,9 +244,9 @@ class RecoveryPlanTableRowAdapter(
         for (i in exercises.size - 1 downTo 0) {
             if (exercises[i].isSelected) {
                 exercises.removeAt(i) // Remove the exercise
+                notifyItemRemoved(i+1) // Notify adapter
             }
         }
-        refreshTable()
     }
 
     // Get the current list of exercises

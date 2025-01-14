@@ -10,6 +10,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.getString
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
@@ -20,7 +21,7 @@ import java.time.LocalTime
 class RecoveryDataTableRowAdapter(
     private val exercises: MutableList<Exercise>,
     private val saveDataCallback: SaveDataCallback
-) : RecyclerView.Adapter<RecoveryDataTableRowAdapter.ExerciseViewHolder>() {
+) : RecyclerView.Adapter<RecoveryDataTableRowAdapter.ExerciseViewHolder>(), RecoveryPlanAdapter {
 
     // Define the callback interface
     interface SaveDataCallback {
@@ -39,20 +40,21 @@ class RecoveryDataTableRowAdapter(
         val time: View = view.findViewById(R.id.time)
         val difficulty: View = view.findViewById(R.id.difficulty)
         val comments: View = view.findViewById(R.id.comments)
-        val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
+        private val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
 
         // Bind method will update based on the view type
         fun bind(exercise: Exercise?, viewType: Int) {
+            val context = itemView.context
             if (viewType == VIEW_TYPE_HEADER) {
                 // Cast to TextView for header
-                (exerciseName as? TextView)?.text = "Exercise Name"
-                (sets as? TextView)?.text = "Sets"
-                (reps as? TextView)?.text = "Reps"
-                (hold as? TextView)?.text = "Hold (secs)"
-                (tension as? TextView)?.text = "Tension"
-                (time as? TextView)?.text = "Time of Completion"
-                (difficulty as? TextView)?.text = "Difficulty"
-                (comments as? TextView)?.text = "Comments"
+                (exerciseName as? TextView)?.text = getString(context, R.string.exerciseName)
+                (sets as? TextView)?.text = getString(context, R.string.sets)
+                (reps as? TextView)?.text = getString(context, R.string.reps)
+                (hold as? TextView)?.text = getString(context, R.string.holdSecs)
+                (tension as? TextView)?.text = getString(context, R.string.tension)
+                (time as? TextView)?.text = getString(context, R.string.timeOfCompletion)
+                (difficulty as? TextView)?.text = getString(context, R.string.difficulty)
+                (comments as? TextView)?.text = getString(context, R.string.comments)
             } else {
                 // Bind editable fields for exercise data rows
                 (exerciseName as? TextView)?.text = exercise?.name
@@ -162,9 +164,11 @@ class RecoveryDataTableRowAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         // Inflate either header or item row based on the view type
         val view: View = if (viewType == VIEW_TYPE_HEADER) {
-            LayoutInflater.from(parent.context).inflate(R.layout.recovery_data_table_header, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.recovery_data_table_header, parent, false)
         } else {
-            LayoutInflater.from(parent.context).inflate(R.layout.recovery_data_row_item, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.recovery_data_row_item, parent, false)
         }
         return ExerciseViewHolder(view)
     }
@@ -196,7 +200,7 @@ class RecoveryDataTableRowAdapter(
 
     // Add exercise row to the list
     @RequiresApi(Build.VERSION_CODES.Q)
-    fun addExerciseRow(exercise: Exercise) {
+    override fun addExerciseRow(exercise: Exercise) {
         exercises.add(exercise)
         notifyItemInserted(exercises.size) // Notify adapter
     }
@@ -207,21 +211,29 @@ class RecoveryDataTableRowAdapter(
         for (i in exercises.size - 1 downTo 0) {
             if (exercises[i].isSelected) {
                 exercises.removeAt(i) // Remove the exercise
+                notifyItemRemoved(i+1) // Notify adapter
             }
         }
-        notifyDataSetChanged() // Notify adapter
     }
 
     // Get the current list of exercises
-    fun getExercises(): List<Exercise> {
+    override fun getExercises(): List<Exercise> {
         return exercises.toList() // Return a copy of the list to avoid external modifications
     }
 
     // Set a new list of exercises
-    @SuppressLint("NotifyDataSetChanged")
-    fun setExercises(newExercises: List<Exercise>) {
+    override fun setExercises(newExercises: List<Exercise>) {
         exercises.clear()
         exercises.addAll(newExercises)
+        refreshTable()
+    }
+
+    override fun notifyItemChangedAndRefresh(position: Int) {
+        super.notifyItemChanged(position)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun refreshTable() {
         notifyDataSetChanged() // Notify adapter
     }
 }

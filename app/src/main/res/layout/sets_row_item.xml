@@ -18,7 +18,7 @@
             android:layout_weight="1"
             android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="Set #"
+            android:text="@string/setNumber"
             android:gravity="center" />
 
         <!-- Reps Count -->

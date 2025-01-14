@@ -19,7 +19,7 @@
             android:layout_weight="1"
             android:textSize="18sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="Set #"
+            android:text="@string/setNumber"
             android:textStyle="bold"
             android:gravity="center" />
 
@@ -31,7 +31,7 @@
             android:layout_weight="1"
             android:textSize="18sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="Reps"
+            android:text="@string/reps"
             android:textStyle="bold"
             android:gravity="center" />
     </TableRow>

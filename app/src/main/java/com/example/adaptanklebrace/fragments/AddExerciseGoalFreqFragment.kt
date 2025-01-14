@@ -12,7 +12,8 @@ import com.example.adaptanklebrace.data.Exercise
 
 class AddExerciseGoalFreqFragment(
     private val exerciseAdapter: RecoveryPlanAdapter,
-    private val exercise: Exercise
+    private val exercise: Exercise,
+    private val position: Int
 ) : DialogFragment() {
 
     override fun onCreateView(
@@ -38,7 +39,7 @@ class AddExerciseGoalFreqFragment(
             } else {
                 // Update the frequency field of the exercise & notify the adapter
                 exercise.frequency = freqNumber.toString() + "x/" + freqCategory
-                exerciseAdapter.refreshTable()
+                exerciseAdapter.notifyItemChangedAndRefresh(position)
                 dismiss() // Close the dialog
             }
         }

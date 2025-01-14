@@ -96,6 +96,7 @@ class StartSetActivity : AppCompatActivity() {
         // todo: implement start/end set buttons
         // todo: once sets are complete, data must be saved in the Recovery Data table on clicking finish button
         // todo: implement progress bar for tracking rep data for basic exercises
+        // todo: on finishing an exercise, add simple dropdown to set the tension level manually
     }
 
     // Load the sets data from the exercise goal

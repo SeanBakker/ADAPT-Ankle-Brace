@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.RecoveryDataActivity.Companion.RECOVERY_DATA_PREFERENCE
@@ -168,8 +167,8 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveExercisesForDate(week, exercises)
     }
 
-    override fun onFocusFrequencyText(exercise: Exercise) {
-        showSetExerciseFrequencyDialog(supportFragmentManager, exerciseAdapter, exercise)
+    override fun onFocusFrequencyText(exercise: Exercise, position: Int) {
+        showSetExerciseFrequencyDialog(exercise, position)
     }
 
     override fun onClickStartExerciseWithWarning(exercise: Exercise) {
@@ -304,9 +303,9 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
     }
 
     // Show pop-up dialog for setting exercise goal frequency for a row
-    fun showSetExerciseFrequencyDialog(fragmentManager: FragmentManager, adapter: RecoveryPlanAdapter, exercise: Exercise) {
-        val addExerciseGoalFreqFragment = AddExerciseGoalFreqFragment(adapter, exercise)
-        addExerciseGoalFreqFragment.show(fragmentManager, "add_exercise_goal_freq")
+    private fun showSetExerciseFrequencyDialog(exercise: Exercise, position: Int) {
+        val addExerciseGoalFreqFragment = AddExerciseGoalFreqFragment(exerciseAdapter, exercise, position)
+        addExerciseGoalFreqFragment.show(supportFragmentManager, "add_exercise_goal_freq")
     }
 
     // Show pop-up dialog for warning of starting an exercise that has above 100% completion

@@ -6,15 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.SettingsActivity
 import com.example.adaptanklebrace.data.Exercise
+import androidx.core.content.ContextCompat.getString
 
 class RecoveryPlanOverviewTableRowAdapter(
     private val exercises: MutableList<Exercise>,
@@ -23,8 +21,6 @@ class RecoveryPlanOverviewTableRowAdapter(
 
     // Define the callback interface
     interface MainActivityCallback {
-        fun saveCurrentDateExerciseData()
-        fun onFocusFrequencyText(exercise: Exercise)
         fun onClickStartExerciseWithoutWarning(exercise: Exercise)
     }
 
@@ -44,26 +40,27 @@ class RecoveryPlanOverviewTableRowAdapter(
         @RequiresApi(Build.VERSION_CODES.Q)
         @SuppressLint("DefaultLocale")
         fun bind(exercise: Exercise?, viewType: Int) {
+            val context = itemView.context
             if (viewType == VIEW_TYPE_HEADER) {
                 // Cast to TextView for header
-                (exerciseName as? TextView)?.text = "Exercise Name"
-                (sets as? TextView)?.text = "Sets"
-                (reps as? TextView)?.text = "Reps"
-                (hold as? TextView)?.text = "Hold (secs)"
-                (tension as? TextView)?.text = "Tension"
-                (frequency as? TextView)?.text = "Freq."
-                (percentageCompleted as? TextView)?.text = "% Completed"
-                (startExerciseButton as? TextView)?.text = "Start Exercise"
+                (exerciseName as? TextView)?.text = getString(context, R.string.exerciseName)
+                (sets as? TextView)?.text = getString(context, R.string.sets)
+                (reps as? TextView)?.text = getString(context, R.string.reps)
+                (hold as? TextView)?.text = getString(context, R.string.holdSecs)
+                (tension as? TextView)?.text = getString(context, R.string.tension)
+                (frequency as? TextView)?.text = getString(context, R.string.freq)
+                (percentageCompleted as? TextView)?.text = getString(context, R.string.percentCompleted)
+                (startExerciseButton as? TextView)?.text = getString(context, R.string.startExerciseBtn)
             } else {
                 // Bind editable fields for exercise data rows
                 (exerciseName as? TextView)?.text = exercise?.name
-                (sets as? EditText)?.setText(exercise?.sets.toString())
-                (reps as? EditText)?.setText(exercise?.reps.toString())
-                (hold as? EditText)?.setText(exercise?.hold.toString())
-                (tension as? EditText)?.setText(exercise?.tension.toString())
-                (frequency as? EditText)?.setText(exercise?.frequency)
+                (sets as? TextView)?.text = exercise?.sets.toString()
+                (reps as? TextView)?.text = exercise?.reps.toString()
+                (hold as? TextView)?.text = exercise?.hold.toString()
+                (tension as? TextView)?.text = exercise?.tension.toString()
+                (frequency as? TextView)?.text = exercise?.frequency
                 (percentageCompleted as? TextView)?.text = String.format("%.2f%%", exercise?.percentageCompleted)
-                (startExerciseButton as? Button)?.text = "Start"
+                (startExerciseButton as? Button)?.text = getString(context, R.string.startBtn)
 
                 // Update color of startExerciseButton based on percentageCompleted field
                 if (exercise != null) {
@@ -83,88 +80,24 @@ class RecoveryPlanOverviewTableRowAdapter(
                     }
                 }
 
-                // Set up listeners for editable fields
-                (sets as? EditText)?.addTextChangedListener {
-                    exercise?.sets = it.toString().toIntOrNull() ?: 0
-                    markAsChanged()
-                }
-                (reps as? EditText)?.addTextChangedListener {
-                    exercise?.reps = it.toString().toIntOrNull() ?: 0
-                    markAsChanged()
-                }
-                (hold as? EditText)?.addTextChangedListener {
-                    exercise?.hold = it.toString().toIntOrNull() ?: 0
-                    markAsChanged()
-                }
-                (tension as? EditText)?.apply {
-                    var initialTension: Int? = null  // Variable to store the original tension value
-
-                    // Add TextChangedListener to handle real-time changes to the text
-                    addTextChangedListener {
-                        val currentTension = text.toString().toIntOrNull()
-
-                        // Restrict tension level between 1-10
-                        if (currentTension == null || currentTension !in 1..10) {
-                            Toast.makeText(itemView.context, "Please enter a tension level between 1 and 10.", Toast.LENGTH_SHORT).show()
-                        } else {
-                            exercise?.tension = currentTension
-                        }
-                        markAsChanged()
-                    }
-
-                    // Add OnFocusChangeListener to handle focus loss and reset value if invalid
-                    setOnFocusChangeListener { _, hasFocus ->
-                        if (hasFocus) {
-                            // Store the original tension value when the field gains focus
-                            initialTension = exercise?.tension
-                        } else {
-                            val currentTension = text.toString().toIntOrNull()
-
-                            // If the input is invalid, reset to the original tension value
-                            if (currentTension !in 1..10) {
-                                // Use the initial value when focus was first gained
-                                initialTension?.let {
-                                    exercise?.tension = it
-                                    setText(it.toString())  // Reset the text to the original tension
-                                }
-                            }
-                            markAsChanged()
-                        }
-                    }
-                }
-                (frequency as? EditText)?.apply {
-                    setOnFocusChangeListener { _, hasFocus ->
-                        if (hasFocus) {
-                            exercise?.let {
-                                mainActivityCallback.onFocusFrequencyText(it)
-                            }
-                        }
-                    }
-                }
+                // Set up listeners
                 (startExerciseButton as? Button)?.setOnClickListener {
                     exercise?.let {
-                        if (it.percentageCompleted >= 100) {
-                            // todo: hide the row in the table
-                        } else {
-                            mainActivityCallback.onClickStartExerciseWithoutWarning(it)
-                        }
+                        mainActivityCallback.onClickStartExerciseWithoutWarning(it)
                     }
                 }
             }
-        }
-
-        private fun markAsChanged() {
-            // This can be used to flag that a change occurred and data needs saving.
-            mainActivityCallback.saveCurrentDateExerciseData()
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         // Inflate either header or item row based on the view type
         val view: View = if (viewType == VIEW_TYPE_HEADER) {
-            LayoutInflater.from(parent.context).inflate(R.layout.recovery_plan_overview_table_header, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.recovery_plan_overview_table_header, parent, false)
         } else {
-            LayoutInflater.from(parent.context).inflate(R.layout.recovery_plan_overview_row_item, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.recovery_plan_overview_row_item, parent, false)
         }
         return ExerciseViewHolder(view)
     }
@@ -209,7 +142,7 @@ class RecoveryPlanOverviewTableRowAdapter(
     // Set a new list of exercises
     override fun setExercises(newExercises: List<Exercise>) {
         exercises.clear()
-        exercises.addAll(newExercises)
+        exercises.addAll(newExercises.filter { it.percentageCompleted < 100 })
         refreshTable()
     }
 
@@ -219,6 +152,6 @@ class RecoveryPlanOverviewTableRowAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     override fun refreshTable() {
-        notifyDataSetChanged() // Notify adapter
+        super.notifyDataSetChanged() // Notify adapter
     }
 }

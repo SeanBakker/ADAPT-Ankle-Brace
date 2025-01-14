@@ -27,7 +27,7 @@
             android:layout_weight="2.5"
             android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="Exercise Name"
+            android:text="@string/exerciseName"
             android:gravity="center" />
 
         <!-- Sets -->
@@ -36,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Sets"
+            android:hint="@string/sets"
             android:inputType="number"
             android:gravity="center" />
 
@@ -46,7 +46,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Reps"
+            android:hint="@string/reps"
             android:inputType="number"
             android:gravity="center" />
 
@@ -56,7 +56,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Hold"
+            android:hint="@string/hold"
             android:inputType="number"
             android:gravity="center" />
 
@@ -66,7 +66,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
-            android:hint="Tension"
+            android:hint="@string/tension"
             android:inputType="number"
             android:gravity="center" />
 
@@ -76,7 +76,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
-            android:hint="Time"
+            android:hint="@string/time"
             android:inputType="text"
             android:gravity="center" />
 
@@ -86,7 +86,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
-            android:hint="Difficulty"
+            android:hint="@string/difficulty"
             android:inputType="number"
             android:gravity="center" />
 
@@ -96,9 +96,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2.5"
-            android:hint="Comments"
+            android:hint="@string/comments"
             android:inputType="text"
             android:gravity="center" />
     </TableRow>
-
 </TableLayout>

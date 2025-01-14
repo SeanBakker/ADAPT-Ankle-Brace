@@ -19,7 +19,7 @@
             android:layout_weight="2.5"
             android:textSize="14sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="Exercise Name"
+            android:text="@string/exerciseName"
             android:textStyle="bold"
             android:gravity="center" />
 
@@ -30,7 +30,7 @@
             android:layout_weight="1"
             android:textSize="14sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="Sets"
+            android:text="@string/sets"
             android:textStyle="bold"
             android:gravity="center" />
 
@@ -41,7 +41,7 @@
             android:layout_weight="1"
             android:textSize="14sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="Reps"
+            android:text="@string/reps"
             android:textStyle="bold"
             android:gravity="center" />
 
@@ -52,7 +52,7 @@
             android:layout_weight="1"
             android:textSize="14sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="Hold (secs)"
+            android:text="@string/holdSecs"
             android:textStyle="bold"
             android:gravity="center" />
 
@@ -63,7 +63,7 @@
             android:layout_weight="1"
             android:textSize="14sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="Tension"
+            android:text="@string/tension"
             android:textStyle="bold"
             android:gravity="center" />
 
@@ -74,7 +74,7 @@
             android:layout_weight="1.5"
             android:textSize="14sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="Freq."
+            android:text="@string/freq"
             android:textStyle="bold"
             android:gravity="center" />
 
@@ -85,7 +85,7 @@
             android:layout_weight="1.6"
             android:textSize="14sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="% Completed"
+            android:text="@string/percentCompleted"
             android:textStyle="bold"
             android:gravity="center" />
 
@@ -98,7 +98,7 @@
             android:layout_marginHorizontal="10dp"
             android:textSize="14sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="Start Exercise"
+            android:text="@string/startExerciseBtn"
             android:textStyle="bold"
             android:gravity="center" />
     </TableRow>

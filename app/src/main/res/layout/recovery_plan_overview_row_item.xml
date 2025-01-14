@@ -17,59 +17,64 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2.5"
+            android:text="@string/exerciseName"
             android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="Exercise Name"
             android:gravity="center" />
 
         <!-- Sets -->
-        <EditText
+        <TextView
             android:id="@+id/sets"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Sets"
-            android:inputType="number"
+            android:text="@string/sets"
+            android:textSize="16sp"
+            android:textColor="?attr/colorOnBackground"
             android:gravity="center" />
 
         <!-- Reps -->
-        <EditText
+        <TextView
             android:id="@+id/reps"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Reps"
-            android:inputType="number"
+            android:text="@string/reps"
+            android:textSize="16sp"
+            android:textColor="?attr/colorOnBackground"
             android:gravity="center" />
 
         <!-- Hold -->
-        <EditText
+        <TextView
             android:id="@+id/hold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Hold"
-            android:inputType="number"
+            android:text="@string/hold"
+            android:textSize="16sp"
+            android:textColor="?attr/colorOnBackground"
             android:gravity="center" />
 
         <!-- Tension -->
-        <EditText
+        <TextView
             android:id="@+id/tension"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Tension"
-            android:inputType="number"
+            android:text="@string/tension"
+            android:textSize="16sp"
+            android:textColor="?attr/colorOnBackground"
             android:gravity="center" />
 
         <!-- Frequency -->
-        <EditText
+        <TextView
             android:id="@+id/frequency"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
-            android:hint="Freq."
-            android:inputType="text"
+            android:text="@string/freq"
+            android:textSize="16sp"
+            android:textColor="?attr/colorOnBackground"
             android:gravity="center" />
 
         <!-- Percentage Completed -->
@@ -78,9 +83,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.6"
+            android:text="%"
             android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
-            android:text="%"
             android:gravity="center" />
 
         <!-- Start Exercise Button -->
@@ -92,7 +97,7 @@
             android:padding="0dp"
             android:layout_marginHorizontal="10dp"
             android:backgroundTint="?attr/colorPrimary"
-            android:text="Start"
+            android:text="@string/startBtn"
             android:gravity="center" />
     </TableRow>
 </TableLayout>

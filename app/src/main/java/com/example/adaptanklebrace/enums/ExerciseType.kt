@@ -85,14 +85,16 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
     ),
     ERROR(
     "ERROR",
-    "An unexpected error occurred when trying to retrieve exercise data.",
+    "Exercise data is unable to be retrieved for the selected exercise.",
         "",
     0
     );
 
     companion object {
         fun getAllExerciseNames(): List<String> {
-            return values().map { it.exerciseName }
+            return values()
+                .filter { it.exerciseName != ERROR.exerciseName }
+                .map { it.exerciseName }
         }
 
         // Convert the enum values to a list of Exercise objects

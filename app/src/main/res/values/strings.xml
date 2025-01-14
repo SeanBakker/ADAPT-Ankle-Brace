@@ -12,16 +12,33 @@
     <!-- Exercises -->
     <string name="rom_exercise">Range of Motion (ROM) Exercise</string>
 
+    <!-- Table Text -->
+    <string name="exerciseName">Exercise Name</string>
+    <string name="sets">Sets</string>
+    <string name="setNumber">Set #</string>
+    <string name="reps">Reps</string>
+    <string name="hold">Hold</string>
+    <string name="holdSecs">Hold (secs)</string>
+    <string name="tension">Tension</string>
+    <string name="freq">Freq.</string>
+    <string name="percentCompleted">% Completed</string>
+    <string name="time">Time</string>
+    <string name="timeOfCompletion">Time of Completion</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="comments">Comments</string>
+
     <!-- Settings Options -->
     <string name="dailyGoalReminder">Daily Goal Reminder</string>
     <string name="workoutScheduleReminder">Workout Schedule Reminder</string>
 
     <!-- Buttons -->
     <string name="connectDeviceBtn">Connect to Device</string>
+    <string name="startBtn">Start</string>
     <string name="startExerciseBtn">Start Exercise</string>
     <string name="startSetBtn">Start Set</string>
     <string name="endSetBtn">End Set</string>
     <string name="finishExerciseBtn">Finish Exercise</string>
+    <string name="editGoalsBtn">Edit Goals</string>
 
     <!-- Fragments -->
     <string name="requiredFieldsFormText">Fields marked with * are required.</string>
