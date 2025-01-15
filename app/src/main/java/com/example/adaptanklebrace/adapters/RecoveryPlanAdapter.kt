@@ -7,5 +7,4 @@ interface RecoveryPlanAdapter {
     fun getExercises(): List<Exercise>
     fun addExerciseRow(exercise: Exercise)
     fun notifyItemChangedAndRefresh(position: Int)
-    fun refreshTable()
 }

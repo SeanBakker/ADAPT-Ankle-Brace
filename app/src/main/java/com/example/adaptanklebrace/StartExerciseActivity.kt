@@ -2,6 +2,7 @@ package com.example.adaptanklebrace
 
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -59,7 +60,7 @@ class StartExerciseActivity : AppCompatActivity() {
         exerciseInfoAdapter = if (exerciseInfo != null) {
             ExerciseInfoAdapter(this, listOf(exerciseInfo))
         } else {
-            ExerciseInfoAdapter(this, listOf(ExerciseType.getErrorExerciseInfo()))
+            ExerciseInfoAdapter(this, listOf(ExerciseType.getErrorExerciseInfo(exercise?.name ?: ExerciseType.ERROR.exerciseName)))
         }
 
         // Initialize and set up the ViewPagerInfo with an adapter
@@ -74,6 +75,14 @@ class StartExerciseActivity : AppCompatActivity() {
 
         // Handle button to connect to the device
         connectToDeviceButton = findViewById(R.id.connectDeviceBtn)
+
+        // Hide the visibility of the connect to device button when the exercise is not recognized in the catalog
+        if (exerciseInfo == null) {
+            connectToDeviceButton.visibility = View.INVISIBLE
+        } else {
+            connectToDeviceButton.visibility = View.VISIBLE
+        }
+
         connectToDeviceButton.setOnClickListener {
             exercise?.let {
                 // todo: update target activity depending on exercise type

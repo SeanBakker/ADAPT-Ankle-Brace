@@ -13,6 +13,7 @@ import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.SettingsActivity
 import com.example.adaptanklebrace.data.Exercise
 import androidx.core.content.ContextCompat.getString
+import com.example.adaptanklebrace.enums.ExerciseType
 
 class RecoveryPlanOverviewTableRowAdapter(
     private val exercises: MutableList<Exercise>,
@@ -76,10 +77,9 @@ class RecoveryPlanOverviewTableRowAdapter(
                 (percentageCompleted as? TextView)?.text = String.format("%.2f%%", exercise?.percentageCompleted)
                 (startExerciseButton as? Button)?.text = getString(context, R.string.startBtn)
 
-                // Update color of startExerciseButton based on percentageCompleted field
+                // Update color of startExerciseButton
                 if (exercise != null) {
-                    // todo: if the exercise name does not exist in the catalog of exercise types, then start button should be hidden
-                    if (exercise.percentageCompleted >= 100) {
+                    if (exercise.percentageCompleted >= 100 || !ExerciseType.getAllExerciseNames().contains(exercise.name)) {
                         (startExerciseButton as? Button)?.apply {
                             setBackgroundColor(context.getColor(R.color.grey_1))
                         }
@@ -157,15 +157,10 @@ class RecoveryPlanOverviewTableRowAdapter(
     override fun setExercises(newExercises: List<Exercise>) {
         exercises.clear()
         exercises.addAll(newExercises.filter { it.percentageCompleted < 100 })
-        refreshTable()
+        notifyItemRangeChanged(1, getItemCount())
     }
 
     override fun notifyItemChangedAndRefresh(position: Int) {
         super.notifyItemChanged(position)
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    override fun refreshTable() {
-        super.notifyDataSetChanged() // Notify adapter
     }
 }

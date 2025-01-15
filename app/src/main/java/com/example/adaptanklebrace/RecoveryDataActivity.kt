@@ -23,6 +23,7 @@ import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.Exercise.CREATOR.formatter
 import com.example.adaptanklebrace.fragments.AddExerciseDataRowFragment
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
+import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
 import java.io.File
 import java.text.SimpleDateFormat
@@ -30,7 +31,7 @@ import java.time.LocalTime
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.Q)
-class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.SaveDataCallback,
+class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.RecoveryDataCallback,
     DeleteRowFragment.OnDeleteListener {
 
     private lateinit var dateTextView: TextView

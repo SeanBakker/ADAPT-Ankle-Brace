@@ -83,11 +83,6 @@ class ExerciseSetsTableRowAdapter(
     fun createSets(newSets: List<Pair<Int, Int>>) {
         sets.clear()
         sets.addAll(newSets)
-        refreshTable()
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun refreshTable() {
-        notifyDataSetChanged() // Notify adapter
+        notifyItemRangeChanged(1, getItemCount())
     }
 }

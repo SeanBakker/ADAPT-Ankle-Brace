@@ -12,8 +12,8 @@ class SettingsActivity : AppCompatActivity() {
     // Checkboxes in settings page
     private lateinit var bluetoothPermissionCheckbox: CheckBox
     private lateinit var notificationsCheckbox: CheckBox
-    private lateinit var goalReminderCheckbox: CheckBox
-    private lateinit var workoutReminderCheckbox: CheckBox
+    private lateinit var weeklyGoalReminderCheckbox: CheckBox
+    private lateinit var dailyExerciseReminderCheckbox: CheckBox
     private lateinit var nightModeCheckbox: CheckBox
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -47,15 +47,15 @@ class SettingsActivity : AppCompatActivity() {
         // Find views by ID
         bluetoothPermissionCheckbox = findViewById(R.id.bluetoothPermissionCheckbox)
         notificationsCheckbox = findViewById(R.id.notificationsCheckbox)
-        goalReminderCheckbox = findViewById(R.id.goalReminderCheckbox)
-        workoutReminderCheckbox = findViewById(R.id.workoutReminderCheckbox)
+        weeklyGoalReminderCheckbox = findViewById(R.id.weeklyGoalReminderCheckbox)
+        dailyExerciseReminderCheckbox = findViewById(R.id.dailyExerciseReminderCheckbox)
         nightModeCheckbox = findViewById(R.id.nightModeCheckbox)
 
         // Load and set saved preferences
         bluetoothPermissionCheckbox.isChecked = getPreference(sharedPreferences, "bluetoothPermission", false)
         notificationsCheckbox.isChecked = getPreference(sharedPreferences, "notifications", false)
-        goalReminderCheckbox.isChecked = getPreference(sharedPreferences, "goalReminder", false)
-        workoutReminderCheckbox.isChecked = getPreference(sharedPreferences, "workoutReminder", false)
+        weeklyGoalReminderCheckbox.isChecked = getPreference(sharedPreferences, "weeklyGoalReminder", false)
+        dailyExerciseReminderCheckbox.isChecked = getPreference(sharedPreferences, "dailyExerciseReminder", false)
         nightModeCheckbox.isChecked = getPreference(sharedPreferences, "nightMode", false)
 
         // Set listeners for checkboxes to save changes
@@ -65,11 +65,11 @@ class SettingsActivity : AppCompatActivity() {
         notificationsCheckbox.setOnCheckedChangeListener { _, isChecked ->
             savePreference("notifications", isChecked)
         }
-        goalReminderCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            savePreference("goalReminder", isChecked)
+        weeklyGoalReminderCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            savePreference("weeklyGoalReminder", isChecked)
         }
-        workoutReminderCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            savePreference("workoutReminder", isChecked)
+        dailyExerciseReminderCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            savePreference("dailyExerciseReminder", isChecked)
         }
         nightModeCheckbox.setOnCheckedChangeListener { _, isChecked ->
             savePreference("nightMode", isChecked)

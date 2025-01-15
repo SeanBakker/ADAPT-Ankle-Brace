@@ -26,7 +26,6 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.adaptanklebrace.RecoveryPlanActivity.Companion.RECOVERY_PLAN_PREFERENCE
 import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.services.BluetoothService
@@ -101,7 +100,6 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
 
         // todo: if there are no goals set for that week, show button to set goals which shows the add goals fragment
-        // todo: fix bug with row percentage completed not updating after recovery data is added
 
         // Setup exercise recovery plan table overview
         exerciseRecyclerView = findViewById(R.id.exerciseRecyclerView)
@@ -125,7 +123,6 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         editGoalsBtn.setOnClickListener { startActivity(Intent(this, RecoveryPlanActivity::class.java)) }
     }
 
-    // Call calculateWeeklyProgress() whenever the activity is resumed
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onResume() {
         super.onResume()
@@ -178,7 +175,7 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
     @SuppressLint("DefaultLocale", "SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun calculateWeeklyProgress(currentWeek: String) {
-        val exerciseGoalsForCurrentWeek = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getExercisesForDate(currentWeek)
+        val exerciseGoalsForCurrentWeek = exerciseAdapter.getExercises()
 
         // Get reference to RecoveryPlanActivity
         val weeklyProgress = recoveryPlanActivity.calculateWeeklyProgress(this, exerciseAdapter, exerciseGoalsForCurrentWeek, currentWeek)
@@ -190,7 +187,6 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
     }
 
     /*** BLUETOOTH INITIALIZATION  ***/
-    // todo: add this initialization to other activities that can start exercises
     private val BLUETOOTH_PERMISSION_REQUEST_CODE = 2
 
     @RequiresApi(Build.VERSION_CODES.S)

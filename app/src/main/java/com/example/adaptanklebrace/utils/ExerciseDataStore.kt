@@ -1,4 +1,4 @@
-package com.example.adaptanklebrace
+package com.example.adaptanklebrace.utils
 
 import android.content.Context
 import android.os.Build

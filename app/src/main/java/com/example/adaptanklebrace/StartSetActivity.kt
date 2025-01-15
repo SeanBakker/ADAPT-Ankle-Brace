@@ -67,7 +67,7 @@ class StartSetActivity : AppCompatActivity() {
         exerciseInfoAdapter = if (exerciseInfo != null) {
             ExerciseInfoAdapter(this, listOf(exerciseInfo))
         } else {
-            ExerciseInfoAdapter(this, listOf(ExerciseType.getErrorExerciseInfo()))
+            ExerciseInfoAdapter(this, listOf(ExerciseType.getErrorExerciseInfo(exercise?.name ?: ExerciseType.ERROR.exerciseName)))
         }
 
         // Initialize and set up the ViewPagerInfo with an adapter

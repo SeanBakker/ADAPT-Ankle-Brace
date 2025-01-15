@@ -28,8 +28,8 @@
     <string name="comments">Comments</string>
 
     <!-- Settings Options -->
-    <string name="dailyGoalReminder">Daily Goal Reminder</string>
-    <string name="workoutScheduleReminder">Workout Schedule Reminder</string>
+    <string name="weeklyGoalReminder">Weekly Goal Reminder</string>
+    <string name="dailyExerciseReminder">Daily Exercise Reminder</string>
 
     <!-- Buttons -->
     <string name="connectDeviceBtn">Connect to Device</string>

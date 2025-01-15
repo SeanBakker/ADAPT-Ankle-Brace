@@ -20,11 +20,11 @@ import java.time.LocalTime
 
 class RecoveryDataTableRowAdapter(
     private val exercises: MutableList<Exercise>,
-    private val saveDataCallback: SaveDataCallback
+    private val recoveryDataCallback: RecoveryDataCallback
 ) : RecyclerView.Adapter<RecoveryDataTableRowAdapter.ExerciseViewHolder>(), RecoveryPlanAdapter {
 
     // Define the callback interface
-    interface SaveDataCallback {
+    interface RecoveryDataCallback {
         fun saveCurrentDateExerciseData()
     }
 
@@ -170,7 +170,7 @@ class RecoveryDataTableRowAdapter(
 
         private fun markAsChanged() {
             // This can be used to flag that a change occurred and data needs saving.
-            saveDataCallback.saveCurrentDateExerciseData()
+            recoveryDataCallback.saveCurrentDateExerciseData()
         }
     }
 
@@ -239,15 +239,11 @@ class RecoveryDataTableRowAdapter(
     override fun setExercises(newExercises: List<Exercise>) {
         exercises.clear()
         exercises.addAll(newExercises)
-        refreshTable()
+        notifyItemRangeChanged(1, getItemCount())
     }
 
     override fun notifyItemChangedAndRefresh(position: Int) {
         super.notifyItemChanged(position)
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    override fun refreshTable() {
-        notifyDataSetChanged() // Notify adapter
+        recoveryDataCallback.saveCurrentDateExerciseData()
     }
 }

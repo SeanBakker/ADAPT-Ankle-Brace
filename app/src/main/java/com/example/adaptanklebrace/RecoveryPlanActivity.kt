@@ -30,6 +30,7 @@ import com.example.adaptanklebrace.fragments.AddExerciseGoalFreqFragment
 import com.example.adaptanklebrace.fragments.AddExerciseGoalRowFragment
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import com.example.adaptanklebrace.fragments.StartExerciseWarningFragment
+import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
 import java.io.File
 import java.text.SimpleDateFormat
@@ -74,6 +75,11 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
         // Handle the back button click
         toolbar.setNavigationOnClickListener {
+            val week = dateTextView.text.toString()
+
+            // Calculate weekly progress when navigating off the page
+            calculateWeeklyProgress(this, exerciseAdapter, exercises, week)
+
             @Suppress("DEPRECATION")
             onBackPressed()
         }
@@ -159,6 +165,14 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
         // Load data for exercise goal completion percentages
         calculateExerciseCompletionForAllRows(this, exerciseAdapter, exerciseGoals, currentWeek)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Load data for current week on resuming
+        val currentWeek = dateTextView.text.toString()
+        loadWeekData(currentWeek)
     }
 
     // Save exercise data for the selected date to the apps storage

@@ -85,8 +85,14 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
     ),
     ERROR(
     "ERROR",
-    "Exercise data is unable to be retrieved for the selected exercise.",
-        "",
+    "Exercise data is unable to be retrieved for the selected exercise. Therefore, we are unable to connect to the device and provide automatic data collection for this exercise.",
+        """
+        1. You can still perform this exercise manually.
+        2. Wear the A.D.A.P.T. device (the device can be left off)
+        3. Set the tension level manually to the specified tension level for your exercise goal.
+        4. Perform the specified number of reps.
+        5. Then repeat for the specified number of sets.
+        """.trimIndent(),
     0
     );
 
@@ -123,9 +129,9 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
             }
 
         @RequiresApi(Build.VERSION_CODES.Q)
-        fun getErrorExerciseInfo(): ExerciseInfo {
+        fun getErrorExerciseInfo(exerciseName: String): ExerciseInfo {
             return ExerciseInfo(
-                name = ERROR.exerciseName,
+                name = exerciseName,
                 description = ERROR.description,
                 steps = ERROR.steps,
                 imageId = ERROR.imageId
