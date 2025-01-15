@@ -129,11 +129,24 @@ class RecoveryPlanOverviewTableRowAdapter(
         if (position == 0) {
             holder.bind(null, VIEW_TYPE_HEADER) // No exercise data for header
         } else {
-            holder.bind(exercises[position - 1], VIEW_TYPE_ITEM) // Bind data for exercise rows
+            val exercise = exercises[position - 1]
+
+            // Hide the exercise row if the percentage completed is >=100
+            if (exercise.percentageCompleted >= 100) {
+                // Hide the row
+                holder.itemView.visibility = View.GONE
+                holder.itemView.layoutParams = RecyclerView.LayoutParams(0, 0)
+            } else {
+                // Show the row and bind its data
+                holder.itemView.visibility = View.VISIBLE
+                holder.itemView.layoutParams = RecyclerView.LayoutParams(
+                    RecyclerView.LayoutParams.MATCH_PARENT,
+                    RecyclerView.LayoutParams.WRAP_CONTENT
+                )
+                holder.bind(exercise, VIEW_TYPE_ITEM) // Bind data for exercise rows
+            }
         }
     }
-
-    override fun getItemCount(): Int = exercises.size + 1 // +1 for the header row
 
     // Constants for view types
     companion object {
@@ -156,11 +169,19 @@ class RecoveryPlanOverviewTableRowAdapter(
     // Set a new list of exercises
     override fun setExercises(newExercises: List<Exercise>) {
         exercises.clear()
-        exercises.addAll(newExercises.filter { it.percentageCompleted < 100 })
-        notifyItemRangeChanged(1, getItemCount())
+        exercises.addAll(newExercises)
+        notifyItemRangeChanged(1, getTotalItemCount())
     }
 
     override fun notifyItemChangedAndRefresh(position: Int) {
         super.notifyItemChanged(position)
     }
+
+    override fun getItemCount(): Int {
+        // Return the count of visible rows + 2 to remove scrollbar when not required
+        val visibleItemCount = exercises.count { it.percentageCompleted < 100 }
+        return visibleItemCount + 2
+    }
+
+    private fun getTotalItemCount(): Int = exercises.size + 1 // +1 for the header row
 }

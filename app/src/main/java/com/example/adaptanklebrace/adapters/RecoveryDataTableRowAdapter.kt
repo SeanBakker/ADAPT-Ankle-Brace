@@ -220,7 +220,6 @@ class RecoveryDataTableRowAdapter(
     }
 
     // Delete exercise row from the list
-    @SuppressLint("NotifyDataSetChanged")
     fun deleteExerciseRow() {
         for (i in exercises.size - 1 downTo 0) {
             if (exercises[i].isSelected) {
