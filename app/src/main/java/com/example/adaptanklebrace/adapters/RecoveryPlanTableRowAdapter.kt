@@ -201,6 +201,12 @@ class RecoveryPlanTableRowAdapter(
         }
     }
 
+    // Constants for view types
+    companion object {
+        const val VIEW_TYPE_HEADER = 0
+        const val VIEW_TYPE_ITEM = 1
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         // Inflate either header or item row based on the view type
         val view: View = if (viewType == VIEW_TYPE_HEADER) {
@@ -231,12 +237,6 @@ class RecoveryPlanTableRowAdapter(
     }
 
     override fun getItemCount(): Int = exercises.size + 1 // +1 for the header row
-
-    // Constants for view types
-    companion object {
-        const val VIEW_TYPE_HEADER = 0
-        const val VIEW_TYPE_ITEM = 1
-    }
 
     // Add exercise row to the list
     @RequiresApi(Build.VERSION_CODES.Q)

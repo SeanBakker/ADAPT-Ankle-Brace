@@ -104,6 +104,12 @@ class RecoveryPlanOverviewTableRowAdapter(
         }
     }
 
+    // Constants for view types
+    companion object {
+        const val VIEW_TYPE_HEADER = 0
+        const val VIEW_TYPE_ITEM = 1
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         // Inflate either header or item row based on the view type
         val view: View = if (viewType == VIEW_TYPE_HEADER) {
@@ -148,11 +154,7 @@ class RecoveryPlanOverviewTableRowAdapter(
         }
     }
 
-    // Constants for view types
-    companion object {
-        const val VIEW_TYPE_HEADER = 0
-        const val VIEW_TYPE_ITEM = 1
-    }
+    override fun getItemCount(): Int = exercises.size + 1 // +1 for the header row
 
     // Add exercise row to the list
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -170,18 +172,10 @@ class RecoveryPlanOverviewTableRowAdapter(
     override fun setExercises(newExercises: List<Exercise>) {
         exercises.clear()
         exercises.addAll(newExercises)
-        notifyItemRangeChanged(1, getTotalItemCount())
+        notifyItemRangeChanged(1, getItemCount())
     }
 
     override fun notifyItemChangedAndRefresh(position: Int) {
         super.notifyItemChanged(position)
     }
-
-    override fun getItemCount(): Int {
-        // Return the count of visible rows + 2 to remove scrollbar when not required
-        val visibleItemCount = exercises.count { it.percentageCompleted < 100 }
-        return visibleItemCount + 2
-    }
-
-    private fun getTotalItemCount(): Int = exercises.size + 1 // +1 for the header row
 }
