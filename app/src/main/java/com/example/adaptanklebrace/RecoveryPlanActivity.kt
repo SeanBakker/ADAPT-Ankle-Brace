@@ -276,6 +276,9 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
                 // Load data for the selected week
                 loadWeekData(chosenWeek)
+
+                // Recalculate percentages for that week
+                calculateWeeklyProgress(this, exerciseAdapter, getExerciseGoals(exerciseAdapter), chosenWeek)
             },
             year,
             month,

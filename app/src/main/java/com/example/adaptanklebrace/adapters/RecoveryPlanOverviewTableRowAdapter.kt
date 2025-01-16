@@ -170,9 +170,14 @@ class RecoveryPlanOverviewTableRowAdapter(
 
     // Set a new list of exercises
     override fun setExercises(newExercises: List<Exercise>) {
+        // Clear the existing data
+        val previousSize = getItemCount()
         exercises.clear()
+        notifyItemRangeRemoved(1, previousSize)
+
+        // Add new exercises
         exercises.addAll(newExercises)
-        notifyItemRangeChanged(1, getItemCount())
+        notifyItemRangeInserted(1, getItemCount())
     }
 
     override fun notifyItemChangedAndRefresh(position: Int) {
