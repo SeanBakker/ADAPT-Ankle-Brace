@@ -1,5 +1,6 @@
 package com.example.adaptanklebrace.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +10,10 @@ import androidx.fragment.app.DialogFragment
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.adapters.RecoveryPlanAdapter
 import com.example.adaptanklebrace.data.Exercise
+import com.example.adaptanklebrace.utils.ExerciseUtil
 
 class AddExerciseGoalFreqFragment(
+    private val context: Context,
     private val exerciseAdapter: RecoveryPlanAdapter,
     private val exercise: Exercise,
     private val position: Int
@@ -33,9 +36,9 @@ class AddExerciseGoalFreqFragment(
             val freqCategory = freqCategorySpinner.selectedItem?.toString()
 
             if (freqNumber == null || freqNumber <= 0) {
-                showToast("Please enter a valid frequency number.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please enter a valid frequency number.")
             } else if (freqCategory.isNullOrEmpty()) {
-                showToast("Please select a frequency category.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please select a frequency category.")
             } else {
                 // Update the frequency field of the exercise & notify the adapter
                 exercise.frequency = freqNumber.toString() + "x/" + freqCategory
@@ -45,9 +48,5 @@ class AddExerciseGoalFreqFragment(
         }
 
         return view
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 }

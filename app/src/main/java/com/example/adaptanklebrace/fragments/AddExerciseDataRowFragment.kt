@@ -1,6 +1,7 @@
 package com.example.adaptanklebrace.fragments
 
 import android.app.TimePickerDialog
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.Q)
 class AddExerciseDataRowFragment(
+    private val context: Context,
     private val exerciseAdapter: RecoveryPlanAdapter
 ) : DialogFragment() {
 
@@ -80,17 +82,17 @@ class AddExerciseDataRowFragment(
             //todo: add option to pick dates for which the exercise was completed for
 
             if (exerciseName.isEmpty()) {
-                showToast("Please enter an exercise name.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please enter an exercise name.")
             } else if (numSets == null || numSets <= 0) {
-                showToast("Please enter a valid number of sets.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please enter a valid number of sets.")
             } else if (numReps == null || numReps <= 0) {
-                showToast("Please enter a valid number of reps.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please enter a valid number of reps.")
             } else if (holdDuration == null || holdDuration < 0) {
-                showToast("Please enter a valid hold duration.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please enter a valid hold duration.")
             } else if (tensionLevel == null || tensionLevel !in 1..10) {
-                showToast("Please enter a tension level between 1 and 10.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please enter a tension level between 1 and 10.")
             } else if (difficultyLevel != null && difficultyLevel !in 1..10) {
-                showToast("Please enter a difficulty level between 1 and 10, or leave it blank.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please enter a difficulty level between 1 and 10, or leave it blank.")
             } else {
                 val exercises = exerciseAdapter.getExercises()
 
@@ -131,9 +133,5 @@ class AddExerciseDataRowFragment(
             calendar.set(Calendar.MINUTE, selectedMinute)
             updateTimeInput()
         }, hour, minute, true).show()
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 }

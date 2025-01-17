@@ -1,5 +1,12 @@
 package com.example.adaptanklebrace.utils
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.widget.TextView
+import android.widget.Toast
+import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.data.Exercise
 
 class ExerciseUtil {
@@ -13,6 +20,21 @@ class ExerciseUtil {
 
             // Return the next ID after the largest existing id
             return largestId + 1
+        }
+
+        @SuppressLint("InflateParams")
+        fun showToast(context: Context, layoutInflater: LayoutInflater, message: String) {
+            // Retrieve the custom toast background
+            val inflater = layoutInflater
+            val customView = inflater.inflate(R.layout.custom_toast, null)
+            val customToast = customView.findViewById<TextView>(R.id.toast_text)
+            customToast.text = message
+
+            val toast = Toast(context)
+            toast.duration = Toast.LENGTH_SHORT
+            toast.setGravity(Gravity.TOP, 0, 10)
+            toast.view = customView
+            toast.show()
         }
     }
 }

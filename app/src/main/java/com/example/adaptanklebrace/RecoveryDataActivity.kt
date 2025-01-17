@@ -10,7 +10,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -229,7 +228,7 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
 
     // Show pop-up dialog for adding exercise data row to the table
     private fun showAddExerciseDialog() {
-        val addExerciseDataRowFragment = AddExerciseDataRowFragment(exerciseAdapter)
+        val addExerciseDataRowFragment = AddExerciseDataRowFragment(this, exerciseAdapter)
         addExerciseDataRowFragment.show(supportFragmentManager, "add_exercise_data_row")
     }
 
@@ -260,10 +259,10 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
 
             writer.close()
             // Notify user
-            Toast.makeText(this, "Data exported to $fileName", Toast.LENGTH_SHORT).show()
+            ExerciseUtil.showToast(this, layoutInflater, "Data exported to $fileName")
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(this, "Export failed", Toast.LENGTH_SHORT).show()
+            ExerciseUtil.showToast(this, layoutInflater, "Export failed")
         }
     }
 
@@ -273,7 +272,7 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
         try {
             val file = File(getExternalFilesDir(null), "RecoveryData_$date.csv")
             if (!file.exists()) {
-                Toast.makeText(this, "No file found to import.", Toast.LENGTH_SHORT).show()
+                ExerciseUtil.showToast(this, layoutInflater, "No file found to import.")
                 return
             }
 
@@ -299,10 +298,10 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
             }
 
             exerciseAdapter.setExercises(exercises)
-            Toast.makeText(this, "Data imported successfully.", Toast.LENGTH_SHORT).show()
+            ExerciseUtil.showToast(this, layoutInflater, "Data imported successfully.")
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(this, "Import failed", Toast.LENGTH_SHORT).show()
+            ExerciseUtil.showToast(this, layoutInflater, "Import failed")
         }
     }
 }

@@ -1,11 +1,16 @@
 package com.example.adaptanklebrace.fragments
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Spinner
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.example.adaptanklebrace.R
@@ -17,6 +22,7 @@ import com.example.adaptanklebrace.utils.ExerciseUtil
 
 @RequiresApi(Build.VERSION_CODES.Q)
 class AddExerciseGoalRowFragment(
+    private val context: Context,
     private val exerciseAdapter: RecoveryPlanAdapter
 ) : DialogFragment() {
 
@@ -68,23 +74,23 @@ class AddExerciseGoalRowFragment(
             //todo: add option to add goal for current week or all future weeks or choose weeks
 
             if (exerciseName.isEmpty()) {
-                showToast("Please enter an exercise name.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please enter an exercise name.")
             } else if (exerciseGoals.any { exercise: Exercise ->
                     exercise.name.equals(exerciseName, ignoreCase = true)
                 }) {
-                showToast("This exercise already exists in the table, please edit the goal instead.")
+                ExerciseUtil.showToast(context, layoutInflater, "This exercise already exists in the table, please edit the goal instead.")
             } else if (numSets == null || numSets <= 0) {
-                showToast("Please enter a valid number of sets.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please enter a valid number of sets.")
             } else if (numReps == null || numReps <= 0) {
-                showToast("Please enter a valid number of reps.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please enter a valid number of reps.")
             } else if (holdDuration == null || holdDuration < 0) {
-                showToast("Please enter a valid hold duration.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please enter a valid hold duration.")
             } else if (tensionLevel == null || tensionLevel !in 1..10) {
-                showToast("Please enter a tension level between 1 and 10.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please enter a tension level between 1 and 10.")
             } else if (freqNumber == null || freqNumber <= 0) {
-                showToast("Please enter a valid frequency number.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please enter a valid frequency number.")
             } else if (freqCategory.isNullOrEmpty()) {
-                showToast("Please select a frequency category.")
+                ExerciseUtil.showToast(context, layoutInflater, "Please select a frequency category.")
             } else {
                 // Create the exercise object
                 val exercise = Exercise(
@@ -105,9 +111,5 @@ class AddExerciseGoalRowFragment(
         }
 
         return view
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 }

@@ -7,11 +7,11 @@ import android.os.Looper
 import android.util.Log
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.example.adaptanklebrace.services.BluetoothService
+import com.example.adaptanklebrace.utils.ExerciseUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -53,7 +53,7 @@ class ROMExerciseActivity : AppCompatActivity() {
         val serviceIntent = Intent(this, BluetoothService::class.java)
         ContextCompat.startForegroundService(this, serviceIntent)
         if (BluetoothService.instance == null) {
-            Toast.makeText(this, "Bluetooth service not available", Toast.LENGTH_SHORT).show()
+            ExerciseUtil.showToast(this, layoutInflater, "Bluetooth service not available")
             finish() // Exit activity
             return
         }

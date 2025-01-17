@@ -19,12 +19,13 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import android.widget.Toast
+import android.view.LayoutInflater
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.adaptanklebrace.R
+import com.example.adaptanklebrace.utils.ExerciseUtil
 import java.util.UUID
 
 class BluetoothService : Service() {
@@ -61,7 +62,7 @@ class BluetoothService : Service() {
         bluetoothAdapter = bluetoothManager?.adapter
 
         if (bluetoothAdapter == null) {
-            Toast.makeText(applicationContext, "Bluetooth not supported", Toast.LENGTH_SHORT).show()
+            ExerciseUtil.showToast(applicationContext, LayoutInflater.from(applicationContext), "Bluetooth not supported")
             stopSelf()  // Stop the service if Bluetooth is not supported
         }
     }
@@ -72,7 +73,7 @@ class BluetoothService : Service() {
         bluetoothDevice = pairedDevices?.firstOrNull { it.name == "ADAPT" } // Sometimes named: Arduino
 
         if (bluetoothDevice == null) {
-            Toast.makeText(context, "A.D.A.P.T. device not found", Toast.LENGTH_SHORT).show()
+            ExerciseUtil.showToast(context, LayoutInflater.from(context), "A.D.A.P.T. device not found")
             return false
         }
 

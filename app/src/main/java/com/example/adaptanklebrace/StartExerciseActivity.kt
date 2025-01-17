@@ -86,7 +86,7 @@ class StartExerciseActivity : AppCompatActivity() {
         connectToDeviceButton.setOnClickListener {
             exercise?.let {
                 // todo: update target activity depending on exercise type
-                val connectDeviceFragment = ConnectDeviceFragment(StartSetActivity::class.java, it)
+                val connectDeviceFragment = ConnectDeviceFragment(this, StartSetActivity::class.java, it)
                 connectDeviceFragment.show(supportFragmentManager, "connect_device")
             }
         }

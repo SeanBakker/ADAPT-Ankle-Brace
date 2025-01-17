@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.CheckBox
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.getString
 import androidx.core.widget.addTextChangedListener
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.Exercise.CREATOR.formatter
+import com.example.adaptanklebrace.utils.ExerciseUtil
 import java.time.LocalTime
 
 class RecoveryDataTableRowAdapter(
@@ -137,7 +137,7 @@ class RecoveryDataTableRowAdapter(
 
                         // Restrict tension level between 1-10
                         if (currentTension == null || currentTension !in 1..10) {
-                            Toast.makeText(itemView.context, "Please enter a tension level between 1 and 10.", Toast.LENGTH_SHORT).show()
+                            ExerciseUtil.showToast(context, LayoutInflater.from(context), "Please enter a tension level between 1 and 10.")
                         } else {
                             exercise?.tension = currentTension
                         }
@@ -183,7 +183,7 @@ class RecoveryDataTableRowAdapter(
                                 markAsChanged()
                             } catch (e: Exception) {
                                 // Handle parsing errors
-                                Toast.makeText(context, "Time format invalid, please enter time as 'HH:mm'", Toast.LENGTH_SHORT).show()
+                                ExerciseUtil.showToast(context, LayoutInflater.from(context), "Time format invalid, please enter time as 'HH:mm'")
                                 exercise?.timeCompleted = LocalTime.parse(originalTime, formatter)
                                 setText(originalTime)
                                 markAsChanged()

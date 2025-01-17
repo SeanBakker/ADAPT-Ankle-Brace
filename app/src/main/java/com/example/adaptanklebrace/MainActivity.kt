@@ -16,7 +16,6 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -29,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.services.BluetoothService
+import com.example.adaptanklebrace.utils.ExerciseUtil
 import com.google.android.material.navigation.NavigationView
 import java.util.Calendar
 
@@ -209,7 +209,7 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 bluetoothService.initBluetooth()
             } else {
-                Toast.makeText(this, "Bluetooth permissions are required", Toast.LENGTH_SHORT).show()
+                ExerciseUtil.showToast(this, layoutInflater, "Bluetooth permissions are required")
             }
         }
     }

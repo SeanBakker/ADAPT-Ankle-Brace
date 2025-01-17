@@ -10,7 +10,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.CheckBox
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.getString
 import androidx.core.widget.addTextChangedListener
@@ -19,6 +18,7 @@ import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.SettingsActivity
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.ExerciseType
+import com.example.adaptanklebrace.utils.ExerciseUtil
 
 class RecoveryPlanTableRowAdapter(
     private val exercises: MutableList<Exercise>,
@@ -166,11 +166,7 @@ class RecoveryPlanTableRowAdapter(
 
                         // Restrict tension level between 1-10
                         if (currentTension == null || currentTension !in 1..10) {
-                            Toast.makeText(
-                                itemView.context,
-                                "Please enter a tension level between 1 and 10.",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            ExerciseUtil.showToast(context, LayoutInflater.from(context), "Please enter a tension level between 1 and 10.")
                         } else {
                             exercise?.tension = currentTension
                         }

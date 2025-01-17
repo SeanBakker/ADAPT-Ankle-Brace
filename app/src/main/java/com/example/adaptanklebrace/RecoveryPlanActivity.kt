@@ -13,7 +13,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -313,7 +312,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
     // Show pop-up dialog for adding exercise goal row to the table
     private fun showAddExerciseDialog() {
-        val addExerciseGoalRowFragment = AddExerciseGoalRowFragment(exerciseAdapter)
+        val addExerciseGoalRowFragment = AddExerciseGoalRowFragment(this, exerciseAdapter)
         addExerciseGoalRowFragment.show(supportFragmentManager, "add_exercise_goal_row")
     }
 
@@ -325,7 +324,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
     // Show pop-up dialog for setting exercise goal frequency for a row
     private fun showSetExerciseFrequencyDialog(exercise: Exercise, position: Int) {
-        val addExerciseGoalFreqFragment = AddExerciseGoalFreqFragment(exerciseAdapter, exercise, position)
+        val addExerciseGoalFreqFragment = AddExerciseGoalFreqFragment(this, exerciseAdapter, exercise, position)
         addExerciseGoalFreqFragment.show(supportFragmentManager, "add_exercise_goal_freq")
     }
 
@@ -446,10 +445,10 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
             writer.close()
             // Notify user
-            Toast.makeText(this, "Data exported to $fileName", Toast.LENGTH_SHORT).show()
+            ExerciseUtil.showToast(this, layoutInflater, "Data exported to $fileName")
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(this, "Export failed", Toast.LENGTH_SHORT).show()
+            ExerciseUtil.showToast(this, layoutInflater, "Export failed")
         }
     }
 
@@ -459,7 +458,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         try {
             val file = File(getExternalFilesDir(null), "RecoveryPlan_$date.csv")
             if (!file.exists()) {
-                Toast.makeText(this, "No file found to import.", Toast.LENGTH_SHORT).show()
+                ExerciseUtil.showToast(this, layoutInflater, "No file found to import.")
                 return
             }
 
@@ -484,10 +483,10 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
             }
 
             exerciseAdapter.setExercises(exercises)
-            Toast.makeText(this, "Data imported successfully.", Toast.LENGTH_SHORT).show()
+            ExerciseUtil.showToast(this, layoutInflater, "Data imported successfully.")
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(this, "Import failed", Toast.LENGTH_SHORT).show()
+            ExerciseUtil.showToast(this, layoutInflater, "Import failed")
         }
     }
 }

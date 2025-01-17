@@ -1,6 +1,7 @@
 package com.example.adaptanklebrace.fragments
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -11,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -19,8 +19,10 @@ import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
 import com.example.adaptanklebrace.services.BluetoothService
+import com.example.adaptanklebrace.utils.ExerciseUtil
 
 class ConnectDeviceFragment(
+    private val context: Context,
     private val targetActivity: Class<out Activity>,
     private val exercise: Exercise
 ) : DialogFragment() {
@@ -54,7 +56,7 @@ class ConnectDeviceFragment(
             ContextCompat.startForegroundService(it, serviceIntent)
             val bluetoothService = BluetoothService.instance
             if (bluetoothService == null) {
-                Toast.makeText(it, "Bluetooth service not available", Toast.LENGTH_SHORT).show()
+                ExerciseUtil.showToast(context, layoutInflater, "Bluetooth service not available")
                 return
             }
 
@@ -90,7 +92,7 @@ class ConnectDeviceFragment(
                     ContextCompat.startActivity(it, startSetIntent, null)
                 }
             } else {
-                Toast.makeText(it, "Bluetooth permissions disabled", Toast.LENGTH_SHORT).show()
+                ExerciseUtil.showToast(context, layoutInflater, "Bluetooth permissions disabled")
             }
         }
     }
