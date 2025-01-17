@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
 
         // todo: if there are no goals set for that week, show button to set goals which shows the add goals fragment
+        // todo: if all goals are completed, show congratulations message & set more goals button
 
         // Setup exercise recovery plan table overview
         exerciseRecyclerView = findViewById(R.id.exerciseRecyclerView)

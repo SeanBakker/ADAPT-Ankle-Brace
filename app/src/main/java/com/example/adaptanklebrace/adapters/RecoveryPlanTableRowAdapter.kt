@@ -2,6 +2,7 @@ package com.example.adaptanklebrace.adapters
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,9 +65,6 @@ class RecoveryPlanTableRowAdapter(
         @RequiresApi(Build.VERSION_CODES.Q)
         @SuppressLint("DefaultLocale")
         fun bind(exercise: Exercise?, position: Int, viewType: Int) {
-            //todo: fix bug with data being set incorrectly (overwritten)
-            // - seems to happen when there are enough exercises to scroll
-            // - exists when clicking update percentages button
             val context = itemView.context
             if (viewType == VIEW_TYPE_HEADER) {
                 // Cast to TextView for header
@@ -113,23 +111,57 @@ class RecoveryPlanTableRowAdapter(
                 }
 
                 // Set up listeners for editable fields
-                (sets as? EditText)?.addTextChangedListener {
-                    exercise?.sets = it.toString().toIntOrNull() ?: 0
-                    markAsChanged()
+                (sets as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
+                    val newWatcher = addTextChangedListener {
+                        exercise?.sets = it.toString().toIntOrNull() ?: 0
+                        markAsChanged()
+                    }
+                    tag = newWatcher
                 }
-                (reps as? EditText)?.addTextChangedListener {
-                    exercise?.reps = it.toString().toIntOrNull() ?: 0
-                    markAsChanged()
+                (reps as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
+                    val newWatcher = addTextChangedListener {
+                        exercise?.reps = it.toString().toIntOrNull() ?: 0
+                        markAsChanged()
+                    }
+                    tag = newWatcher
                 }
-                (hold as? EditText)?.addTextChangedListener {
-                    exercise?.hold = it.toString().toIntOrNull() ?: 0
-                    markAsChanged()
+                (hold as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
+                    val newWatcher = addTextChangedListener {
+                        exercise?.hold = it.toString().toIntOrNull() ?: 0
+                        markAsChanged()
+                    }
+                    tag = newWatcher
                 }
                 (tension as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    onFocusChangeListener = null
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
                     var initialTension: Int? = null  // Variable to store the original tension value
 
                     // Add TextChangedListener to handle real-time changes to the text
-                    addTextChangedListener {
+                    val newWatcher = addTextChangedListener {
                         val currentTension = text.toString().toIntOrNull()
 
                         // Restrict tension level between 1-10
@@ -144,6 +176,7 @@ class RecoveryPlanTableRowAdapter(
                         }
                         markAsChanged()
                     }
+                    tag = newWatcher
 
                     // Add OnFocusChangeListener to handle focus loss and reset value if invalid
                     setOnFocusChangeListener { _, hasFocus ->
@@ -166,6 +199,9 @@ class RecoveryPlanTableRowAdapter(
                     }
                 }
                 (frequency as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    onFocusChangeListener = null
+
                     setOnFocusChangeListener { _, hasFocus ->
                         if (hasFocus) {
                             exercise?.let {
@@ -184,9 +220,18 @@ class RecoveryPlanTableRowAdapter(
                         }
                     }
                 }
-                (comments as? EditText)?.addTextChangedListener {
-                    exercise?.comments = it.toString()
-                    markAsChanged()
+                (comments as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
+                    val newWatcher = addTextChangedListener {
+                        exercise?.comments = it.toString()
+                        markAsChanged()
+                    }
+                    tag = newWatcher
                 }
                 (selectRowCheckBox as? CheckBox)?.setOnCheckedChangeListener { _, isChecked ->
                     exercise?.isSelected = isChecked
@@ -236,6 +281,46 @@ class RecoveryPlanTableRowAdapter(
         }
     }
 
+    // Ensure listeners are properly cleared when view is detached from the window
+    override fun onViewRecycled(holder: ExerciseViewHolder) {
+        super.onViewRecycled(holder)
+        (holder.sets as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
+        }
+        (holder.reps as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
+        }
+        (holder.hold as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
+        }
+        (holder.tension as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
+        }
+        (holder.comments as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
+        }
+    }
+
     override fun getItemCount(): Int = exercises.size + 1 // +1 for the header row
 
     // Add exercise row to the list
@@ -276,4 +361,11 @@ class RecoveryPlanTableRowAdapter(
         super.notifyItemChanged(position)
         recoveryPlanCallback.saveCurrentDateExerciseData()
     }
+
+//    fun notifyItemChangedById(id: Long) {
+//        val position = exercises.indexOfFirst { it.id.toLong() == id }
+//        if (position != -1) {
+//            notifyItemChanged(position + 1) // Offset by 1 for the header row
+//        }
+//    }
 }

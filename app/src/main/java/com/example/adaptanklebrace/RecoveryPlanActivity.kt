@@ -75,6 +75,9 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
         // Handle the back button click
         toolbar.setNavigationOnClickListener {
+            // Save current state of the data
+            saveCurrentDateExerciseData()
+
             val week = dateTextView.text.toString()
 
             // Calculate weekly progress when navigating off the page
@@ -380,10 +383,14 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         }
 
         // Update the exercise data
+        val previousPercentage = exerciseGoal.percentageCompleted
         exerciseGoal.percentageCompleted = percentageCompleted
 
-        // Notify the adapter to update the UI for the row
-        adapter.notifyItemChangedAndRefresh(exercises.indexOf(exerciseGoal) + 1) // +1 to account for the header
+        // Notify the adapter to update the UI for the row if it has changed
+        if (previousPercentage != percentageCompleted) {
+            val position = exercises.indexOf(exerciseGoal) + 1 // +1 to account for the header
+            adapter.notifyItemChangedAndRefresh(position)
+        }
 
         return percentageCompleted
     }

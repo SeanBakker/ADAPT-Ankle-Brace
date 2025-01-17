@@ -1,7 +1,7 @@
 package com.example.adaptanklebrace.adapters
 
-import android.annotation.SuppressLint
 import android.os.Build
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -82,23 +82,57 @@ class RecoveryDataTableRowAdapter(
                 (selectRowCheckBox as? CheckBox)?.isChecked = exercise?.isSelected ?: false
 
                 // Set up listeners for editable fields
-                (sets as? EditText)?.addTextChangedListener {
-                    exercise?.sets = it.toString().toIntOrNull() ?: 0
-                    markAsChanged()
+                (sets as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
+                    val newWatcher = addTextChangedListener {
+                        exercise?.sets = it.toString().toIntOrNull() ?: 0
+                        markAsChanged()
+                    }
+                    tag = newWatcher
                 }
-                (reps as? EditText)?.addTextChangedListener {
-                    exercise?.reps = it.toString().toIntOrNull() ?: 0
-                    markAsChanged()
+                (reps as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
+                    val newWatcher = addTextChangedListener {
+                        exercise?.reps = it.toString().toIntOrNull() ?: 0
+                        markAsChanged()
+                    }
+                    tag = newWatcher
                 }
-                (hold as? EditText)?.addTextChangedListener {
-                    exercise?.hold = it.toString().toIntOrNull() ?: 0
-                    markAsChanged()
+                (hold as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
+                    val newWatcher = addTextChangedListener {
+                        exercise?.hold = it.toString().toIntOrNull() ?: 0
+                        markAsChanged()
+                    }
+                    tag = newWatcher
                 }
                 (tension as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    onFocusChangeListener = null
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
                     var initialTension: Int? = null  // Variable to store the original tension value
 
                     // Add TextChangedListener to handle real-time changes to the text
-                    addTextChangedListener {
+                    val newWatcher = addTextChangedListener {
                         val currentTension = text.toString().toIntOrNull()
 
                         // Restrict tension level between 1-10
@@ -109,6 +143,7 @@ class RecoveryDataTableRowAdapter(
                         }
                         markAsChanged()
                     }
+                    tag = newWatcher
 
                     // Add OnFocusChangeListener to handle focus loss and reset value if invalid
                     setOnFocusChangeListener { _, hasFocus ->
@@ -131,6 +166,9 @@ class RecoveryDataTableRowAdapter(
                     }
                 }
                 (time as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    onFocusChangeListener = null
+
                     // Store the original time before editing
                     var originalTime = exercise?.timeCompleted?.format(formatter) ?: "00:00"
 
@@ -153,13 +191,31 @@ class RecoveryDataTableRowAdapter(
                         }
                     }
                 }
-                (difficulty as? EditText)?.addTextChangedListener {
-                    exercise?.difficulty = it.toString().toIntOrNull() ?: 0
-                    markAsChanged()
+                (difficulty as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
+                    val newWatcher = addTextChangedListener {
+                        exercise?.difficulty = it.toString().toIntOrNull() ?: 0
+                        markAsChanged()
+                    }
+                    tag = newWatcher
                 }
-                (comments as? EditText)?.addTextChangedListener {
-                    exercise?.comments = it.toString()
-                    markAsChanged()
+                (comments as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
+                    val newWatcher = addTextChangedListener {
+                        exercise?.comments = it.toString()
+                        markAsChanged()
+                    }
+                    tag = newWatcher
                 }
                 (selectRowCheckBox as? CheckBox)?.setOnCheckedChangeListener { _, isChecked ->
                     exercise?.isSelected = isChecked
@@ -207,6 +263,54 @@ class RecoveryDataTableRowAdapter(
             holder.bind(null, VIEW_TYPE_HEADER) // No exercise data for header
         } else {
             holder.bind(exercises[position - 1], VIEW_TYPE_ITEM) // Bind data for exercise rows
+        }
+    }
+
+    // Ensure listeners are properly cleared when view is detached from the window
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun onViewRecycled(holder: ExerciseViewHolder) {
+        super.onViewRecycled(holder)
+        (holder.sets as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
+        }
+        (holder.reps as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
+        }
+        (holder.hold as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
+        }
+        (holder.tension as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
+        }
+        (holder.difficulty as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
+        }
+        (holder.comments as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
         }
     }
 
