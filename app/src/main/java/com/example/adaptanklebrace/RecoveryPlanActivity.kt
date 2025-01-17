@@ -5,7 +5,6 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.MotionEvent
@@ -13,7 +12,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -35,7 +33,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-@RequiresApi(Build.VERSION_CODES.Q)
 class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.RecoveryPlanCallback,
     DeleteRowFragment.OnDeleteListener, StartExerciseWarningFragment.OnStartExerciseListener {
 
@@ -330,7 +327,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
     // Show pop-up dialog for warning of starting an exercise that has above 100% completion
     private fun showStartExerciseWarningDialog(exercise: Exercise) {
-        val startExerciseWarningFragment = StartExerciseWarningFragment(exercise)
+        val startExerciseWarningFragment = StartExerciseWarningFragment(this, exercise)
         startExerciseWarningFragment.show(supportFragmentManager, "start_exercise_warning")
     }
 

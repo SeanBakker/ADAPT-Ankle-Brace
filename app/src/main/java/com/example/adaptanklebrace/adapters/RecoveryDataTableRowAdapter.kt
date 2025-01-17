@@ -1,6 +1,5 @@
 package com.example.adaptanklebrace.adapters
 
-import android.os.Build
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -8,13 +7,11 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.CheckBox
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.getString
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.data.Exercise
-import com.example.adaptanklebrace.data.Exercise.CREATOR.formatter
 import com.example.adaptanklebrace.utils.ExerciseUtil
 import java.time.LocalTime
 
@@ -43,7 +40,6 @@ class RecoveryDataTableRowAdapter(
     }
 
     // ViewHolder for both header and item rows
-    @RequiresApi(Build.VERSION_CODES.Q)
     inner class ExerciseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         // These will be either EditText or TextView based on row type
         val exerciseName: View = view.findViewById(R.id.exerciseName)
@@ -76,7 +72,7 @@ class RecoveryDataTableRowAdapter(
                 (reps as? EditText)?.setText(exercise?.reps.toString())
                 (hold as? EditText)?.setText(exercise?.hold.toString())
                 (tension as? EditText)?.setText(exercise?.tension.toString())
-                (time as? EditText)?.setText(exercise?.timeCompleted?.let { it.format(formatter) } ?: LocalTime.now().format(formatter))
+                (time as? EditText)?.setText(exercise?.timeCompleted?.let { it.format(ExerciseUtil.timeFormatter) } ?: LocalTime.now().format(ExerciseUtil.timeFormatter))
                 (difficulty as? EditText)?.setText(exercise?.difficulty.toString())
                 (comments as? EditText)?.setText(exercise?.comments)
                 (selectRowCheckBox as? CheckBox)?.isChecked = exercise?.isSelected ?: false
@@ -169,24 +165,14 @@ class RecoveryDataTableRowAdapter(
                     // Remove previous listener to avoid duplicate events
                     onFocusChangeListener = null
 
-                    // Store the original time before editing
-                    var originalTime = exercise?.timeCompleted?.format(formatter) ?: "00:00"
-
-                    // Handle the focus change (when the user clicks away from the EditText)
                     setOnFocusChangeListener { _, hasFocus ->
                         if (hasFocus) {
-                            originalTime = exercise?.timeCompleted?.format(formatter) ?: "00:00"
-                        } else {
-                            try {
-                                // Only parse when focus is lost
-                                exercise?.timeCompleted = LocalTime.parse(text.toString(), formatter)
-                                markAsChanged()
-                            } catch (e: Exception) {
-                                // Handle parsing errors
-                                ExerciseUtil.showToast(context, LayoutInflater.from(context), "Time format invalid, please enter time as 'HH:mm'")
-                                exercise?.timeCompleted = LocalTime.parse(originalTime, formatter)
-                                setText(originalTime)
-                                markAsChanged()
+                            exercise?.let {
+                                ExerciseUtil.showTimePickerDialog(context, this) { selectedTime ->
+                                    exercise.timeCompleted = selectedTime
+                                    markAsChanged()
+                                }
+                                time.clearFocus()
                             }
                         }
                     }
@@ -236,7 +222,6 @@ class RecoveryDataTableRowAdapter(
         const val VIEW_TYPE_ITEM = 1
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         // Inflate either header or item row based on the view type
         val view: View = if (viewType == VIEW_TYPE_HEADER) {
@@ -257,7 +242,6 @@ class RecoveryDataTableRowAdapter(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         if (position == 0) {
             holder.bind(null, VIEW_TYPE_HEADER) // No exercise data for header
@@ -267,7 +251,6 @@ class RecoveryDataTableRowAdapter(
     }
 
     // Ensure listeners are properly cleared when view is detached from the window
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewRecycled(holder: ExerciseViewHolder) {
         super.onViewRecycled(holder)
         (holder.sets as? EditText)?.apply {
@@ -317,7 +300,6 @@ class RecoveryDataTableRowAdapter(
     override fun getItemCount(): Int = exercises.size + 1 // +1 for the header row
 
     // Add exercise row to the list
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun addExerciseRow(exercise: Exercise) {
         exercises.add(exercise)
         notifyItemInserted(exercises.size) // Notify adapter

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <!-- AppBarLayout with Toolbar for back button -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/notificationsAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/notificationsToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:title="@string/notifications"
+            app:titleTextColor="?attr/colorOnPrimary"
+            app:navigationIcon="@drawable/baseline_arrow_back_24"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/notificationsAppBar"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Weekly Goal Reminder Section -->
+        <TextView
+            android:id="@+id/weeklyGoalTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="Weekly Goal Reminder"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnPrimary"
+            android:paddingBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/weeklyNotificationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/weeklyGoalTitle"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/weeklyNotificationPermissionCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/weeklyDateInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Select Day"
+                android:focusable="false"
+                android:drawableEnd="@drawable/baseline_edit_calendar_24"
+                android:padding="8dp"
+                android:background="@drawable/edit_text_background" />
+
+            <Space
+                android:layout_width="16dp"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/weeklyTimeInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Select Time"
+                android:focusable="false"
+                android:drawableEnd="@drawable/baseline_access_time_24"
+                android:padding="8dp"
+                android:background="@drawable/edit_text_background" />
+        </LinearLayout>
+
+        <!-- Daily Workout Reminder Section -->
+        <TextView
+            android:id="@+id/dailyWorkoutTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/weeklyNotificationLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="Daily Workout Reminder"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnPrimary"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/dailyNotificationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/dailyWorkoutTitle"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/dailyNotificationPermissionCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/dailyTimeInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Select Time"
+                android:focusable="false"
+                android:drawableEnd="@drawable/baseline_access_time_24"
+                android:padding="8dp"
+                android:background="@drawable/edit_text_background" />
+
+            <Space
+                android:layout_width="16dp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="false"
+                android:padding="8dp" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

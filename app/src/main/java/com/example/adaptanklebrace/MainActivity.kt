@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.view.Menu
@@ -16,7 +15,6 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -29,6 +27,7 @@ import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.services.BluetoothService
 import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.SharedPreferencesUtil
 import com.google.android.material.navigation.NavigationView
 import java.util.Calendar
 
@@ -45,7 +44,6 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
     private var exercises: MutableList<Exercise> = mutableListOf()
 
     private var settingsActivity = SettingsActivity()
-    @RequiresApi(Build.VERSION_CODES.Q)
     private var recoveryPlanActivity = RecoveryPlanActivity()
     private lateinit var bluetoothService: BluetoothService
     private var isBluetoothServiceBound = false
@@ -61,14 +59,13 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Initialize the app theme
         // Check saved preference for night mode
-        sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE)
-        val isNightMode = settingsActivity.getPreference(sharedPreferences, "nightMode", false)
+        sharedPreferences = getSharedPreferences(SettingsActivity.SETTINGS_PREFERENCE, MODE_PRIVATE)
+        val isNightMode = SharedPreferencesUtil.getPreference(sharedPreferences, SettingsActivity.NIGHT_MODE_KEY, false)
         settingsActivity.changeAppTheme(isNightMode)
         setContentView(R.layout.activity_main)
 
@@ -124,7 +121,6 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         editGoalsBtn.setOnClickListener { startActivity(Intent(this, RecoveryPlanActivity::class.java)) }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onResume() {
         super.onResume()
         val currentWeek = recoveryPlanActivity.calculateWeekRange(Calendar.getInstance())
@@ -168,13 +164,11 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         super.onDestroy()
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onClickStartExerciseWithoutWarning(exercise: Exercise) {
         recoveryPlanActivity.onStartExerciseActivity(this, exercise)
     }
 
     @SuppressLint("DefaultLocale", "SetTextI18n")
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun calculateWeeklyProgress(currentWeek: String) {
         val exerciseGoalsForCurrentWeek = exerciseAdapter.getExercises()
 
@@ -190,10 +184,9 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
     /*** BLUETOOTH INITIALIZATION  ***/
     private val BLUETOOTH_PERMISSION_REQUEST_CODE = 2
 
-    @RequiresApi(Build.VERSION_CODES.S)
     fun checkAndRequestBluetoothPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||
-            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED)) {
+            (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED)) {
             ActivityCompat.requestPermissions(this,
                 arrayOf(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN),
                 BLUETOOTH_PERMISSION_REQUEST_CODE)
@@ -202,7 +195,6 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         return true
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == BLUETOOTH_PERMISSION_REQUEST_CODE) {

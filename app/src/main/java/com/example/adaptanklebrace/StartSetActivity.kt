@@ -1,9 +1,7 @@
 package com.example.adaptanklebrace
 
-import android.os.Build
 import android.os.Bundle
 import android.widget.Button
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,7 +28,6 @@ class StartSetActivity : AppCompatActivity() {
     private lateinit var setsAdapter: ExerciseSetsTableRowAdapter
     private var sets: MutableList<Pair<Int, Int>> = mutableListOf()
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start_set)

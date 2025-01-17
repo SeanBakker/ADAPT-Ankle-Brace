@@ -1,13 +1,11 @@
 package com.example.adaptanklebrace.adapters
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.SettingsActivity
@@ -52,7 +50,6 @@ class RecoveryPlanOverviewTableRowAdapter(
         private val startExerciseButton: View = view.findViewById(R.id.startExerciseBtn)
 
         // Bind method will update based on the view type
-        @RequiresApi(Build.VERSION_CODES.Q)
         @SuppressLint("DefaultLocale")
         fun bind(exercise: Exercise?, viewType: Int) {
             val context = itemView.context
@@ -130,7 +127,6 @@ class RecoveryPlanOverviewTableRowAdapter(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         if (position == 0) {
             holder.bind(null, VIEW_TYPE_HEADER) // No exercise data for header
@@ -157,7 +153,6 @@ class RecoveryPlanOverviewTableRowAdapter(
     override fun getItemCount(): Int = exercises.size + 1 // +1 for the header row
 
     // Add exercise row to the list
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun addExerciseRow(exercise: Exercise) {
         exercises.add(exercise)
         notifyItemInserted(exercises.size) // Notify adapter

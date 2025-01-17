@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Add Bluetooth permissions -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -18,6 +17,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <!-- Add notifications permissions -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:allowBackup="true"
         android:enableOnBackInvokedCallback="true"
@@ -26,8 +28,7 @@
         android:icon="@drawable/baseline_healing_24"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AdaptAnkleBrace"
-        tools:targetApi="tiramisu">
+        android:theme="@style/Theme.AdaptAnkleBrace">
 
         <!-- Bluetooth Service -->
         <service
@@ -35,6 +36,9 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
+
+        <!-- Notification Receiver -->
+        <receiver android:name=".NotificationReceiver" />
 
         <!-- Main Activity -->
         <activity
@@ -58,5 +62,4 @@
         <activity android:name=".StartExerciseActivity" />
         <activity android:name=".StartSetActivity" />
     </application>
-
 </manifest>

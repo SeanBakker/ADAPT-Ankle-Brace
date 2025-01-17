@@ -1,12 +1,9 @@
 package com.example.adaptanklebrace.data
 
-import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.annotation.RequiresApi
 import java.io.Serializable
 
-@RequiresApi(Build.VERSION_CODES.Q)
 data class ExerciseInfo(
     val name: String = "",
     var description: String = "",

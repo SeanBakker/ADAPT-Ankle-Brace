@@ -1,14 +1,11 @@
 package com.example.adaptanklebrace.data
 
-import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.annotation.RequiresApi
+import com.example.adaptanklebrace.utils.ExerciseUtil
 import java.io.Serializable
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.Q)
 data class Exercise(
     val id: Int, // Unique identifier for tables
     val name: String = "",
@@ -31,7 +28,7 @@ data class Exercise(
         parcel.readInt(),
         parcel.readInt(),
         parcel.readInt(),
-        parcel.readString().let { LocalTime.parse(it, formatter) },
+        parcel.readString().let { LocalTime.parse(it, ExerciseUtil.timeFormatter) },
         parcel.readString() ?: "",
         parcel.readInt(),
         parcel.readString() ?: "",
@@ -46,7 +43,7 @@ data class Exercise(
         parcel.writeInt(reps)
         parcel.writeInt(hold)
         parcel.writeInt(tension)
-        parcel.writeString(timeCompleted.format(formatter))
+        parcel.writeString(timeCompleted.format(ExerciseUtil.timeFormatter))
         parcel.writeString(frequency)
         parcel.writeInt(difficulty)
         parcel.writeString(comments)
@@ -59,9 +56,6 @@ data class Exercise(
     }
 
     companion object CREATOR : Parcelable.Creator<Exercise> {
-        // Define a formatter for LocalTime
-        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-
         override fun createFromParcel(parcel: Parcel): Exercise {
             return Exercise(parcel)
         }

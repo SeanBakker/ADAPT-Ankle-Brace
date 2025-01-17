@@ -1,7 +1,6 @@
 package com.example.adaptanklebrace.adapters
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.CheckBox
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.getString
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
@@ -62,7 +60,6 @@ class RecoveryPlanTableRowAdapter(
         private val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
 
         // Bind method will update based on the view type
-        @RequiresApi(Build.VERSION_CODES.Q)
         @SuppressLint("DefaultLocale")
         fun bind(exercise: Exercise?, position: Int, viewType: Int) {
             val context = itemView.context
@@ -268,7 +265,6 @@ class RecoveryPlanTableRowAdapter(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         if (position == 0) {
             holder.bind(null, 0, VIEW_TYPE_HEADER) // No exercise data for header
@@ -320,7 +316,6 @@ class RecoveryPlanTableRowAdapter(
     override fun getItemCount(): Int = exercises.size + 1 // +1 for the header row
 
     // Add exercise row to the list
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun addExerciseRow(exercise: Exercise) {
         exercises.add(exercise)
         notifyItemInserted(exercises.size) // Notify adapter

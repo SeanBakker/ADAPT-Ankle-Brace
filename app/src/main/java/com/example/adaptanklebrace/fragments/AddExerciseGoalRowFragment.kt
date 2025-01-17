@@ -1,7 +1,6 @@
 package com.example.adaptanklebrace.fragments
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.RecoveryPlanActivity
@@ -20,7 +18,6 @@ import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.utils.ExerciseUtil
 
-@RequiresApi(Build.VERSION_CODES.Q)
 class AddExerciseGoalRowFragment(
     private val context: Context,
     private val exerciseAdapter: RecoveryPlanAdapter
@@ -45,7 +42,7 @@ class AddExerciseGoalRowFragment(
 
         // Initialize exercise name dropdown
         val exerciseNames = ExerciseType.getAllExerciseNames()
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, exerciseNames)
+        val adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, exerciseNames)
         exerciseNameDropdown.setAdapter(adapter)
 
         // Show all suggestions when the field gains focus

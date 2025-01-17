@@ -3,14 +3,12 @@ package com.example.adaptanklebrace
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.res.ColorStateList
-import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -19,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.adapters.RecoveryDataTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
-import com.example.adaptanklebrace.data.Exercise.CREATOR.formatter
 import com.example.adaptanklebrace.fragments.AddExerciseDataRowFragment
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import com.example.adaptanklebrace.utils.ExerciseDataStore
@@ -29,7 +26,6 @@ import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.util.*
 
-@RequiresApi(Build.VERSION_CODES.Q)
 class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.RecoveryDataCallback,
     DeleteRowFragment.OnDeleteListener {
 
@@ -289,7 +285,7 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
                         reps = columns[2].toInt(),
                         hold = columns[3].toInt(),
                         tension = columns[4].toInt(),
-                        timeCompleted = LocalTime.parse(columns[5], formatter),
+                        timeCompleted = LocalTime.parse(columns[5], ExerciseUtil.timeFormatter),
                         difficulty = columns[6].toInt(),
                         comments = columns[7],
                         isSelected = columns[8].toBoolean()

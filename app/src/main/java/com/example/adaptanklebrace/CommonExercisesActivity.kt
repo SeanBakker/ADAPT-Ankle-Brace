@@ -1,10 +1,8 @@
 package com.example.adaptanklebrace
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.viewpager2.widget.ViewPager2
@@ -17,7 +15,6 @@ class CommonExercisesActivity : AppCompatActivity() {
     private lateinit var quickLinksLayout: LinearLayout
     private lateinit var exerciseInfoAdapter: ExerciseInfoAdapter
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_common_exercises)

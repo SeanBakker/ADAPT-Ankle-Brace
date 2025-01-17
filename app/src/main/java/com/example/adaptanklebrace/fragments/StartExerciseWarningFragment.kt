@@ -11,6 +11,7 @@ import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.data.Exercise
 
 class StartExerciseWarningFragment(
+    private val context: Context,
     private val exercise: Exercise
 ) : DialogFragment() {
 
@@ -37,7 +38,7 @@ class StartExerciseWarningFragment(
 
     private fun startExercise() {
         // Call back to the activity through the interface
-        listener?.onStartExerciseActivity(requireContext(), exercise)
+        listener?.onStartExerciseActivity(context, exercise)
         dismiss() // Close the dialog
     }
 

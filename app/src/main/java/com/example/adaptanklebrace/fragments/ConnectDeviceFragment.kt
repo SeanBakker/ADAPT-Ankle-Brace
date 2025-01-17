@@ -3,7 +3,6 @@ package com.example.adaptanklebrace.fragments
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
@@ -12,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.example.adaptanklebrace.R
@@ -27,7 +25,6 @@ class ConnectDeviceFragment(
     private val exercise: Exercise
 ) : DialogFragment() {
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,7 +42,6 @@ class ConnectDeviceFragment(
         return view
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun connectToDevice() {
         // Get reference to the current activity
         val currentActivity = activity

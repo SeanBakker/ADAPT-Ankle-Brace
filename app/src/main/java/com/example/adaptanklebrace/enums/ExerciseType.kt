@@ -1,7 +1,5 @@
 package com.example.adaptanklebrace.enums
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
 
@@ -104,7 +102,6 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
         }
 
         // Convert the enum values to a list of Exercise objects
-        @RequiresApi(Build.VERSION_CODES.Q)
         fun getAllExercises(): List<ExerciseInfo> = values()
             .filter { it.exerciseName != ERROR.exerciseName }
             .map {
@@ -116,7 +113,6 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
                 )
             }
 
-        @RequiresApi(Build.VERSION_CODES.Q)
         fun getExerciseInfoByName(name: String): ExerciseInfo? = values()
             .firstOrNull { it.exerciseName == name }
             ?.let {
@@ -128,7 +124,6 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
                 )
             }
 
-        @RequiresApi(Build.VERSION_CODES.Q)
         fun getErrorExerciseInfo(exerciseName: String): ExerciseInfo {
             return ExerciseInfo(
                 name = exerciseName,
@@ -138,7 +133,6 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
             )
         }
 
-        @RequiresApi(Build.VERSION_CODES.Q)
         fun getErrorExercise(): Exercise {
             return Exercise(
                 id = -1,

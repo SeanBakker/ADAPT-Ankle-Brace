@@ -84,54 +84,6 @@
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 
-            <!-- Daily Goal Reminder Setting -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="40dp">
-
-                <CheckBox
-                    android:id="@+id/weeklyGoalReminderCheckbox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:id="@+id/weeklyGoalReminderText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/weeklyGoalReminder"
-                    android:textSize="16sp"
-                    android:textColor="?attr/colorOnBackground"
-                    android:textStyle="bold"
-                    android:layout_marginStart="8dp" />
-            </LinearLayout>
-
-            <!-- Workout Schedule Reminder Setting -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="40dp">
-
-                <CheckBox
-                    android:id="@+id/dailyExerciseReminderCheckbox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:id="@+id/dailyExerciseReminderText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/dailyExerciseReminder"
-                    android:textSize="16sp"
-                    android:textColor="?attr/colorOnBackground"
-                    android:textStyle="bold"
-                    android:layout_marginStart="8dp" />
-            </LinearLayout>
-
             <!-- Night Mode Setting -->
             <LinearLayout
                 android:layout_width="match_parent"

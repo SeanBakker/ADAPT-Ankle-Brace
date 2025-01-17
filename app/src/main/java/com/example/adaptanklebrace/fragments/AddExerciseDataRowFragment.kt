@@ -1,35 +1,27 @@
 package com.example.adaptanklebrace.fragments
 
-import android.app.TimePickerDialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.RecoveryDataActivity
 import com.example.adaptanklebrace.adapters.RecoveryPlanAdapter
 import com.example.adaptanklebrace.data.Exercise
-import com.example.adaptanklebrace.data.Exercise.CREATOR.formatter
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.utils.ExerciseUtil
-import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.util.Calendar
-import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.Q)
 class AddExerciseDataRowFragment(
     private val context: Context,
     private val exerciseAdapter: RecoveryPlanAdapter
 ) : DialogFragment() {
 
     private lateinit var timeInput: TextView
-    private val calendar: Calendar = Calendar.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +42,7 @@ class AddExerciseDataRowFragment(
 
         // Initialize exercise name dropdown
         val exerciseNames = ExerciseType.getAllExerciseNames()
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, exerciseNames)
+        val adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, exerciseNames)
         exerciseNameDropdown.setAdapter(adapter)
 
         // Show all suggestions when the field gains focus
@@ -61,11 +53,11 @@ class AddExerciseDataRowFragment(
         }
 
         // Set default time to the current time
-        updateTimeInput()
+        ExerciseUtil.updateTimeInput(timeInput, Calendar.getInstance())
 
         // Handle time input click
         timeInput.setOnClickListener {
-            showTimePickerDialog()
+            ExerciseUtil.showTimePickerDialog(context, timeInput)
         }
 
         // Handle button click
@@ -104,7 +96,7 @@ class AddExerciseDataRowFragment(
                     reps = numReps,
                     hold = holdDuration,
                     tension = tensionLevel,
-                    timeCompleted = LocalTime.parse(timeOfCompletion, formatter),
+                    timeCompleted = LocalTime.parse(timeOfCompletion, ExerciseUtil.timeFormatter),
                     difficulty = difficultyLevel ?: 0,
                     comments = comments
                 )
@@ -117,21 +109,5 @@ class AddExerciseDataRowFragment(
         }
 
         return view
-    }
-
-    private fun updateTimeInput() {
-        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-        timeInput.text = timeFormat.format(calendar.time)
-    }
-
-    private fun showTimePickerDialog() {
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
-
-        TimePickerDialog(requireContext(), { _, selectedHour, selectedMinute ->
-            calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
-            calendar.set(Calendar.MINUTE, selectedMinute)
-            updateTimeInput()
-        }, hour, minute, true).show()
     }
 }

@@ -1,10 +1,8 @@
 package com.example.adaptanklebrace
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.viewpager2.widget.ViewPager2
@@ -23,7 +21,6 @@ class StartExerciseActivity : AppCompatActivity() {
     private lateinit var exerciseDataAdapter: ExerciseDataAdapter
     private lateinit var connectToDeviceButton: Button
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start_exercise)
