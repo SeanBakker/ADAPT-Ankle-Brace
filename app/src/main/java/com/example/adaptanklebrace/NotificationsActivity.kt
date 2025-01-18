@@ -10,6 +10,8 @@ import android.widget.CheckBox
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewTableRowAdapter
+import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.CalendarDay
 import com.example.adaptanklebrace.utils.Converters
 import com.example.adaptanklebrace.utils.ExerciseUtil
@@ -25,6 +27,15 @@ class NotificationsActivity : AppCompatActivity() {
     private lateinit var dailyNotificationCheckbox: CheckBox
 
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferencesSettings: SharedPreferences
+    private var recoveryPlanActivity = RecoveryPlanActivity()
+    private var mainActivity = MainActivity()
+
+    private lateinit var exerciseAdapter: RecoveryPlanOverviewTableRowAdapter
+    private var exercises: MutableList<Exercise> = mutableListOf()
+
+    private val WEEKLY_NOTIFICATION_REQUEST_CODE = 100
+    private val DAILY_NOTIFICATION_REQUEST_CODE = 200
 
     companion object {
         const val NOTIFICATIONS_PREFERENCE = "AppNotifications"
@@ -34,6 +45,7 @@ class NotificationsActivity : AppCompatActivity() {
         const val WEEKLY_TIME_KEY= "weeklyTimeInput"
         const val DAILY_TIME_KEY= "dailyTimeInput"
 
+        var notificationsEnabled: Boolean = false
         var weeklyNotificationEnabled: Boolean = false
         var dailyNotificationEnabled: Boolean = false
     }
@@ -74,10 +86,20 @@ class NotificationsActivity : AppCompatActivity() {
         weeklyTimeInput.setText(SharedPreferencesUtil.getPreference(sharedPreferences, WEEKLY_TIME_KEY, ""))
         dailyTimeInput.setText(SharedPreferencesUtil.getPreference(sharedPreferences, DAILY_TIME_KEY, ""))
 
+        // Setup the adapter
+        exerciseAdapter = RecoveryPlanOverviewTableRowAdapter(exercises, mainActivity)
+
+        // Load data for current week on activity start
+        val currentWeek = recoveryPlanActivity.calculateWeekRange(Calendar.getInstance())
+        recoveryPlanActivity.loadExerciseWeekData(this, exerciseAdapter, currentWeek)
+
         // Set click listeners for the inputs
         weeklyDateInput.setOnClickListener {
-            ExerciseUtil.showDayPickerDialog(this, weeklyDateInput) { selectedDate ->
-                SharedPreferencesUtil.savePreference(sharedPreferences, WEEKLY_DATE_KEY, selectedDate)
+            ExerciseUtil.showDayPickerDialog(this, weeklyDateInput) { selectedDay ->
+                SharedPreferencesUtil.savePreference(sharedPreferences, WEEKLY_DATE_KEY, selectedDay)
+                if (weeklyNotificationCheckbox.isChecked && !completedWeeklyProgress()) {
+                    scheduleWeeklyNotification()
+                }
             }
         }
         weeklyTimeInput.setOnClickListener {
@@ -85,6 +107,9 @@ class NotificationsActivity : AppCompatActivity() {
                 // Save the selected time to app storage
                 val time = Converters.convertLocalTimeToString(selectedTime)
                 SharedPreferencesUtil.savePreference(sharedPreferences, WEEKLY_TIME_KEY, time)
+                if (weeklyNotificationCheckbox.isChecked && !completedWeeklyProgress()) {
+                    scheduleWeeklyNotification()
+                }
             }
         }
         dailyTimeInput.setOnClickListener {
@@ -92,37 +117,100 @@ class NotificationsActivity : AppCompatActivity() {
                 // Save the selected time to app storage
                 val time = Converters.convertLocalTimeToString(selectedTime)
                 SharedPreferencesUtil.savePreference(sharedPreferences, DAILY_TIME_KEY, time)
+                if (dailyNotificationCheckbox.isChecked) {
+                    scheduleDailyNotification()
+                }
             }
         }
 
         weeklyNotificationCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            if (weeklyDateInput.text.toString() != "") {
-                if (weeklyTimeInput.text.toString() != "") {
-                    SharedPreferencesUtil.savePreference(sharedPreferences, WEEKLY_NOTIFICATION_KEY, isChecked)
-                    weeklyNotificationEnabled = isChecked
-                    if (isChecked && SettingsActivity.notificationsEnabled) { scheduleWeeklyNotification() }
+            if (isChecked) {
+                if (weeklyDateInput.text.toString().isNotEmpty()) {
+                    if (weeklyTimeInput.text.toString().isNotEmpty()) {
+                        SharedPreferencesUtil.savePreference(
+                            sharedPreferences,
+                            WEEKLY_NOTIFICATION_KEY,
+                            true
+                        )
+                        if (notificationsEnabled) {
+                            weeklyNotificationEnabled = true
+                            if (!completedWeeklyProgress()) {
+                                scheduleWeeklyNotification()
+                            }
+                        } else {
+                            ExerciseUtil.showToast(
+                                this,
+                                layoutInflater,
+                                "Please enable notification permissions in the settings."
+                            )
+                            weeklyNotificationCheckbox.isChecked = false
+                        }
+                    } else {
+                        ExerciseUtil.showToast(
+                            this,
+                            layoutInflater,
+                            "Please select a time before activating the notification."
+                        )
+                        weeklyNotificationCheckbox.isChecked = false
+                    }
                 } else {
-                    ExerciseUtil.showToast(this, layoutInflater, "Please select a time before activating the notification.")
+                    ExerciseUtil.showToast(
+                        this,
+                        layoutInflater,
+                        "Please select a day before activating the notification."
+                    )
                     weeklyNotificationCheckbox.isChecked = false
                 }
             } else {
-                ExerciseUtil.showToast(this, layoutInflater, "Please select a day before activating the notification.")
-                weeklyNotificationCheckbox.isChecked = false
+                // Cancel notification when checkbox is no longer checked
+                cancelWeeklyNotification()
             }
         }
         dailyNotificationCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            if (dailyTimeInput.text.toString() != "") {
-                SharedPreferencesUtil.savePreference(sharedPreferences, DAILY_NOTIFICATION_KEY, isChecked)
-                dailyNotificationEnabled = isChecked
-                if (isChecked && SettingsActivity.notificationsEnabled) { scheduleDailyNotification() }
+            if (isChecked) {
+                if (dailyTimeInput.text.toString().isNotEmpty()) {
+                    SharedPreferencesUtil.savePreference(
+                        sharedPreferences,
+                        DAILY_NOTIFICATION_KEY,
+                        true
+                    )
+                    if (notificationsEnabled) {
+                        dailyNotificationEnabled = true
+                        scheduleDailyNotification()
+                    } else {
+                        ExerciseUtil.showToast(
+                            this,
+                            layoutInflater,
+                            "Please enable notification permissions in the settings."
+                        )
+                        dailyNotificationCheckbox.isChecked = false
+                    }
+                } else {
+                    ExerciseUtil.showToast(
+                        this,
+                        layoutInflater,
+                        "Please select a time before activating the notification."
+                    )
+                    dailyNotificationCheckbox.isChecked = false
+                }
             } else {
-                ExerciseUtil.showToast(this, layoutInflater, "Please select a time before activating the notification.")
-                dailyNotificationCheckbox.isChecked = false
+                // Cancel notification when checkbox is no longer checked
+                cancelDailyNotification()
             }
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        // Get permissions from SettingsActivity
+        sharedPreferencesSettings = getSharedPreferences(SettingsActivity.SETTINGS_PREFERENCE, MODE_PRIVATE)
+        notificationsEnabled = SharedPreferencesUtil.getPreference(sharedPreferencesSettings, SettingsActivity.NOTIFICATIONS_PERMISSION_KEY, false)
+    }
+
     private fun scheduleWeeklyNotification() {
+        cancelWeeklyNotification()
+
         val day = weeklyDateInput.text.toString()
         val time = weeklyTimeInput.text.toString()
         val dayOfWeek = CalendarDay.convertDayToCalendar(day)
@@ -140,7 +228,7 @@ class NotificationsActivity : AppCompatActivity() {
             putExtra("title", "Weekly Reminder")
             putExtra("message", "It's time to complete your weekly exercise goals!")
         }
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getBroadcast(this, WEEKLY_NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
@@ -151,6 +239,8 @@ class NotificationsActivity : AppCompatActivity() {
     }
 
     private fun scheduleDailyNotification() {
+        cancelDailyNotification()
+
         val time = dailyTimeInput.text.toString()
         val timeParts = time.split(":").map { it.toInt() }
 
@@ -165,7 +255,7 @@ class NotificationsActivity : AppCompatActivity() {
             putExtra("title", "Daily Reminder")
             putExtra("message", "Don't forget to complete your exercises today!")
         }
-        val pendingIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getBroadcast(this, DAILY_NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
@@ -173,5 +263,34 @@ class NotificationsActivity : AppCompatActivity() {
             AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
+    }
+
+    private fun cancelWeeklyNotification() {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, NotificationReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, WEEKLY_NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE)
+
+        if (pendingIntent != null) {
+            alarmManager.cancel(pendingIntent)
+            pendingIntent.cancel()
+        }
+    }
+
+    private fun cancelDailyNotification() {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, NotificationReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, DAILY_NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE)
+
+        if (pendingIntent != null) {
+            alarmManager.cancel(pendingIntent)
+            pendingIntent.cancel()
+        }
+    }
+
+    private fun completedWeeklyProgress(): Boolean {
+        val currentWeek = recoveryPlanActivity.calculateWeekRange(Calendar.getInstance())
+        val exerciseGoalsForCurrentWeek = exerciseAdapter.getExercises()
+        val weeklyProgress = recoveryPlanActivity.calculateWeeklyProgress(this, exerciseAdapter, exerciseGoalsForCurrentWeek, currentWeek)
+        return (weeklyProgress >= 100.0)
     }
 }

@@ -66,6 +66,10 @@ class SettingsActivity : AppCompatActivity() {
         notificationsCheckbox.isChecked = SharedPreferencesUtil.getPreference(sharedPreferences, NOTIFICATIONS_PERMISSION_KEY, false)
         nightModeCheckbox.isChecked = SharedPreferencesUtil.getPreference(sharedPreferences, NIGHT_MODE_KEY, false)
 
+        bluetoothEnabled = bluetoothPermissionCheckbox.isChecked
+        notificationsEnabled = notificationsCheckbox.isChecked
+        nightMode = nightModeCheckbox.isChecked
+
         // Set listeners for checkboxes to save changes
         bluetoothPermissionCheckbox.setOnCheckedChangeListener { _, isChecked ->
             SharedPreferencesUtil.savePreference(sharedPreferences, BLUETOOTH_PERMISSION_KEY, isChecked)
