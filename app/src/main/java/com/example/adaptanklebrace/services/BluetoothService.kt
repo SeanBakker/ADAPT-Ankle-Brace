@@ -221,15 +221,13 @@ class BluetoothService : Service() {
     @SuppressLint("ForegroundServiceType")
     private fun startForegroundServiceWithNotification() {
         val notificationChannelId = "BluetoothServiceChannel"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                notificationChannelId,
-                "Bluetooth Service",
-                NotificationManager.IMPORTANCE_LOW
-            )
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
-        }
+        val channel = NotificationChannel(
+            notificationChannelId,
+            "Bluetooth Service",
+            NotificationManager.IMPORTANCE_LOW
+        )
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(channel)
 
         val notification = NotificationCompat.Builder(this, notificationChannelId)
             .setContentTitle("Bluetooth Service")
