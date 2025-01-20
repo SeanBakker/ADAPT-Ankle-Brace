@@ -182,7 +182,7 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
     }
 
     /*** BLUETOOTH INITIALIZATION  ***/
-    private val BLUETOOTH_PERMISSION_REQUEST_CODE = 2
+    private val BLUETOOTH_PERMISSION_REQUEST_CODE = 1002
 
     fun checkAndRequestBluetoothPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||

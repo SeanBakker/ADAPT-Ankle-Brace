@@ -22,6 +22,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
+    private val BLUETOOTH_PERMISSION_REQUEST_CODE = 1002
 
     companion object {
         const val SETTINGS_PREFERENCE = "AppSettings"
@@ -72,8 +73,27 @@ class SettingsActivity : AppCompatActivity() {
 
         // Set listeners for checkboxes to save changes
         bluetoothPermissionCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            SharedPreferencesUtil.savePreference(sharedPreferences, BLUETOOTH_PERMISSION_KEY, isChecked)
-            bluetoothEnabled = isChecked
+            if (isChecked) {
+                // Check if the app already has bluetooth permission
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    // Permission already granted
+                    SharedPreferencesUtil.savePreference(sharedPreferences, BLUETOOTH_PERMISSION_KEY, true)
+                    bluetoothEnabled = true
+                } else {
+                    // Request permission
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN),
+                        BLUETOOTH_PERMISSION_REQUEST_CODE
+                    )
+                }
+            } else {
+                // Handle the case when bluetooth is disabled
+                SharedPreferencesUtil.savePreference(sharedPreferences, BLUETOOTH_PERMISSION_KEY, false)
+                bluetoothEnabled = false
+            }
         }
 
         notificationsCheckbox.setOnCheckedChangeListener { _, isChecked ->
@@ -115,21 +135,33 @@ class SettingsActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted
-                SharedPreferencesUtil.savePreference(sharedPreferences, NOTIFICATIONS_PERMISSION_KEY, true)
-                notificationsEnabled = true
-                ExerciseUtil.showToast(this, layoutInflater, "Notifications enabled")
-            } else {
-                // Permission denied
-                SharedPreferencesUtil.savePreference(sharedPreferences, NOTIFICATIONS_PERMISSION_KEY, false)
-                notificationsEnabled = false
-                ExerciseUtil.showToast(this, layoutInflater, "Notification permission denied")
+        when (requestCode) {
+            NOTIFICATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Notification permission granted
+                    SharedPreferencesUtil.savePreference(sharedPreferences, NOTIFICATIONS_PERMISSION_KEY, true)
+                    notificationsEnabled = true
+                    ExerciseUtil.showToast(this, layoutInflater, "Notification permission enabled")
+                } else {
+                    // Notification permission denied
+                    SharedPreferencesUtil.savePreference(sharedPreferences, NOTIFICATIONS_PERMISSION_KEY, false)
+                    notificationsEnabled = false
+                    ExerciseUtil.showToast(this, layoutInflater, "Notification permission denied")
+                }
+            }
+
+            BLUETOOTH_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Bluetooth permission granted
+                    SharedPreferencesUtil.savePreference(sharedPreferences, BLUETOOTH_PERMISSION_KEY, true)
+                    ExerciseUtil.showToast(this, layoutInflater, "Bluetooth permission granted")
+                } else {
+                    // Bluetooth permission denied
+                    SharedPreferencesUtil.savePreference(sharedPreferences, BLUETOOTH_PERMISSION_KEY, false)
+                    ExerciseUtil.showToast(this, layoutInflater, "Bluetooth permission denied")
+                }
             }
         }
-
-        // todo: add request for bluetooth permissions
     }
 
     // Change the app theme between Light/Night modes
