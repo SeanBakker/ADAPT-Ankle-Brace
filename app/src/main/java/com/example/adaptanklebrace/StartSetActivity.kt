@@ -2,6 +2,8 @@ package com.example.adaptanklebrace
 
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +26,10 @@ class StartSetActivity : AppCompatActivity() {
     private lateinit var endSetButton: Button
     private lateinit var setsRecyclerView: RecyclerView
     private lateinit var finishButton: Button
+    private lateinit var setProgressBar: ProgressBar
+    private lateinit var setProgressLiveDataText: TextView
+    private lateinit var setProgressMinText: TextView
+    private lateinit var setProgressMaxText: TextView
 
     private lateinit var setsAdapter: ExerciseSetsTableRowAdapter
     private var sets: MutableList<Pair<Int, Int>> = mutableListOf()
@@ -90,10 +96,21 @@ class StartSetActivity : AppCompatActivity() {
         setsRecyclerView.layoutManager = LinearLayoutManager(this)
         setsRecyclerView.adapter = setsAdapter
 
+        // Initialize the progress bar and text views
+        setProgressBar = findViewById(R.id.setProgressBar)
+        setProgressLiveDataText = findViewById(R.id.setProgressLiveDataText)
+        setProgressMinText = findViewById(R.id.setProgressMinText)
+        setProgressMaxText = findViewById(R.id.setProgressMaxText)
+
         // todo: implement start/end set buttons
         // todo: once sets are complete, data must be saved in the Recovery Data table on clicking finish button
-        // todo: implement progress bar for tracking rep data for basic exercises
         // todo: on finishing an exercise, add simple dropdown to set the tension level manually
+
+        // Set test values
+        setProgressBar.progress = 25 // Calculate this as a % of the max/min angles
+        setProgressLiveDataText.text = "30°"
+        setProgressMinText.text = "10°"
+        setProgressMaxText.text = "70°"
     }
 
     // Load the sets data from the exercise goal
