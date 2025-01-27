@@ -21,6 +21,8 @@ class StartExerciseActivity : AppCompatActivity() {
     private lateinit var exerciseDataAdapter: ExerciseDataAdapter
     private lateinit var connectToDeviceButton: Button
 
+    private lateinit var chosenActivity: Class<*>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start_exercise)
@@ -82,8 +84,17 @@ class StartExerciseActivity : AppCompatActivity() {
 
         connectToDeviceButton.setOnClickListener {
             exercise?.let {
-                // todo: update target activity depending on exercise type
-                val connectDeviceFragment = ConnectDeviceFragment(this, StartSetActivity::class.java, it)
+                // Choose target activity based on provided exercise info
+                if (exerciseInfo != null) {
+                    chosenActivity = when (exerciseInfo.name) {
+                        ExerciseType.RANGE_OF_MOTION.exerciseName -> ROMExerciseActivity::class.java
+                        ExerciseType.GAIT_SYMMETRY.exerciseName -> GaitSymmetryExerciseActivity::class.java
+                        ExerciseType.IMPACT_FORCE.exerciseName -> ImpactForceExerciseActivity::class.java
+                        else -> StartSetActivity::class.java
+                    }
+                }
+
+                val connectDeviceFragment = ConnectDeviceFragment(this, chosenActivity, it)
                 connectDeviceFragment.show(supportFragmentManager, "connect_device")
             }
         }

@@ -252,7 +252,7 @@ class BluetoothService : Service() {
         super.onDestroy()
         if (ActivityCompat.checkSelfPermission(
                 this,
-                android.Manifest.permission.BLUETOOTH_CONNECT
+                Manifest.permission.BLUETOOTH_CONNECT
             ) != PackageManager.PERMISSION_GRANTED
         ) { return }
         bluetoothGatt?.close() // Close Bluetooth connection when service is destroyed

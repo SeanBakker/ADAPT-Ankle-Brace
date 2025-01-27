@@ -1,6 +1,5 @@
 package com.example.adaptanklebrace.fragments
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -21,7 +20,7 @@ import com.example.adaptanklebrace.utils.ExerciseUtil
 
 class ConnectDeviceFragment(
     private val context: Context,
-    private val targetActivity: Class<out Activity>,
+    private val targetActivity: Class<*>,
     private val exercise: Exercise
 ) : DialogFragment() {
 
