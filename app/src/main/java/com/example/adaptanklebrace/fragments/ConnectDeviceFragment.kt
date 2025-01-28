@@ -56,8 +56,9 @@ class ConnectDeviceFragment(
             }
 
             // Check and request bluetooth permissions to ADAPT device
-            if (true) { // it.checkAndRequestBluetoothPermissions()
-                if (true) { // bluetoothService.connectToBluetoothDevice(it)
+            if (bluetoothService.checkAndRequestBluetoothPermissions(requireActivity())) {
+                if (bluetoothService.connectToBluetoothDevice(it)) {
+                    Thread.sleep(1000) // Wait for device to load
                     bluetoothService.writeDeviceData("ready")
                     dismiss() // Close the dialog
 
@@ -81,6 +82,8 @@ class ConnectDeviceFragment(
                     // todo: not all exercises will have the test rep
 
                     // After test rep is complete, start target activity to perform sets
+                    Thread.sleep(2000) // Wait for device to load
+                    bluetoothService.writeDeviceData("start")
                     val startSetIntent = Intent(it, targetActivity)
                     val parcelableExercise = exercise as Parcelable
                     startSetIntent.putExtra(ExerciseInfo.EXERCISE_KEY, parcelableExercise)

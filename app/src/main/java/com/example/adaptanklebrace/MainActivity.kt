@@ -1,6 +1,5 @@
 package com.example.adaptanklebrace
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
@@ -17,7 +16,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -47,6 +45,7 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
     private var recoveryPlanActivity = RecoveryPlanActivity()
     private lateinit var bluetoothService: BluetoothService
     private var isBluetoothServiceBound = false
+    private val BLUETOOTH_PERMISSION_REQUEST_CODE = 1002
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -179,20 +178,6 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         // Update progress bar and text
         weeklyProgressBar.progress = weeklyProgress.toInt()
         weeklyProgressText.text = "$truncatedWeeklyProgress%"
-    }
-
-    /*** BLUETOOTH INITIALIZATION  ***/
-    private val BLUETOOTH_PERMISSION_REQUEST_CODE = 1002
-
-    fun checkAndRequestBluetoothPermissions(): Boolean {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||
-            (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED)) {
-            ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN),
-                BLUETOOTH_PERMISSION_REQUEST_CODE)
-            return false
-        }
-        return true
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

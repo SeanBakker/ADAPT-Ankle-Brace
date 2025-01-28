@@ -21,7 +21,7 @@ class StartExerciseActivity : AppCompatActivity() {
     private lateinit var exerciseDataAdapter: ExerciseDataAdapter
     private lateinit var connectToDeviceButton: Button
 
-    private lateinit var chosenActivity: Class<*>
+    private var chosenActivity: Class<*> = StartSetActivity::class.java
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

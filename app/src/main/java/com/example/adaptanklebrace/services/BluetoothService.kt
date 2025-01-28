@@ -2,6 +2,7 @@ package com.example.adaptanklebrace.services
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
@@ -16,7 +17,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import android.view.LayoutInflater
@@ -37,9 +37,12 @@ class BluetoothService : Service() {
 
     private val serviceUUID: UUID = UUID.fromString("f3b4f9a8-25b8-4ee1-8b69-0a61a964de15")
     private val characteristicUUID: UUID = UUID.fromString("f8c2f5f0-4e8c-4a95-b9c1-3c8c33b457c3")
+    private val BLUETOOTH_PERMISSION_REQUEST_CODE = 1002
 
-    private val _deviceLiveData = MutableLiveData<Int>()
+    val _deviceLiveData = MutableLiveData<Int>()
     val deviceLiveData: LiveData<Int> get() = _deviceLiveData
+
+    private var isReadingInProgress = false // Flag to control read behavior
 
     companion object {
         var instance: BluetoothService? = null
@@ -109,16 +112,22 @@ class BluetoothService : Service() {
                 status: Int
             ) {
                 if (status == BluetoothGatt.GATT_SUCCESS) {
-                    val byteArray = characteristic.value
-                    if (byteArray.isNotEmpty()) {
-                        // todo: accept all required data types for reading data from the device
-                        // Convert the first byte to an integer
-                        val value = byteArray[0].toInt() and 0xFF // Convert to unsigned value
-                        _deviceLiveData.postValue(value)
-                        Log.i("Bluetooth", "Characteristic read: $value°")
+                    val value = characteristic.value
+                    if (value.isNotEmpty()) {
+                        // Process the received data (e.g., parse as integer)
+                        val readValue = value[0].toInt() and 0xFF
+
+                        // Update LiveData immediately if its value has changed
+                        if (_deviceLiveData.value != readValue) {
+                            _deviceLiveData.postValue(readValue)
+                            Log.i("Bluetooth", "Characteristic read: $readValue°")
+                        }
                     } else {
                         Log.w("Bluetooth", "Characteristic read: no data received")
                     }
+
+                    // Stop reading if another read is not needed
+                    isReadingInProgress = false
                 } else {
                     Log.e("Bluetooth", "Failed to read characteristic, status: $status")
                 }
@@ -132,23 +141,43 @@ class BluetoothService : Service() {
                 super.onCharacteristicWrite(gatt, characteristic, status)
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     Log.i("Bluetooth", "Successfully wrote to characteristic: ${characteristic.uuid}")
+//                    gatt.readCharacteristic(characteristic)
                 } else {
                     Log.w("Bluetooth", "Failed to write to characteristic: ${characteristic.uuid}, status: $status")
                 }
             }
 
             @Deprecated("Deprecated in Java")
+            @Suppress("DEPRECATION")
             override fun onCharacteristicChanged(
                 gatt: BluetoothGatt,
                 characteristic: BluetoothGattCharacteristic
             ) {
-                // Handle notifications from the device
-                @Suppress("DEPRECATION")
-                val value = characteristic.value?.firstOrNull()?.toInt() ?: 0
-                Log.i("Bluetooth", "Notification received: $value")
-                _deviceLiveData.postValue(value)
+                val value = characteristic.value
+                if (value.isNotEmpty()) {
+                    // Process the received data (e.g., parse as integer)
+                    val receivedValue = value[0].toInt() and 0xFF
+
+                    // Update LiveData immediately
+                    _deviceLiveData.postValue(receivedValue)
+
+                    Log.i("Bluetooth", "Characteristic changed: $receivedValue°")
+                } else {
+                    Log.w("Bluetooth", "Characteristic changed: no data received")
+                }
             }
         })
+        return true
+    }
+
+    fun checkAndRequestBluetoothPermissions(activity: Activity): Boolean {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||
+            (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(activity,
+                arrayOf(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN),
+                BLUETOOTH_PERMISSION_REQUEST_CODE)
+            return false
+        }
         return true
     }
 
@@ -175,7 +204,6 @@ class BluetoothService : Service() {
             }
             if (descriptor != null) {
                 descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-
             }
         } else {
             Log.w("Bluetooth", "Bluetooth connect permission not granted.")
@@ -183,15 +211,22 @@ class BluetoothService : Service() {
     }
 
     fun readDeviceData() {
-        bluetoothGatt?.let { gatt ->
-            val characteristic = gatt.getService(serviceUUID)?.getCharacteristic(characteristicUUID)
-            characteristic?.let {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
-                    gatt.readCharacteristic(it)
-                    // This callback will trigger when the characteristic is read
-                    gatt.setCharacteristicNotification(it, true)
-                } else {
-                    Log.w("Bluetooth", "Bluetooth connect permission not granted.")
+        if (!isReadingInProgress) {
+            bluetoothGatt?.let { gatt ->
+                val characteristic =
+                    gatt.getService(serviceUUID)?.getCharacteristic(characteristicUUID)
+                characteristic?.let {
+                    if (ActivityCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.BLUETOOTH_CONNECT
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        // Read characteristic to get initial value
+                        gatt.readCharacteristic(it)
+                        isReadingInProgress = true // Set flag to prevent sequential reads
+                    } else {
+                        Log.w("Bluetooth", "Bluetooth connect permission not granted.")
+                    }
                 }
             }
         }
@@ -215,6 +250,23 @@ class BluetoothService : Service() {
                     Log.w("Bluetooth", "Bluetooth connect permission not granted.")
                 }
             }
+        }
+    }
+
+    fun disconnect() {
+        if (bluetoothGatt != null) {
+            Log.i("Bluetooth", "Disconnecting from Bluetooth device.")
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                bluetoothGatt?.disconnect()
+                bluetoothGatt?.close()
+                bluetoothGatt = null
+            }
+        } else {
+            Log.w("Bluetooth", "No active Bluetooth connection to disconnect.")
         }
     }
 

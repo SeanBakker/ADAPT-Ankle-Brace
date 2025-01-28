@@ -1,11 +1,16 @@
 package com.example.adaptanklebrace
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -15,6 +20,8 @@ import com.example.adaptanklebrace.adapters.ExerciseSetsTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
 import com.example.adaptanklebrace.enums.ExerciseType
+import com.example.adaptanklebrace.services.BluetoothService
+import com.example.adaptanklebrace.utils.ExerciseUtil
 
 class StartSetActivity : AppCompatActivity() {
 
@@ -30,6 +37,9 @@ class StartSetActivity : AppCompatActivity() {
     private lateinit var setProgressLiveDataText: TextView
     private lateinit var setProgressMinText: TextView
     private lateinit var setProgressMaxText: TextView
+
+    private lateinit var bluetoothService: BluetoothService
+    private val handler = Handler(Looper.getMainLooper())
 
     private lateinit var setsAdapter: ExerciseSetsTableRowAdapter
     private var sets: MutableList<Pair<Int, Int>> = mutableListOf()
@@ -49,9 +59,22 @@ class StartSetActivity : AppCompatActivity() {
 
         // Handle the back button click
         toolbar.setNavigationOnClickListener {
+            // Close bluetooth connection
+            bluetoothService.disconnect()
+
             @Suppress("DEPRECATION")
             onBackPressed()
         }
+
+        // Start the Bluetooth service
+        val serviceIntent = Intent(this, BluetoothService::class.java)
+        ContextCompat.startForegroundService(this, serviceIntent)
+        if (BluetoothService.instance == null) {
+            ExerciseUtil.showToast(this, layoutInflater, "Bluetooth service not available")
+            finish() // Exit activity
+            return
+        }
+        bluetoothService = BluetoothService.instance!!
 
         // Retrieve the passed Exercise object with the intent
         @Suppress("DEPRECATION")
@@ -106,11 +129,38 @@ class StartSetActivity : AppCompatActivity() {
         // todo: once sets are complete, data must be saved in the Recovery Data table on clicking finish button
         // todo: on finishing an exercise, add simple dropdown to set the tension level manually
 
+        // Periodically read angle from ADAPT device
+        handler.post(updateAngleTask)
+        bluetoothService._deviceLiveData.observe(this) { value ->
+            updateProgress(value.toDouble())
+            Log.i("ANGLE", "Angle data received: $value")
+        }
+
         // Set test values
         setProgressBar.progress = 25 // Calculate this as a % of the max/min angles
         setProgressLiveDataText.text = "30°"
+
+        // todo: set min/max values from test rep
         setProgressMinText.text = "10°"
         setProgressMaxText.text = "70°"
+    }
+
+    private fun updateProgress(anglesDegrees: Double) {
+        setProgressBar.progress = anglesDegrees.toInt()
+        setProgressLiveDataText.text = "$anglesDegrees°"
+    }
+
+    private val updateAngleTask = object : Runnable {
+        override fun run() {
+            // Read characteristic (device) data
+            bluetoothService.readDeviceData()
+            handler.postDelayed(this, 50)
+        }
+    }
+
+    override fun onDestroy() {
+        handler.removeCallbacks(updateAngleTask)
+        super.onDestroy()
     }
 
     // Load the sets data from the exercise goal

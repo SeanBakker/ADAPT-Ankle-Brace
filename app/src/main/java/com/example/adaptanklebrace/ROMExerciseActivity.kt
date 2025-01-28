@@ -103,7 +103,7 @@ class ROMExerciseActivity : AppCompatActivity() {
 
     private val updateAngleTask = object : Runnable {
         override fun run() {
-            // Read characteristic (device) data from MainActivity
+            // Read characteristic (device) data
             bluetoothService.readDeviceData()
             bluetoothService.deviceLiveData.value?.toInt().let {
                 if (it != null) {
