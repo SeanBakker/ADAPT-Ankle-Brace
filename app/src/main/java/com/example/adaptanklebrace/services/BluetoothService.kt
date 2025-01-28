@@ -141,7 +141,6 @@ class BluetoothService : Service() {
                 super.onCharacteristicWrite(gatt, characteristic, status)
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     Log.i("Bluetooth", "Successfully wrote to characteristic: ${characteristic.uuid}")
-//                    gatt.readCharacteristic(characteristic)
                 } else {
                     Log.w("Bluetooth", "Failed to write to characteristic: ${characteristic.uuid}, status: $status")
                 }
