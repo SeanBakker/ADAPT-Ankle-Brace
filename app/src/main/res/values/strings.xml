@@ -11,8 +11,7 @@
 
     <!-- Exercises -->
     <string name="rom_exercise">Range of Motion (ROM) Exercise</string>
-    <string name="gait_symmetry_exercise">Gait Symmetry Exercise</string>
-    <string name="impact_force_exercise">Impact Force Exercise</string>
+    <string name="gait_test_exercise">Gait Test Exercise</string>
 
     <!-- Table Text -->
     <string name="exerciseName">Exercise Name</string>

@@ -3,7 +3,7 @@
     <!-- Background of the progress bar -->
     <item>
         <shape>
-            <solid android:color="@color/grey_1"/> <!-- Background color -->
+            <solid android:color="@color/grey_2"/> <!-- Background color -->
             <corners android:radius="10dp"/> <!-- Rounded corners -->
         </shape>
     </item>

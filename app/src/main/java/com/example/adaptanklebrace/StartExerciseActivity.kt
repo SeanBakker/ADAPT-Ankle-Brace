@@ -88,8 +88,7 @@ class StartExerciseActivity : AppCompatActivity() {
                 if (exerciseInfo != null) {
                     chosenActivity = when (exerciseInfo.name) {
                         ExerciseType.RANGE_OF_MOTION.exerciseName -> ROMExerciseActivity::class.java
-                        ExerciseType.GAIT_SYMMETRY.exerciseName -> GaitSymmetryExerciseActivity::class.java
-                        ExerciseType.IMPACT_FORCE.exerciseName -> ImpactForceExerciseActivity::class.java
+                        ExerciseType.GAIT_TEST.exerciseName -> GaitTestExerciseActivity::class.java
                         else -> StartSetActivity::class.java
                     }
                 }

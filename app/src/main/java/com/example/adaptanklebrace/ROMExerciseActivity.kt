@@ -49,16 +49,6 @@ class ROMExerciseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rom_exercise)
 
-        // Start the Bluetooth service
-        val serviceIntent = Intent(this, BluetoothService::class.java)
-        ContextCompat.startForegroundService(this, serviceIntent)
-        if (BluetoothService.instance == null) {
-            ExerciseUtil.showToast(this, layoutInflater, "Bluetooth service not available")
-            finish() // Exit activity
-            return
-        }
-        bluetoothService = BluetoothService.instance!!
-
         // Set up the toolbar
         val toolbar: Toolbar = findViewById(R.id.romExerciseToolbar)
         setSupportActionBar(toolbar)
@@ -70,9 +60,22 @@ class ROMExerciseActivity : AppCompatActivity() {
 
         // Handle the back button click
         toolbar.setNavigationOnClickListener {
+            // Close bluetooth connection
+            bluetoothService.disconnect()
+
             @Suppress("DEPRECATION")
             onBackPressed() // Go back to the previous activity
         }
+
+        // Start the Bluetooth service
+        val serviceIntent = Intent(this, BluetoothService::class.java)
+        ContextCompat.startForegroundService(this, serviceIntent)
+        if (BluetoothService.instance == null) {
+            ExerciseUtil.showToast(this, layoutInflater, "Bluetooth service not available")
+            finish() // Exit activity
+            return
+        }
+        bluetoothService = BluetoothService.instance!!
 
         // Setup the progress bars and text
         flexionProgressBar = findViewById(R.id.flexionProgress)

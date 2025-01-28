@@ -47,7 +47,7 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="&lt;Exercise 1&gt;"
+                android:text="&lt;Plantar flexion&gt;"
                 android:textSize="10sp"
                 android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
@@ -57,7 +57,7 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="&lt;Exercise 2&gt;"
+                android:text="&lt;Dorsiflexion&gt;"
                 android:textSize="10sp"
                 android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
@@ -67,7 +67,7 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="&lt;Exercise 3&gt;"
+                android:text="&lt;Inversion&gt;"
                 android:textSize="10sp"
                 android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
@@ -77,7 +77,7 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="&lt;Exercise 4&gt;"
+                android:text="&lt;Eversion&gt;"
                 android:textSize="10sp"
                 android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
@@ -87,7 +87,7 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="&lt;Exercise 5&gt;"
+                android:text="&lt;ROM Test&gt;"
                 android:textSize="10sp"
                 android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
@@ -97,17 +97,7 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="&lt;Exercise 6&gt;"
-                android:textSize="10sp"
-                android:textColor="?attr/colorPrimaryVariant"
-                android:onClick="onQuickLinkClick" />
-
-            <Button
-                android:id="@+id/btn_exercise_7"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="&lt;Exercise 7&gt;"
+                android:text="&lt;Gait Test&gt;"
                 android:textSize="10sp"
                 android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />

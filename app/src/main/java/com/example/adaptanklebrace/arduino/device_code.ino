@@ -70,11 +70,25 @@ void loop() {
                             // Clear the value after reading
                             customCharacteristic.writeValue((uint8_t)0);
 
-                            // Check the exercise type sent to the device
+                            // *** CHECK EXERCISE TYPE TO START ***
                             if (receivedData == "start") {
                                 Serial.println("Device is starting basic exercises!");
                                 delay(50);
                                 performExerciseRoutine();
+                            } else if (receivedData == "start_ROM") {
+                                Serial.println("Device is starting ROM Test exercise!");
+                                delay(50);
+                                uint8_t testValue = (uint8_t)(50);
+                                customCharacteristic.writeValue(testValue);
+                                Serial.print("Sent value: ");
+                                Serial.println(testValue);
+                            } else if (receivedData == "start_Gait") {
+                                Serial.println("Device is starting Gait Test exercise!");
+                                delay(50);
+                                uint8_t testValue = (uint8_t)(10);
+                                customCharacteristic.writeValue(testValue);
+                                Serial.print("Sent value: ");
+                                Serial.println(testValue);
                             }
                         }
                     } // end while

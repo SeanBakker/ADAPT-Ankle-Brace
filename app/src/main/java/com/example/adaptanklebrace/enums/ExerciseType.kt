@@ -59,27 +59,16 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
         """.trimIndent(),
         5
     ),
-    GAIT_SYMMETRY(
-        "Gait Symmetry",
-        "An exercise to monitor improvements in the recovery of gait of the ankle joint.",
+    GAIT_TEST(
+        "Gait Test",
+        "An exercise to monitor improvements in the recovery of gait and impact force of the ankle joint.",
         """
         1. Stand with your feet hip-width apart.
-        2. Walk in a straight line, with each step of equal length.
+        2. Walk normally in a straight line.
         3. Perform the specified number of reps (steps).
         4. After a short break, repeat for the specified number of sets.
         """.trimIndent(),
         6
-    ),
-    IMPACT_FORCE(
-        "Impact Force",
-        "An exercise to monitor improvements in the body's ability to absorb shock during the walking cycle.",
-        """
-        1. Stand with your feet hip-width apart.
-        2. Walk in a straight line, with each step of equal length.
-        3. Perform the specified number of reps (steps).
-        4. After a short break, repeat for the specified number of sets.
-        """.trimIndent(),
-        7
     ),
     ERROR(
     "ERROR",

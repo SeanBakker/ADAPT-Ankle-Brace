@@ -12,7 +12,9 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import com.example.adaptanklebrace.GaitTestExerciseActivity
 import com.example.adaptanklebrace.R
+import com.example.adaptanklebrace.ROMExerciseActivity
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
 import com.example.adaptanklebrace.services.BluetoothService
@@ -81,9 +83,16 @@ class ConnectDeviceFragment(
                     // todo: implement test rep fragment
                     // todo: not all exercises will have the test rep
 
-                    // After test rep is complete, start target activity to perform sets
+                    // Send start flag to device to prepare exercise data collection
                     Thread.sleep(2000) // Wait for device to load
-                    bluetoothService.writeDeviceData("start")
+
+                    when (targetActivity) {
+                        ROMExerciseActivity::class.java -> bluetoothService.writeDeviceData("start_ROM")
+                        GaitTestExerciseActivity::class.java -> bluetoothService.writeDeviceData("start_Gait")
+                        else -> bluetoothService.writeDeviceData("start")
+                    }
+
+                    // Start target activity to perform sets
                     val startSetIntent = Intent(it, targetActivity)
                     val parcelableExercise = exercise as Parcelable
                     startSetIntent.putExtra(ExerciseInfo.EXERCISE_KEY, parcelableExercise)

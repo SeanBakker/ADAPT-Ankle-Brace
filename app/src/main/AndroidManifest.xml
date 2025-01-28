@@ -53,8 +53,7 @@
 
         <!-- Exercise Item Activities -->
         <activity android:name=".ROMExerciseActivity" />
-        <activity android:name=".GaitSymmetryExerciseActivity" />
-        <activity android:name=".ImpactForceExerciseActivity" />
+        <activity android:name=".GaitTestExerciseActivity" />
 
         <!-- Other Activities -->
         <activity android:name=".SettingsActivity" />

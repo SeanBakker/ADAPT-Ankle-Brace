@@ -52,7 +52,6 @@ class CommonExercisesActivity : AppCompatActivity() {
             R.id.btn_exercise_4 -> viewPager.currentItem = 3
             R.id.btn_exercise_5 -> viewPager.currentItem = 4
             R.id.btn_exercise_6 -> viewPager.currentItem = 5
-            R.id.btn_exercise_7 -> viewPager.currentItem = 6
         }
     }
 
