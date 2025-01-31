@@ -118,7 +118,7 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:indeterminate="false"
                 android:max="100"
-                android:progress="10"
+                android:progress="0"
                 android:progressDrawable="@drawable/horizontal_progress_bar" />
 
             <TextView
@@ -126,7 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="0°"
+                android:text="360°"
                 android:textSize="30sp"
                 android:textStyle="bold" />
         </LinearLayout>

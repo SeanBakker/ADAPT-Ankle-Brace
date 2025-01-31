@@ -36,13 +36,12 @@ class BluetoothService : Service() {
     private var bluetoothDevice: BluetoothDevice? = null
 
     private val serviceUUID: UUID = UUID.fromString("f3b4f9a8-25b8-4ee1-8b69-0a61a964de15")
-    private val characteristicUUID: UUID = UUID.fromString("f8c2f5f0-4e8c-4a95-b9c1-3c8c33b457c3")
+    private val readCharacteristicUUID: UUID = UUID.fromString("f8c2f5f0-4e8c-4a95-b9c1-3c8c33b457c3")
+    private val writeCharacteristicUUID: UUID = UUID.fromString("f8c2f5f0-4e8c-4a95-b9c1-3c8c33b457c4")
     private val BLUETOOTH_PERMISSION_REQUEST_CODE = 1002
 
-    val _deviceLiveData = MutableLiveData<Int>()
-    val deviceLiveData: LiveData<Int> get() = _deviceLiveData
-
-    private var isReadingInProgress = false // Flag to control read behavior
+    val _deviceLiveData = MutableLiveData<Pair<Int, Int>?>()
+    val deviceLiveData: LiveData<Pair<Int, Int>?> get() = _deviceLiveData
 
     companion object {
         var instance: BluetoothService? = null
@@ -94,10 +93,9 @@ class BluetoothService : Service() {
             override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     Log.i("Bluetooth", "Services discovered")
-                    val characteristic: BluetoothGattCharacteristic? = gatt.getService(serviceUUID)?.getCharacteristic(characteristicUUID)
-                    characteristic?.let {
+                    val readCharacteristic: BluetoothGattCharacteristic? = gatt.getService(serviceUUID)?.getCharacteristic(readCharacteristicUUID)
+                    readCharacteristic?.let {
                         enableNotifications(gatt, it)
-                        writeDeviceData("ready")
                     }
                 } else {
                     Log.w("Bluetooth", "Service discovery failed: $status")
@@ -114,20 +112,21 @@ class BluetoothService : Service() {
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     val value = characteristic.value
                     if (value.isNotEmpty()) {
-                        // Process the received data (e.g., parse as integer)
-                        val readValue = value[0].toInt() and 0xFF
-
-                        // Update LiveData immediately if its value has changed
-                        if (_deviceLiveData.value != readValue) {
-                            _deviceLiveData.postValue(readValue)
-                            Log.i("Bluetooth", "Characteristic read: $readValue°")
+                        if (value.size == 1) {
+                            // Single integer
+                            val singleValue = value[0].toInt() and 0xFF
+                            _deviceLiveData.postValue(Pair(singleValue, singleValue)) // Store as a pair for consistency
+                            Log.i("Bluetooth", "Characteristic read (single): $singleValue")
+                        } else if (value.size >= 2) {
+                            // Pair of integers
+                            val firstValue = value[0].toInt() and 0xFF
+                            val secondValue = value[1].toInt() and 0xFF
+                            _deviceLiveData.postValue(Pair(firstValue, secondValue))
+                            Log.i("Bluetooth", "Characteristic read (pair): ($firstValue, $secondValue)")
                         }
                     } else {
                         Log.w("Bluetooth", "Characteristic read: no data received")
                     }
-
-                    // Stop reading if another read is not needed
-                    isReadingInProgress = false
                 } else {
                     Log.e("Bluetooth", "Failed to read characteristic, status: $status")
                 }
@@ -154,13 +153,18 @@ class BluetoothService : Service() {
             ) {
                 val value = characteristic.value
                 if (value.isNotEmpty()) {
-                    // Process the received data (e.g., parse as integer)
-                    val receivedValue = value[0].toInt() and 0xFF
-
-                    // Update LiveData immediately
-                    _deviceLiveData.postValue(receivedValue)
-
-                    Log.i("Bluetooth", "Characteristic changed: $receivedValue°")
+                    if (value.size == 1) {
+                        // Single integer
+                        val singleValue = value[0].toInt() and 0xFF
+                        _deviceLiveData.postValue(Pair(singleValue, singleValue)) // Store as a pair for consistency
+                        Log.i("Bluetooth", "Characteristic changed (single): $singleValue")
+                    } else if (value.size >= 2) {
+                        // Pair of integers
+                        val firstValue = value[0].toInt() and 0xFF
+                        val secondValue = value[1].toInt() and 0xFF
+                        _deviceLiveData.postValue(Pair(firstValue, secondValue))
+                        Log.i("Bluetooth", "Characteristic changed (pair): ($firstValue, $secondValue)")
+                    }
                 } else {
                     Log.w("Bluetooth", "Characteristic changed: no data received")
                 }
@@ -210,22 +214,18 @@ class BluetoothService : Service() {
     }
 
     fun readDeviceData() {
-        if (!isReadingInProgress) {
-            bluetoothGatt?.let { gatt ->
-                val characteristic =
-                    gatt.getService(serviceUUID)?.getCharacteristic(characteristicUUID)
-                characteristic?.let {
-                    if (ActivityCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.BLUETOOTH_CONNECT
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        // Read characteristic to get initial value
-                        gatt.readCharacteristic(it)
-                        isReadingInProgress = true // Set flag to prevent sequential reads
-                    } else {
-                        Log.w("Bluetooth", "Bluetooth connect permission not granted.")
-                    }
+        bluetoothGatt?.let { gatt ->
+            val readCharacteristic = gatt.getService(serviceUUID)?.getCharacteristic(readCharacteristicUUID)
+            readCharacteristic?.let {
+                if (ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.BLUETOOTH_CONNECT
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    // Read characteristic to get initial value
+                    gatt.readCharacteristic(it)
+                } else {
+                    Log.w("Bluetooth", "Bluetooth connect permission not granted.")
                 }
             }
         }
@@ -234,8 +234,8 @@ class BluetoothService : Service() {
     @Suppress("DEPRECATION")
     fun writeDeviceData(data: String) {
         bluetoothGatt?.let { gatt ->
-            val characteristic: BluetoothGattCharacteristic? = gatt.getService(serviceUUID)?.getCharacteristic(characteristicUUID)
-            characteristic?.let {
+            val writeCharacteristic: BluetoothGattCharacteristic? = gatt.getService(serviceUUID)?.getCharacteristic(writeCharacteristicUUID)
+            writeCharacteristic?.let {
                 it.value = data.toByteArray()
                 it.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
@@ -252,6 +252,10 @@ class BluetoothService : Service() {
         }
     }
 
+    fun resetLiveData() {
+        _deviceLiveData.postValue(null)
+    }
+
     fun disconnect() {
         if (bluetoothGatt != null) {
             Log.i("Bluetooth", "Disconnecting from Bluetooth device.")
@@ -260,6 +264,7 @@ class BluetoothService : Service() {
                     Manifest.permission.BLUETOOTH_CONNECT
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
+                resetLiveData()
                 bluetoothGatt?.disconnect()
                 bluetoothGatt?.close()
                 bluetoothGatt = null

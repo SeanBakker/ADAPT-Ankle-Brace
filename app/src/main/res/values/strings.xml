@@ -38,6 +38,8 @@
     <string name="startExerciseBtn">Start Exercise</string>
     <string name="startSetBtn">Start Set</string>
     <string name="endSetBtn">End Set</string>
+    <string name="startTestRepBtn">Start Test Rep</string>
+    <string name="endTestRepBtn">End Test Rep</string>
     <string name="finishExerciseBtn">Finish Exercise</string>
     <string name="editGoalsBtn">Edit Goals</string>
 
@@ -49,4 +51,7 @@
         <item>day</item>
         <item>week</item>
     </string-array>
+
+    <!-- Error -->
+    <string name="error">error</string>
 </resources>

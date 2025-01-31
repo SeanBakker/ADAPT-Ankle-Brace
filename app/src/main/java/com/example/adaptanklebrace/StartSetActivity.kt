@@ -1,5 +1,6 @@
 package com.example.adaptanklebrace
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -41,9 +42,15 @@ class StartSetActivity : AppCompatActivity() {
     private lateinit var bluetoothService: BluetoothService
     private val handler = Handler(Looper.getMainLooper())
 
+    private var isFirstRun = true
+    private var minAngle: Int = 0
+    private var maxAngle: Int = 360
+
     private lateinit var setsAdapter: ExerciseSetsTableRowAdapter
     private var sets: MutableList<Pair<Int, Int>> = mutableListOf()
 
+    @Suppress("DEPRECATION")
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start_set)
@@ -77,7 +84,6 @@ class StartSetActivity : AppCompatActivity() {
         bluetoothService = BluetoothService.instance!!
 
         // Retrieve the passed Exercise object with the intent
-        @Suppress("DEPRECATION")
         val exercise: Exercise? = intent.getParcelableExtra(ExerciseInfo.EXERCISE_KEY)
         var exerciseInfo: ExerciseInfo? = null
 
@@ -131,23 +137,45 @@ class StartSetActivity : AppCompatActivity() {
 
         // Periodically read angle from ADAPT device
         handler.post(updateAngleTask)
-        bluetoothService._deviceLiveData.observe(this) { value ->
-            updateProgress(value.toDouble())
-            Log.i("ANGLE", "Angle data received: $value")
+        bluetoothService.deviceLiveData.observe(this) { pair ->
+            pair?.let {
+                if (isFirstRun) {
+                    Log.i("ANGLE", "Min angle received: ${it.first}")
+                    Log.i("ANGLE", "Max angle received: ${it.second}")
+                    updateMinMaxAngles(it.first, it.second)
+                    isFirstRun = false // Mark that the first run is complete
+                } else {
+                    // This runs after the first time
+                    updateProgress(it.first.toDouble())
+                    Log.i("ANGLE", "Angle data received: ${it.first}")
+                }
+            }
         }
 
-        // Set test values
-        setProgressBar.progress = 25 // Calculate this as a % of the max/min angles
-        setProgressLiveDataText.text = "30°"
-
-        // todo: set min/max values from test rep
-        setProgressMinText.text = "10°"
-        setProgressMaxText.text = "70°"
+        // Configure start set button
+        startSetButton = findViewById(R.id.startSetBtn)
+        startSetButton.setOnClickListener {
+            // Send start flag to device to prepare exercise data collection (of sets)
+            bluetoothService.writeDeviceData("start")
+        }
     }
 
+    @SuppressLint("SetTextI18n", "DefaultLocale")
     private fun updateProgress(anglesDegrees: Double) {
-        setProgressBar.progress = anglesDegrees.toInt()
+        // Calculate progress as a percentage of the angle range
+        val progressPercentage = ((anglesDegrees - minAngle) / (maxAngle - minAngle)) * 100
+
+        // Update progress bar
+        setProgressBar.progress = progressPercentage.toInt()
         setProgressLiveDataText.text = "$anglesDegrees°"
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateMinMaxAngles(minAngleValue: Int, maxAngleValue: Int) {
+        minAngle = minAngleValue
+        maxAngle = maxAngleValue
+        setProgressMinText.text = "$minAngleValue°"
+        setProgressMaxText.text = "$maxAngleValue°"
     }
 
     private val updateAngleTask = object : Runnable {
