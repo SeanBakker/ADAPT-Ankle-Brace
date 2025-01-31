@@ -19,8 +19,8 @@ object BindingAdapters {
         imageId?.let {
             //todo: add proper exercise images
             val drawableResId = when (it) {
-                1 -> R.drawable.baseline_directions_walk_24 // exercise #1
-                2 -> R.drawable.baseline_directions_run_24 // exercise #2
+                1 -> R.drawable.plantarflexion_guide // exercise #1
+                2 -> R.drawable.dorsiflexion_guide // exercise #2
                 3 -> R.drawable.baseline_healing_24 // exercise #3
                 4 -> R.drawable.baseline_healing_24 // exercise #4
                 5 -> R.drawable.baseline_healing_24 // exercise #5
