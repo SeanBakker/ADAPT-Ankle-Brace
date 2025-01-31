@@ -18,7 +18,8 @@ data class Exercise(
     var difficulty: Int = 0,
     var comments: String = "",
     var isSelected: Boolean = false,
-    var percentageCompleted: Double = 0.0
+    var percentageCompleted: Double = 0.0,
+    var isVisible: Boolean = true
 ) : Parcelable, Serializable {
 
     constructor(parcel: Parcel) : this(
@@ -33,7 +34,8 @@ data class Exercise(
         parcel.readInt(),
         parcel.readString() ?: "",
         parcel.readBoolean(),
-        parcel.readDouble()
+        parcel.readDouble(),
+        parcel.readBoolean()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -49,6 +51,7 @@ data class Exercise(
         parcel.writeString(comments)
         parcel.writeBoolean(isSelected)
         parcel.writeDouble(percentageCompleted)
+        parcel.writeBoolean(isVisible)
     }
 
     override fun describeContents(): Int {

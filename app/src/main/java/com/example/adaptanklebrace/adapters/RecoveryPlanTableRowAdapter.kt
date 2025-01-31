@@ -352,11 +352,4 @@ class RecoveryPlanTableRowAdapter(
         super.notifyItemChanged(position)
         recoveryPlanCallback.saveCurrentDateExerciseData()
     }
-
-//    fun notifyItemChangedById(id: Long) {
-//        val position = exercises.indexOfFirst { it.id.toLong() == id }
-//        if (position != -1) {
-//            notifyItemChanged(position + 1) // Offset by 1 for the header row
-//        }
-//    }
 }

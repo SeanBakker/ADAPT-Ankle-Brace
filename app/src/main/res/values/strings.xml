@@ -42,6 +42,7 @@
     <string name="endTestRepBtn">End Test Rep</string>
     <string name="finishExerciseBtn">Finish Exercise</string>
     <string name="editGoalsBtn">Edit Goals</string>
+    <string name="setGoalsBtn">Set Goals</string>
 
     <!-- Fragments -->
     <string name="requiredFieldsFormText">Fields marked with * are required.</string>

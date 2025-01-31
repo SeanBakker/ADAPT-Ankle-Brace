@@ -105,6 +105,54 @@
             android:layout_gravity="center"
             android:scrollbars="vertical" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/goalsTextLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/recoveryPlanOverviewText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/goalsCompletedText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/goalsTextLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="20dp"
+                android:text="Congratulations! All goals have been completed for this week!\n New goals can be added from the Recovery Plan page."
+                android:textSize="20sp"
+                android:textColor="?attr/colorOnBackground"
+                android:lineSpacingExtra="5dp"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/noGoalsSetText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/goalsTextLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="20dp"
+                android:text="There are no goals set for this week, click below to set new goals!"
+                android:textSize="20sp"
+                android:textColor="?attr/colorOnBackground"
+                android:gravity="center" />
+
+            <!-- Edit Exercise Goals -->
+            <Button
+                android:id="@+id/setGoalsBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/noGoalsSetText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="10dp"
+                android:text="@string/setGoalsBtn"
+                android:layout_gravity="center" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <!-- Edit Exercise Goals -->
         <Button
             android:id="@+id/editGoalsBtn"

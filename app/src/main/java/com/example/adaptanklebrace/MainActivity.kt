@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -37,6 +38,9 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
     private lateinit var weeklyProgressText: TextView
     private lateinit var exerciseRecyclerView: RecyclerView
     private lateinit var editGoalsBtn: Button
+    private lateinit var goalsCompletedText: TextView
+    private lateinit var noGoalsSetText: TextView
+    private lateinit var setGoalsBtn: Button
 
     private lateinit var exerciseAdapter: RecoveryPlanOverviewTableRowAdapter
     private var exercises: MutableList<Exercise> = mutableListOf()
@@ -62,7 +66,6 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         super.onCreate(savedInstanceState)
 
         // Initialize the app theme
-        // Check saved preference for night mode
         sharedPreferences = getSharedPreferences(SettingsActivity.SETTINGS_PREFERENCE, MODE_PRIVATE)
         val isNightMode = SharedPreferencesUtil.getPreference(sharedPreferences, SettingsActivity.NIGHT_MODE_KEY, false)
         settingsActivity.changeAppTheme(isNightMode)
@@ -95,9 +98,6 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         ContextCompat.startForegroundService(this, serviceIntent)
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
 
-        // todo: if there are no goals set for that week, show button to set goals which shows the add goals fragment
-        // todo: if all goals are completed, show congratulations message & set more goals button
-
         // Setup exercise recovery plan table overview
         exerciseRecyclerView = findViewById(R.id.exerciseRecyclerView)
         exerciseRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -118,6 +118,12 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         // Initialize edit goals button
         editGoalsBtn = findViewById(R.id.editGoalsBtn)
         editGoalsBtn.setOnClickListener { startActivity(Intent(this, RecoveryPlanActivity::class.java)) }
+
+        // Initialize buttons & text related to goal completion
+        goalsCompletedText = findViewById(R.id.goalsCompletedText)
+        noGoalsSetText = findViewById(R.id.noGoalsSetText)
+        setGoalsBtn = findViewById(R.id.setGoalsBtn)
+        setGoalsBtn.setOnClickListener { startActivity(Intent(this, RecoveryPlanActivity::class.java)) }
     }
 
     override fun onResume() {
@@ -129,6 +135,11 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
 
         // Ensure progress is updated when the activity comes to the foreground
         calculateWeeklyProgress(currentWeek)
+
+        // Update visibility of recycler view table after the adapter processes the data
+        exerciseRecyclerView.post {
+            updateRecyclerViewVisibility()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -167,6 +178,22 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         recoveryPlanActivity.onStartExerciseActivity(this, exercise)
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == BLUETOOTH_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                bluetoothService.initBluetooth()
+            } else {
+                ExerciseUtil.showToast(this, layoutInflater, "Bluetooth permissions are required")
+            }
+        }
+    }
+
+    /**
+     * Calculates the progress of exercise completion for the given week.
+     *
+     * @param currentWeek chosen week to calculate progress
+     */
     @SuppressLint("DefaultLocale", "SetTextI18n")
     private fun calculateWeeklyProgress(currentWeek: String) {
         val exerciseGoalsForCurrentWeek = exerciseAdapter.getExercises()
@@ -180,14 +207,46 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         weeklyProgressText.text = "$truncatedWeeklyProgress%"
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == BLUETOOTH_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                bluetoothService.initBluetooth()
+    /**
+     * Updates the visibility of the Recovery Plan Overview table based on exercise count.
+     */
+    private fun updateRecyclerViewVisibility() {
+        if (exerciseAdapter.getVisibleItemCount() <= 1) {
+            exerciseRecyclerView.visibility = View.INVISIBLE
+            editGoalsBtn.visibility = View.GONE
+
+            // Check goals completed percentage
+            val currentProgress = weeklyProgressBar.progress
+            if (currentProgress >= 100) {
+                // All goals completed
+                setGoalsTextVisibility(goalsCompleted = true)
             } else {
-                ExerciseUtil.showToast(this, layoutInflater, "Bluetooth permissions are required")
+                // No goals set
+                setGoalsTextVisibility(noGoals = true)
             }
+        } else {
+            exerciseRecyclerView.visibility = View.VISIBLE
+            editGoalsBtn.visibility = View.VISIBLE
+            setGoalsTextVisibility()
+        }
+    }
+
+    /**
+     * Sets the visibility of various text views and buttons related to
+     * when no goals are set or all goals are completed.
+     *
+     * @param goalsCompleted boolean if all goals are completed
+     * @param noGoals boolean if no goals are set
+     */
+    private fun setGoalsTextVisibility(goalsCompleted: Boolean = false, noGoals: Boolean = false) {
+        goalsCompletedText.visibility = if (goalsCompleted) View.VISIBLE else View.GONE
+
+        if (noGoals) {
+            noGoalsSetText.visibility = View.VISIBLE
+            setGoalsBtn.visibility = View.VISIBLE
+        } else {
+            noGoalsSetText.visibility = View.GONE
+            setGoalsBtn.visibility = View.GONE
         }
     }
 }

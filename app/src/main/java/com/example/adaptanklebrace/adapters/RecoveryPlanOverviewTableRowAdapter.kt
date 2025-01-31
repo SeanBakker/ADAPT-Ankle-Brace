@@ -134,23 +134,34 @@ class RecoveryPlanOverviewTableRowAdapter(
             val exercise = exercises[position - 1]
 
             // Hide the exercise row if the percentage completed is >=100
-            if (exercise.percentageCompleted >= 100) {
-                // Hide the row
-                holder.itemView.visibility = View.GONE
-                holder.itemView.layoutParams = RecyclerView.LayoutParams(0, 0)
-            } else {
-                // Show the row and bind its data
+            exercise.isVisible = exercise.percentageCompleted < 100
+
+            if (exercise.isVisible) {
+                // Show the row
                 holder.itemView.visibility = View.VISIBLE
                 holder.itemView.layoutParams = RecyclerView.LayoutParams(
                     RecyclerView.LayoutParams.MATCH_PARENT,
                     RecyclerView.LayoutParams.WRAP_CONTENT
                 )
-                holder.bind(exercise, VIEW_TYPE_ITEM) // Bind data for exercise rows
+                holder.bind(exercise, VIEW_TYPE_ITEM) // Bind data
+            } else {
+                // Hide the row
+                holder.itemView.visibility = View.GONE
+                holder.itemView.layoutParams = RecyclerView.LayoutParams(0, 0)
             }
         }
     }
 
     override fun getItemCount(): Int = exercises.size + 1 // +1 for the header row
+
+    /**
+     * Retrieves the item count of only visible rows in the table.
+     *
+     * @return integer visible item count
+     */
+    fun getVisibleItemCount(): Int {
+        return exercises.count { it.isVisible } + 1 // Count visible exercises + header row
+    }
 
     // Add exercise row to the list
     override fun addExerciseRow(exercise: Exercise) {
