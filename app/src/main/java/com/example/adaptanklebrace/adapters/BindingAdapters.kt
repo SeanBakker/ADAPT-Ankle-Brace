@@ -21,8 +21,8 @@ object BindingAdapters {
             val drawableResId = when (it) {
                 1 -> R.drawable.plantarflexion_guide // exercise #1
                 2 -> R.drawable.dorsiflexion_guide // exercise #2
-                3 -> R.drawable.baseline_healing_24 // exercise #3
-                4 -> R.drawable.baseline_healing_24 // exercise #4
+                3 -> R.drawable.inversion_guide // exercise #3
+                4 -> R.drawable.eversion_guide // exercise #4
                 5 -> R.drawable.baseline_healing_24 // exercise #5
                 6 -> R.drawable.baseline_healing_24 // exercise #6
                 7 -> R.drawable.baseline_healing_24 // exercise #7
