@@ -21,6 +21,7 @@ import com.example.adaptanklebrace.fragments.AddExerciseDataRowFragment
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalTime
@@ -63,8 +64,10 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
 
         // Handle the back button click
         toolbar.setNavigationOnClickListener {
-            @Suppress("DEPRECATION")
-            onBackPressed()
+            GeneralUtil.returnToMainActivity(this)
+            // Apply a smooth transition
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+            finish() // Close activity
         }
 
         // Initialize views

@@ -42,7 +42,7 @@
     <string name="endSetBtn">End Set</string>
     <string name="startTestRepBtn">Start Test Rep</string>
     <string name="endTestRepBtn">End Test Rep</string>
-    <string name="finishExerciseBtn">Finish Exercise</string>
+    <string name="finishExerciseBtn">Finish &amp; Save Exercise</string>
     <string name="editGoalsBtn">Edit Goals</string>
     <string name="setGoalsBtn">Set Goals</string>
 

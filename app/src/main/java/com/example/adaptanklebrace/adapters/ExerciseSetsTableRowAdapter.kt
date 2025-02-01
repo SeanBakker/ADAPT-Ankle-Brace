@@ -1,6 +1,5 @@
 package com.example.adaptanklebrace.adapters
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +17,8 @@ class ExerciseSetsTableRowAdapter(
     inner class SetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val setNumber: View = view.findViewById(R.id.setNumber)
         private val repsCount: View = view.findViewById(R.id.repsCount)
+
+        // todo: fix bug with overwriting reps counts
 
         // Bind method will update based on the view type
         fun bind(set: Pair<Int, Int>?, viewType: Int) {
@@ -68,21 +69,56 @@ class ExerciseSetsTableRowAdapter(
 
     override fun getItemCount(): Int = sets.size + 1 // +1 for the header row
 
+    /**
+     * Retrieves the item count of only non-zero reps in the table.
+     *
+     * @return integer item count
+     */
+    fun getNonZeroRowsCount(): Int {
+        return getSetsWithNonZeroReps().size
+    }
+
     // Constants for view types
     companion object {
         const val VIEW_TYPE_HEADER = 0
         const val VIEW_TYPE_ITEM = 1
     }
 
-    // Get the current list of sets
-    fun getSets(): List<Pair<Int, Int>> {
-        return sets.toList() // Return a copy of the list to avoid external modifications
+    /**
+     * Retrieves the current list of sets with non-zero rep counts.
+     *
+     * @return list of integer pairs
+     */
+    private fun getSetsWithNonZeroReps(): List<Pair<Int, Int>> {
+        return sets.filter { it.second > 0 }.toList() // Return a copy of the list to avoid external modifications
     }
 
-    // Create a new list of sets
+    /**
+     * Creates a new list of sets.
+     *
+     * @param newSets list of integer pairs
+     */
     fun createSets(newSets: List<Pair<Int, Int>>) {
         sets.clear()
         sets.addAll(newSets)
         notifyItemRangeChanged(1, getItemCount())
+    }
+
+    /**
+     * Retrieves the average number of reps for all sets completed.
+     *
+     * @return integer item count
+     */
+    fun getAverageReps(): Int {
+        val sets = getSetsWithNonZeroReps()
+        if (sets.isNotEmpty()) {
+            var repsTotal = 0
+            for (set in sets) {
+                repsTotal += set.second
+            }
+            return (repsTotal / sets.size)
+        } else {
+            return 0
+        }
     }
 }

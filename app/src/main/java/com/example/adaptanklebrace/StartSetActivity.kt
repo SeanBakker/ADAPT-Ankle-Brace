@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.example.adaptanklebrace.RecoveryDataActivity.Companion.RECOVERY_DATA_PREFERENCE
 import com.example.adaptanklebrace.adapters.ExerciseDataAdapter
 import com.example.adaptanklebrace.adapters.ExerciseInfoAdapter
 import com.example.adaptanklebrace.adapters.ExerciseSetsTableRowAdapter
@@ -22,7 +23,9 @@ import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.services.BluetoothService
+import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 
 class StartSetActivity : AppCompatActivity() {
 
@@ -77,7 +80,7 @@ class StartSetActivity : AppCompatActivity() {
         val serviceIntent = Intent(this, BluetoothService::class.java)
         ContextCompat.startForegroundService(this, serviceIntent)
         if (BluetoothService.instance == null) {
-            ExerciseUtil.showToast(this, layoutInflater, "Bluetooth service not available")
+            GeneralUtil.showToast(this, layoutInflater, "Bluetooth service not available")
             finish() // Exit activity
             return
         }
@@ -159,6 +162,50 @@ class StartSetActivity : AppCompatActivity() {
         startSetButton.setOnClickListener {
             // Send start flag to device to prepare exercise data collection (of sets)
             bluetoothService.writeDeviceData("start")
+        }
+
+        // Configure end set button
+        endSetButton.setOnClickListener {
+            // todo: implement this button to fill in table row with data from device
+        }
+
+        // Configure finish button
+        finishButton.setOnClickListener {
+            if (exercise != null) {
+                // Send finish flag to device to end the exercise
+                bluetoothService.writeDeviceData("finish")
+
+                // Save the exercise data to the Recovery Data table
+                val currentDate = GeneralUtil.getCurrentDate()
+                val existingExercises =
+                    ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).getExercisesForDate(
+                        currentDate
+                    )
+
+                // Calculate sets completed as all >0 reps rows in the table
+                val setsCompleted = setsAdapter.getNonZeroRowsCount()
+
+                // Calculate reps completed as an average of all >0 reps in the table
+                val repsCompleted = setsAdapter.getAverageReps()
+
+                // todo: update values with device data
+                // todo: ask for difficulty rating & comments before saving data
+                val completedExercise = Exercise(
+                    id = ExerciseUtil.generateNewId(existingExercises),
+                    name = exercise.name,
+                    sets = setsCompleted,
+                    reps = repsCompleted,
+                    hold = 1,
+                    tension = 1,
+                )
+                ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).saveExercisesForDate(
+                    currentDate,
+                    existingExercises + completedExercise
+                )
+            }
+
+            // Redirect the user back to the Recovery Data page
+            startActivity(Intent(this, RecoveryDataActivity::class.java))
         }
     }
 
