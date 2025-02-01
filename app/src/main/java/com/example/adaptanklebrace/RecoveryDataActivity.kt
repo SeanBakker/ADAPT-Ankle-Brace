@@ -136,7 +136,7 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
         deleteExerciseButton.setOnClickListener { showDeleteExerciseDialog() }
 
         // Load data for today's date on activity start
-        val currentDate = getCurrentDate()
+        val currentDate = GeneralUtil.getCurrentDate()
         dateTextView.text = currentDate
         loadDateData(currentDate)
     }
@@ -194,15 +194,6 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
         datePickerDialog.show()
     }
 
-    private fun getCurrentDate(): String {
-        val calendar = Calendar.getInstance()
-        val selectedDate = calendar.time
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(selectedDate)
-
-        return formattedDate
-    }
-
     // Load data from the selected date from the apps storage
     @SuppressLint("SetTextI18n")
     private fun loadDateData(date: String) {
@@ -258,10 +249,10 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
 
             writer.close()
             // Notify user
-            ExerciseUtil.showToast(this, layoutInflater, "Data exported to $fileName")
+            GeneralUtil.showToast(this, layoutInflater, "Data exported to $fileName")
         } catch (e: Exception) {
             e.printStackTrace()
-            ExerciseUtil.showToast(this, layoutInflater, "Export failed")
+            GeneralUtil.showToast(this, layoutInflater, "Export failed")
         }
     }
 
@@ -271,7 +262,7 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
         try {
             val file = File(getExternalFilesDir(null), "RecoveryData_$date.csv")
             if (!file.exists()) {
-                ExerciseUtil.showToast(this, layoutInflater, "No file found to import.")
+                GeneralUtil.showToast(this, layoutInflater, "No file found to import.")
                 return
             }
 
@@ -288,7 +279,7 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
                         reps = columns[2].toInt(),
                         hold = columns[3].toInt(),
                         tension = columns[4].toInt(),
-                        timeCompleted = LocalTime.parse(columns[5], ExerciseUtil.timeFormatter),
+                        timeCompleted = LocalTime.parse(columns[5], GeneralUtil.timeFormatter),
                         difficulty = columns[6].toInt(),
                         comments = columns[7],
                         isSelected = columns[8].toBoolean()
@@ -297,10 +288,10 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
             }
 
             exerciseAdapter.setExercises(exercises)
-            ExerciseUtil.showToast(this, layoutInflater, "Data imported successfully.")
+            GeneralUtil.showToast(this, layoutInflater, "Data imported successfully.")
         } catch (e: Exception) {
             e.printStackTrace()
-            ExerciseUtil.showToast(this, layoutInflater, "Import failed")
+            GeneralUtil.showToast(this, layoutInflater, "Import failed")
         }
     }
 }

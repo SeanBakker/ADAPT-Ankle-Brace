@@ -16,7 +16,7 @@ import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.SettingsActivity
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.ExerciseType
-import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 
 class RecoveryPlanTableRowAdapter(
     private val exercises: MutableList<Exercise>,
@@ -163,7 +163,7 @@ class RecoveryPlanTableRowAdapter(
 
                         // Restrict tension level between 1-10
                         if (currentTension == null || currentTension !in 1..10) {
-                            ExerciseUtil.showToast(context, LayoutInflater.from(context), "Please enter a tension level between 1 and 10.")
+                            GeneralUtil.showToast(context, LayoutInflater.from(context), "Please enter a tension level between 1 and 10.")
                         } else {
                             exercise?.tension = currentTension
                         }

@@ -29,6 +29,7 @@ import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import com.example.adaptanklebrace.fragments.StartExerciseWarningFragment
 import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -442,10 +443,10 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
             writer.close()
             // Notify user
-            ExerciseUtil.showToast(this, layoutInflater, "Data exported to $fileName")
+            GeneralUtil.showToast(this, layoutInflater, "Data exported to $fileName")
         } catch (e: Exception) {
             e.printStackTrace()
-            ExerciseUtil.showToast(this, layoutInflater, "Export failed")
+            GeneralUtil.showToast(this, layoutInflater, "Export failed")
         }
     }
 
@@ -455,7 +456,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         try {
             val file = File(getExternalFilesDir(null), "RecoveryPlan_$date.csv")
             if (!file.exists()) {
-                ExerciseUtil.showToast(this, layoutInflater, "No file found to import.")
+                GeneralUtil.showToast(this, layoutInflater, "No file found to import.")
                 return
             }
 
@@ -480,10 +481,10 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
             }
 
             exerciseAdapter.setExercises(exercises)
-            ExerciseUtil.showToast(this, layoutInflater, "Data imported successfully.")
+            GeneralUtil.showToast(this, layoutInflater, "Data imported successfully.")
         } catch (e: Exception) {
             e.printStackTrace()
-            ExerciseUtil.showToast(this, layoutInflater, "Import failed")
+            GeneralUtil.showToast(this, layoutInflater, "Import failed")
         }
     }
 }

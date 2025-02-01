@@ -22,7 +22,7 @@ import com.example.adaptanklebrace.StartSetActivity
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
 import com.example.adaptanklebrace.services.BluetoothService
-import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 
 class ConnectDeviceFragment(
     private val context: Context,
@@ -68,7 +68,7 @@ class ConnectDeviceFragment(
     private fun connectToDevice(currentActivity: Activity?, bluetoothService: BluetoothService?) {
         currentActivity?.let {
             if (bluetoothService == null) {
-                ExerciseUtil.showToast(context, layoutInflater, "Bluetooth service not available")
+                GeneralUtil.showToast(context, layoutInflater, "Bluetooth service not available")
                 return
             }
 
@@ -136,7 +136,7 @@ class ConnectDeviceFragment(
                     dismiss() // Close the dialog
                 }
             } else {
-                ExerciseUtil.showToast(context, layoutInflater, "Bluetooth permissions disabled")
+                GeneralUtil.showToast(context, layoutInflater, "Bluetooth permissions disabled")
             }
         }
     }

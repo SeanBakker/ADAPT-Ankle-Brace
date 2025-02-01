@@ -14,7 +14,7 @@ import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.CalendarDay
 import com.example.adaptanklebrace.utils.Converters
-import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 import com.example.adaptanklebrace.utils.SharedPreferencesUtil
 import java.util.Calendar
 
@@ -95,7 +95,7 @@ class NotificationsActivity : AppCompatActivity() {
 
         // Set click listeners for the inputs
         weeklyDateInput.setOnClickListener {
-            ExerciseUtil.showDayPickerDialog(this, weeklyDateInput) { selectedDay ->
+            GeneralUtil.showDayPickerDialog(this, weeklyDateInput) { selectedDay ->
                 SharedPreferencesUtil.savePreference(sharedPreferences, WEEKLY_DATE_KEY, selectedDay)
                 if (weeklyNotificationCheckbox.isChecked && !completedWeeklyProgress()) {
                     scheduleWeeklyNotification()
@@ -103,7 +103,7 @@ class NotificationsActivity : AppCompatActivity() {
             }
         }
         weeklyTimeInput.setOnClickListener {
-            ExerciseUtil.showTimePickerDialog(this, weeklyTimeInput) { selectedTime ->
+            GeneralUtil.showTimePickerDialog(this, weeklyTimeInput) { selectedTime ->
                 // Save the selected time to app storage
                 val time = Converters.convertLocalTimeToString(selectedTime)
                 SharedPreferencesUtil.savePreference(sharedPreferences, WEEKLY_TIME_KEY, time)
@@ -113,7 +113,7 @@ class NotificationsActivity : AppCompatActivity() {
             }
         }
         dailyTimeInput.setOnClickListener {
-            ExerciseUtil.showTimePickerDialog(this, dailyTimeInput) { selectedTime ->
+            GeneralUtil.showTimePickerDialog(this, dailyTimeInput) { selectedTime ->
                 // Save the selected time to app storage
                 val time = Converters.convertLocalTimeToString(selectedTime)
                 SharedPreferencesUtil.savePreference(sharedPreferences, DAILY_TIME_KEY, time)
@@ -138,7 +138,7 @@ class NotificationsActivity : AppCompatActivity() {
                                 scheduleWeeklyNotification()
                             }
                         } else {
-                            ExerciseUtil.showToast(
+                            GeneralUtil.showToast(
                                 this,
                                 layoutInflater,
                                 "Please enable notification permissions in the settings."
@@ -146,7 +146,7 @@ class NotificationsActivity : AppCompatActivity() {
                             weeklyNotificationCheckbox.isChecked = false
                         }
                     } else {
-                        ExerciseUtil.showToast(
+                        GeneralUtil.showToast(
                             this,
                             layoutInflater,
                             "Please select a time before activating the notification."
@@ -154,7 +154,7 @@ class NotificationsActivity : AppCompatActivity() {
                         weeklyNotificationCheckbox.isChecked = false
                     }
                 } else {
-                    ExerciseUtil.showToast(
+                    GeneralUtil.showToast(
                         this,
                         layoutInflater,
                         "Please select a day before activating the notification."
@@ -178,7 +178,7 @@ class NotificationsActivity : AppCompatActivity() {
                         dailyNotificationEnabled = true
                         scheduleDailyNotification()
                     } else {
-                        ExerciseUtil.showToast(
+                        GeneralUtil.showToast(
                             this,
                             layoutInflater,
                             "Please enable notification permissions in the settings."
@@ -186,7 +186,7 @@ class NotificationsActivity : AppCompatActivity() {
                         dailyNotificationCheckbox.isChecked = false
                     }
                 } else {
-                    ExerciseUtil.showToast(
+                    GeneralUtil.showToast(
                         this,
                         layoutInflater,
                         "Please select a time before activating the notification."

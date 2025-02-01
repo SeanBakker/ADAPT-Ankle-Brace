@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 import com.example.adaptanklebrace.utils.SharedPreferencesUtil
 
 class SettingsActivity : AppCompatActivity() {
@@ -141,12 +141,12 @@ class SettingsActivity : AppCompatActivity() {
                     // Notification permission granted
                     SharedPreferencesUtil.savePreference(sharedPreferences, NOTIFICATIONS_PERMISSION_KEY, true)
                     notificationsEnabled = true
-                    ExerciseUtil.showToast(this, layoutInflater, "Notification permission enabled")
+                    GeneralUtil.showToast(this, layoutInflater, "Notification permission enabled")
                 } else {
                     // Notification permission denied
                     SharedPreferencesUtil.savePreference(sharedPreferences, NOTIFICATIONS_PERMISSION_KEY, false)
                     notificationsEnabled = false
-                    ExerciseUtil.showToast(this, layoutInflater, "Notification permission denied")
+                    GeneralUtil.showToast(this, layoutInflater, "Notification permission denied")
                 }
             }
 
@@ -154,11 +154,11 @@ class SettingsActivity : AppCompatActivity() {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Bluetooth permission granted
                     SharedPreferencesUtil.savePreference(sharedPreferences, BLUETOOTH_PERMISSION_KEY, true)
-                    ExerciseUtil.showToast(this, layoutInflater, "Bluetooth permission granted")
+                    GeneralUtil.showToast(this, layoutInflater, "Bluetooth permission granted")
                 } else {
                     // Bluetooth permission denied
                     SharedPreferencesUtil.savePreference(sharedPreferences, BLUETOOTH_PERMISSION_KEY, false)
-                    ExerciseUtil.showToast(this, layoutInflater, "Bluetooth permission denied")
+                    GeneralUtil.showToast(this, layoutInflater, "Bluetooth permission denied")
                 }
             }
         }

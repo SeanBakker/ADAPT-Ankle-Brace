@@ -17,6 +17,7 @@ import com.example.adaptanklebrace.adapters.RecoveryPlanAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 
 class AddExerciseGoalRowFragment(
     private val context: Context,
@@ -71,23 +72,23 @@ class AddExerciseGoalRowFragment(
             //todo: add option to add goal for current week or all future weeks or choose weeks
 
             if (exerciseName.isEmpty()) {
-                ExerciseUtil.showToast(context, layoutInflater, "Please enter an exercise name.")
+                GeneralUtil.showToast(context, layoutInflater, "Please enter an exercise name.")
             } else if (exerciseGoals.any { exercise: Exercise ->
                     exercise.name.equals(exerciseName, ignoreCase = true)
                 }) {
-                ExerciseUtil.showToast(context, layoutInflater, "This exercise already exists in the table, please edit the goal instead.")
+                GeneralUtil.showToast(context, layoutInflater, "This exercise already exists in the table, please edit the goal instead.")
             } else if (numSets == null || numSets <= 0) {
-                ExerciseUtil.showToast(context, layoutInflater, "Please enter a valid number of sets.")
+                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid number of sets.")
             } else if (numReps == null || numReps <= 0) {
-                ExerciseUtil.showToast(context, layoutInflater, "Please enter a valid number of reps.")
+                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid number of reps.")
             } else if (holdDuration == null || holdDuration < 0) {
-                ExerciseUtil.showToast(context, layoutInflater, "Please enter a valid hold duration.")
+                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid hold duration.")
             } else if (tensionLevel == null || tensionLevel !in 1..10) {
-                ExerciseUtil.showToast(context, layoutInflater, "Please enter a tension level between 1 and 10.")
+                GeneralUtil.showToast(context, layoutInflater, "Please enter a tension level between 1 and 10.")
             } else if (freqNumber == null || freqNumber <= 0) {
-                ExerciseUtil.showToast(context, layoutInflater, "Please enter a valid frequency number.")
+                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid frequency number.")
             } else if (freqCategory.isNullOrEmpty()) {
-                ExerciseUtil.showToast(context, layoutInflater, "Please select a frequency category.")
+                GeneralUtil.showToast(context, layoutInflater, "Please select a frequency category.")
             } else {
                 // Create the exercise object
                 val exercise = Exercise(

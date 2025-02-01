@@ -12,7 +12,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.data.Exercise
-import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 import java.time.LocalTime
 
 class RecoveryDataTableRowAdapter(
@@ -72,7 +72,7 @@ class RecoveryDataTableRowAdapter(
                 (reps as? EditText)?.setText(exercise?.reps.toString())
                 (hold as? EditText)?.setText(exercise?.hold.toString())
                 (tension as? EditText)?.setText(exercise?.tension.toString())
-                (time as? EditText)?.setText(exercise?.timeCompleted?.let { it.format(ExerciseUtil.timeFormatter) } ?: LocalTime.now().format(ExerciseUtil.timeFormatter))
+                (time as? EditText)?.setText(exercise?.timeCompleted?.let { it.format(GeneralUtil.timeFormatter) } ?: LocalTime.now().format(GeneralUtil.timeFormatter))
                 (difficulty as? EditText)?.setText(exercise?.difficulty.toString())
                 (comments as? EditText)?.setText(exercise?.comments)
                 (selectRowCheckBox as? CheckBox)?.isChecked = exercise?.isSelected ?: false
@@ -133,7 +133,7 @@ class RecoveryDataTableRowAdapter(
 
                         // Restrict tension level between 1-10
                         if (currentTension == null || currentTension !in 1..10) {
-                            ExerciseUtil.showToast(context, LayoutInflater.from(context), "Please enter a tension level between 1 and 10.")
+                            GeneralUtil.showToast(context, LayoutInflater.from(context), "Please enter a tension level between 1 and 10.")
                         } else {
                             exercise?.tension = currentTension
                         }
@@ -168,7 +168,7 @@ class RecoveryDataTableRowAdapter(
                     setOnFocusChangeListener { _, hasFocus ->
                         if (hasFocus) {
                             exercise?.let {
-                                ExerciseUtil.showTimePickerDialog(context, this) { selectedTime ->
+                                GeneralUtil.showTimePickerDialog(context, this) { selectedTime ->
                                     exercise.timeCompleted = selectedTime
                                     markAsChanged()
                                 }

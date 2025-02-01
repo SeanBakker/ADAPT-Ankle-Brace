@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.services.BluetoothService
-import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 import com.example.adaptanklebrace.utils.SharedPreferencesUtil
 import com.google.android.material.navigation.NavigationView
 import java.util.Calendar
@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 bluetoothService.initBluetooth()
             } else {
-                ExerciseUtil.showToast(this, layoutInflater, "Bluetooth permissions are required")
+                GeneralUtil.showToast(this, layoutInflater, "Bluetooth permissions are required")
             }
         }
     }

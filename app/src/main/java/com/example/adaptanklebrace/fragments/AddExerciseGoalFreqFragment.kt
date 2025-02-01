@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.adapters.RecoveryPlanAdapter
 import com.example.adaptanklebrace.data.Exercise
-import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 
 class AddExerciseGoalFreqFragment(
     private val context: Context,
@@ -36,9 +36,9 @@ class AddExerciseGoalFreqFragment(
             val freqCategory = freqCategorySpinner.selectedItem?.toString()
 
             if (freqNumber == null || freqNumber <= 0) {
-                ExerciseUtil.showToast(context, layoutInflater, "Please enter a valid frequency number.")
+                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid frequency number.")
             } else if (freqCategory.isNullOrEmpty()) {
-                ExerciseUtil.showToast(context, layoutInflater, "Please select a frequency category.")
+                GeneralUtil.showToast(context, layoutInflater, "Please select a frequency category.")
             } else {
                 // Update the frequency field of the exercise & notify the adapter
                 exercise.frequency = freqNumber.toString() + "x/" + freqCategory

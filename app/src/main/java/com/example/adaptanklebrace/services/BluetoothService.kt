@@ -25,7 +25,7 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.adaptanklebrace.R
-import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 import java.util.UUID
 
 class BluetoothService : Service() {
@@ -64,7 +64,7 @@ class BluetoothService : Service() {
         bluetoothAdapter = bluetoothManager?.adapter
 
         if (bluetoothAdapter == null) {
-            ExerciseUtil.showToast(applicationContext, LayoutInflater.from(applicationContext), "Bluetooth not supported")
+            GeneralUtil.showToast(applicationContext, LayoutInflater.from(applicationContext), "Bluetooth not supported")
             stopSelf()  // Stop the service if Bluetooth is not supported
         }
     }
@@ -75,7 +75,7 @@ class BluetoothService : Service() {
         bluetoothDevice = pairedDevices?.firstOrNull { it.name == "ADAPT" } // Sometimes named: Arduino
 
         if (bluetoothDevice == null) {
-            ExerciseUtil.showToast(context, LayoutInflater.from(context), "A.D.A.P.T. device not found")
+            GeneralUtil.showToast(context, LayoutInflater.from(context), "A.D.A.P.T. device not found")
             return false
         }
 

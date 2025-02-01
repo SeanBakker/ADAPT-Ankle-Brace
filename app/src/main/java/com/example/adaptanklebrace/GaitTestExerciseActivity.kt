@@ -18,6 +18,7 @@ import com.example.adaptanklebrace.data.ExerciseInfo
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.services.BluetoothService
 import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 
 class GaitTestExerciseActivity : AppCompatActivity() {
 
@@ -65,7 +66,7 @@ class GaitTestExerciseActivity : AppCompatActivity() {
         val serviceIntent = Intent(this, BluetoothService::class.java)
         ContextCompat.startForegroundService(this, serviceIntent)
         if (BluetoothService.instance == null) {
-            ExerciseUtil.showToast(this, layoutInflater, "Bluetooth service not available")
+            GeneralUtil.showToast(this, layoutInflater, "Bluetooth service not available")
             finish() // Exit activity
             return
         }

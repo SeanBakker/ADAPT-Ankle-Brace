@@ -13,7 +13,7 @@ class Converters {
         }
 
         fun convertLocalTimeToString(localTime: LocalTime): String {
-            return localTime.format(ExerciseUtil.timeFormatter)
+            return localTime.format(GeneralUtil.timeFormatter)
         }
     }
 }

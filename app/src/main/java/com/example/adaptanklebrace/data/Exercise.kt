@@ -2,7 +2,7 @@ package com.example.adaptanklebrace.data
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.example.adaptanklebrace.utils.ExerciseUtil
+import com.example.adaptanklebrace.utils.GeneralUtil
 import java.io.Serializable
 import java.time.LocalTime
 
@@ -29,7 +29,7 @@ data class Exercise(
         parcel.readInt(),
         parcel.readInt(),
         parcel.readInt(),
-        parcel.readString().let { LocalTime.parse(it, ExerciseUtil.timeFormatter) },
+        parcel.readString().let { LocalTime.parse(it, GeneralUtil.timeFormatter) },
         parcel.readString() ?: "",
         parcel.readInt(),
         parcel.readString() ?: "",
@@ -45,7 +45,7 @@ data class Exercise(
         parcel.writeInt(reps)
         parcel.writeInt(hold)
         parcel.writeInt(tension)
-        parcel.writeString(timeCompleted.format(ExerciseUtil.timeFormatter))
+        parcel.writeString(timeCompleted.format(GeneralUtil.timeFormatter))
         parcel.writeString(frequency)
         parcel.writeInt(difficulty)
         parcel.writeString(comments)
