@@ -31,7 +31,7 @@ class ConnectDeviceFragment(
 ) : DialogFragment() {
 
     private var isManuallyDismissed: Boolean = false
-    private var isTensionCorrect: Boolean = false
+    private var isTensionCorrect: Boolean = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -100,6 +100,7 @@ class ConnectDeviceFragment(
                                     parentFragmentManager,
                                     "tension_level_warning"
                                 )
+                                isTensionCorrect = false
                             } else {
                                 isTensionCorrect = true
                             }

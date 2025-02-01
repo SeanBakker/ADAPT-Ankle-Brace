@@ -117,7 +117,7 @@ class StartSetActivity : AppCompatActivity() {
 
         // Load sets data
         if (exercise != null) {
-            loadSetsData(exercise)
+            ExerciseUtil.loadSetsData(setsAdapter, exercise)
         }
 
         // Initialize and set up the RecyclerView
@@ -125,7 +125,10 @@ class StartSetActivity : AppCompatActivity() {
         setsRecyclerView.layoutManager = LinearLayoutManager(this)
         setsRecyclerView.adapter = setsAdapter
 
-        // Initialize the progress bar and text views
+        // Initialize progress bar, buttons & text views
+        startSetButton = findViewById(R.id.startSetBtn)
+        endSetButton = findViewById(R.id.endSetBtn)
+        finishButton = findViewById(R.id.finishExerciseBtn)
         setProgressBar = findViewById(R.id.setProgressBar)
         setProgressLiveDataText = findViewById(R.id.setProgressLiveDataText)
         setProgressMinText = findViewById(R.id.setProgressMinText)
@@ -153,7 +156,6 @@ class StartSetActivity : AppCompatActivity() {
         }
 
         // Configure start set button
-        startSetButton = findViewById(R.id.startSetBtn)
         startSetButton.setOnClickListener {
             // Send start flag to device to prepare exercise data collection (of sets)
             bluetoothService.writeDeviceData("start")
@@ -189,18 +191,5 @@ class StartSetActivity : AppCompatActivity() {
     override fun onDestroy() {
         handler.removeCallbacks(updateAngleTask)
         super.onDestroy()
-    }
-
-    // Load the sets data from the exercise goal
-    private fun loadSetsData(exerciseGoal: Exercise) {
-        val sets: MutableList<Pair<Int, Int>> = mutableListOf()
-
-        // Create an element in the list for each set
-        for (setNumber in 0 until exerciseGoal.sets) {
-            sets.add(Pair(setNumber+1, 0))
-        }
-
-        // Load the sets for the table
-        setsAdapter.createSets(sets)
     }
 }

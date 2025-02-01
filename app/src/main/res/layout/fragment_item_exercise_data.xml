@@ -29,9 +29,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sets: "
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="?attr/colorOnBackground"
+                android:textColor="?attr/colorOnSecondary"
                 android:layout_marginTop="8dp" />
 
             <TextView
@@ -40,9 +40,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 app:intToStringText="@{exerciseData.sets}"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/red_1"
+                android:textColor="?attr/colorOnSecondary"
                 android:layout_marginTop="8dp" />
         </LinearLayout>
 
@@ -58,9 +58,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Reps: "
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="?attr/colorOnBackground"
+                android:textColor="?attr/colorOnSecondary"
                 android:layout_marginTop="8dp" />
 
             <TextView
@@ -69,9 +69,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 app:intToStringText="@{exerciseData.reps}"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/red_1"
+                android:textColor="?attr/colorOnSecondary"
                 android:layout_marginTop="8dp" />
         </LinearLayout>
 
@@ -87,9 +87,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Hold (seconds): "
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="?attr/colorOnBackground"
+                android:textColor="?attr/colorOnSecondary"
                 android:layout_marginTop="8dp" />
 
             <TextView
@@ -98,9 +98,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 app:intToStringText="@{exerciseData.hold}"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/red_1"
+                android:textColor="?attr/colorOnSecondary"
                 android:layout_marginTop="8dp" />
         </LinearLayout>
 
@@ -116,9 +116,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tension: "
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="?attr/colorOnBackground"
+                android:textColor="?attr/colorOnSecondary"
                 android:layout_marginTop="8dp" />
 
             <TextView
@@ -127,9 +127,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 app:intToStringText="@{exerciseData.tension}"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/red_1"
+                android:textColor="?attr/colorOnSecondary"
                 android:layout_marginTop="8dp" />
         </LinearLayout>
     </RelativeLayout>

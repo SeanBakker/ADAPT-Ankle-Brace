@@ -27,6 +27,8 @@
     <string name="timeOfCompletion">Time of Completion</string>
     <string name="difficulty">Difficulty</string>
     <string name="comments">Comments</string>
+    <string name="noData">---</string>
+    <string name="NA">N/A</string>
 
     <!-- Settings Options -->
     <string name="weeklyGoalReminder">Weekly Goal Reminder</string>
