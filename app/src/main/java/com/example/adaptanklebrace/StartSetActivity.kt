@@ -188,15 +188,14 @@ class StartSetActivity : AppCompatActivity() {
                 // Calculate reps completed as an average of all >0 reps in the table
                 val repsCompleted = setsAdapter.getAverageReps()
 
-                // todo: update values with device data
                 // todo: ask for difficulty rating & comments before saving data
                 val completedExercise = Exercise(
                     id = ExerciseUtil.generateNewId(existingExercises),
                     name = exercise.name,
                     sets = setsCompleted,
                     reps = repsCompleted,
-                    hold = 1,
-                    tension = 1,
+                    hold = exercise.hold,
+                    tension = exercise.tension, // todo: update with actual tension from device
                 )
                 ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).saveExercisesForDate(
                     currentDate,

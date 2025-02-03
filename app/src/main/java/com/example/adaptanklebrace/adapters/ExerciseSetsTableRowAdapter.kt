@@ -106,6 +106,7 @@ class ExerciseSetsTableRowAdapter(
 
     /**
      * Retrieves the average number of reps for all sets completed.
+     * Floor the resulting average to an integer.
      *
      * @return integer item count
      */
@@ -116,7 +117,7 @@ class ExerciseSetsTableRowAdapter(
             for (set in sets) {
                 repsTotal += set.second
             }
-            return (repsTotal / sets.size)
+            return repsTotal.floorDiv(sets.size)
         } else {
             return 0
         }
