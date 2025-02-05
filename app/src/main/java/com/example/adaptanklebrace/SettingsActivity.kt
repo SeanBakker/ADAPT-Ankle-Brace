@@ -145,6 +145,7 @@ class SettingsActivity : AppCompatActivity() {
                 } else {
                     // Notification permission denied
                     SharedPreferencesUtil.savePreference(sharedPreferences, NOTIFICATIONS_PERMISSION_KEY, false)
+                    notificationsCheckbox.isChecked = false
                     notificationsEnabled = false
                     GeneralUtil.showToast(this, layoutInflater, "Notification permission denied")
                 }
@@ -154,10 +155,13 @@ class SettingsActivity : AppCompatActivity() {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Bluetooth permission granted
                     SharedPreferencesUtil.savePreference(sharedPreferences, BLUETOOTH_PERMISSION_KEY, true)
+                    bluetoothEnabled = true
                     GeneralUtil.showToast(this, layoutInflater, "Bluetooth permission granted")
                 } else {
                     // Bluetooth permission denied
                     SharedPreferencesUtil.savePreference(sharedPreferences, BLUETOOTH_PERMISSION_KEY, false)
+                    bluetoothPermissionCheckbox.isChecked = false
+                    bluetoothEnabled = false
                     GeneralUtil.showToast(this, layoutInflater, "Bluetooth permission denied")
                 }
             }
