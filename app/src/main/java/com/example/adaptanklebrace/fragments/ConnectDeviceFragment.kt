@@ -15,9 +15,9 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import com.example.adaptanklebrace.GaitTestExerciseActivity
+import com.example.adaptanklebrace.GaitTestMetricActivity
 import com.example.adaptanklebrace.R
-import com.example.adaptanklebrace.ROMExerciseActivity
+import com.example.adaptanklebrace.ROMMetricActivity
 import com.example.adaptanklebrace.StartSetActivity
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
@@ -118,15 +118,16 @@ class ConnectDeviceFragment(
 
                             // Send start flag to device to prepare exercise data collection (of sets)
                             when (targetActivity) {
-                                ROMExerciseActivity::class.java -> bluetoothService.writeDeviceData("start_ROM")
-                                GaitTestExerciseActivity::class.java -> bluetoothService.writeDeviceData("start_Gait")
+                                ROMMetricActivity::class.java -> bluetoothService.writeDeviceData("start_ROM")
+                                GaitTestMetricActivity::class.java -> bluetoothService.writeDeviceData("start_Gait")
                                 else -> bluetoothService.writeDeviceData(getString(R.string.error))
                             }
 
                             // Start target activity to perform sets
+                            // Use METRIC_KEY since only metrics will start the target activity through this execution path
                             val startSetIntent = Intent(it, targetActivity)
                             val parcelableExercise = exercise as Parcelable
-                            startSetIntent.putExtra(ExerciseInfo.EXERCISE_KEY, parcelableExercise)
+                            startSetIntent.putExtra(ExerciseInfo.METRIC_KEY, parcelableExercise)
                             ContextCompat.startActivity(it, startSetIntent, null)
                         }
                     }

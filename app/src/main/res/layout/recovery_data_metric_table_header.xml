@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:stretchColumns="1"
+    android:gravity="center_horizontal">
+
+    <!-- Table row for header -->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/selectRowCheckBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/metricName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.5"
+            android:textSize="14sp"
+            android:textColor="?attr/colorOnBackground"
+            android:text="@string/metricName"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:textSize="14sp"
+            android:textColor="?attr/colorOnBackground"
+            android:text="@string/timeOfCompletion"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/viewMetricsBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:layout_marginHorizontal="10dp"
+            android:textSize="14sp"
+            android:textColor="?attr/colorOnBackground"
+            android:text="@string/viewMetrics"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/difficulty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:textColor="?attr/colorOnBackground"
+            android:text="@string/difficulty"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/comments"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.5"
+            android:textSize="14sp"
+            android:textColor="?attr/colorOnBackground"
+            android:text="@string/comments"
+            android:textStyle="bold"
+            android:gravity="center" />
+    </TableRow>
+</TableLayout>

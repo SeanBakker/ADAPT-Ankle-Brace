@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat
 import com.example.adaptanklebrace.services.BluetoothService
 import com.example.adaptanklebrace.utils.GeneralUtil
 
-class ROMExerciseActivity : AppCompatActivity() {
+class ROMMetricActivity : AppCompatActivity() {
 
     private lateinit var flexionProgressBar: ProgressBar
     private lateinit var inversionProgressBar: ProgressBar
@@ -27,12 +27,12 @@ class ROMExerciseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_rom_exercise)
+        setContentView(R.layout.activity_rom_metric)
 
         // Set up the toolbar
         val toolbar: Toolbar = findViewById(R.id.romExerciseToolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(R.string.rom_exercise)
+        supportActionBar?.title = getString(R.string.rom_metric)
 
         // Enable the back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

@@ -3,6 +3,7 @@ package com.example.adaptanklebrace.utils
 import android.content.Context
 import com.example.adaptanklebrace.adapters.LocalTimeAdapter
 import com.example.adaptanklebrace.data.Exercise
+import com.example.adaptanklebrace.data.Metric
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import java.time.LocalTime
@@ -28,6 +29,27 @@ class ExerciseDataStore(context: Context, preferenceName: String) {
 
         return if (json != null) {
             val type = object : TypeToken<List<Exercise>>() {}.type
+            gson.fromJson(json, type)
+        } else {
+            emptyList()
+        }
+    }
+
+    fun saveMetricsForDate(date: String, metrics: List<Metric>) {
+        // Get unique key for storing metrics for this date
+        val key = getMetricKey(date)
+
+        val json = gson.toJson(metrics)
+        sharedPreferences.edit().putString(key, json).apply()
+    }
+
+    fun getMetricsForDate(date: String): List<Metric> {
+        // Retrieve the JSON string using the unique key
+        val key = getMetricKey(date)
+        val json = sharedPreferences.getString(key, null)
+
+        return if (json != null) {
+            val type = object : TypeToken<List<Metric>>() {}.type
             gson.fromJson(json, type)
         } else {
             emptyList()
@@ -63,6 +85,10 @@ class ExerciseDataStore(context: Context, preferenceName: String) {
 
     private fun getExerciseKey(date: String): String {
         return "$date-exercises"
+    }
+
+    private fun getMetricKey(date: String): String {
+        return "$date-metrics"
     }
 
     private fun getDifficultyAndCommentsKey(date: String): String {

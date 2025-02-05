@@ -190,7 +190,7 @@ class StartSetActivity : AppCompatActivity() {
 
                 // todo: ask for difficulty rating & comments before saving data
                 val completedExercise = Exercise(
-                    id = ExerciseUtil.generateNewId(existingExercises),
+                    id = ExerciseUtil.generateNewExerciseId(existingExercises),
                     name = exercise.name,
                     sets = setsCompleted,
                     reps = repsCompleted,

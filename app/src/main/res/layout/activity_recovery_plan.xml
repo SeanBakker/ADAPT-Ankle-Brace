@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -21,17 +20,19 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:layout_marginTop="56dp">
+        android:layout_marginTop="?attr/actionBarSize">
 
-        <!-- Date and Summary -->
+        <!-- Date -->
         <LinearLayout
+            android:id="@+id/dateLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
@@ -51,9 +52,12 @@
                 android:text="📅" />
         </LinearLayout>
 
+        <!-- Summary -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/summaryLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/dateLayout"
             android:padding="8dp"
             app:cardBackgroundColor="@color/transparent">
 
@@ -107,18 +111,87 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Exercise Plan Table -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/exerciseRecyclerView"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/exerciseTableLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:scrollbars="vertical" />
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/summaryLayout"
+            app:layout_constraintHeight_max="600dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/exerciseTableHeaderText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                android:paddingTop="20dp"
+                android:paddingBottom="10dp"
+                android:text="Recovery Exercises:"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSecondary"
+                android:gravity="start" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/exerciseTableHeaderText"
+                android:orientation="horizontal">
+
+                <!-- Exercise Plan Table -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/exerciseRecyclerView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingBottom="50dp"
+                    android:scrollbars="vertical" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/metricTableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/exerciseTableLayout"
+            app:layout_constraintHeight_max="300dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/metricTableHeaderText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                android:paddingTop="20dp"
+                android:paddingBottom="10dp"
+                android:text="Metrics:"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSecondary"
+                android:gravity="start" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/metricTableHeaderText"
+                android:orientation="horizontal">
+
+                <!-- Exercise Plan Table -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/metricRecyclerView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:scrollbars="vertical" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Bottom Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/metricTableLayout"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal"
             android:gravity="end">
 
@@ -141,21 +214,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:text="Update Percentages" />
+                android:text="Recalculate %" />
 
             <Button
-                android:id="@+id/deleteExerciseButton"
+                android:id="@+id/deleteRowButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:text="Delete Row" />
 
             <Button
+                android:id="@+id/addMetricButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="Add Metric Row" />
+
+            <Button
                 android:id="@+id/addExerciseButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:text="Add Row" />
+                android:text="Add Exercise Row" />
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

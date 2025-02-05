@@ -10,8 +10,10 @@ import android.widget.CheckBox
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewTableRowAdapter
+import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewExerciseTableRowAdapter
+import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewMetricTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
+import com.example.adaptanklebrace.data.Metric
 import com.example.adaptanklebrace.enums.CalendarDay
 import com.example.adaptanklebrace.utils.Converters
 import com.example.adaptanklebrace.utils.GeneralUtil
@@ -31,8 +33,11 @@ class NotificationsActivity : AppCompatActivity() {
     private var recoveryPlanActivity = RecoveryPlanActivity()
     private var mainActivity = MainActivity()
 
-    private lateinit var exerciseAdapter: RecoveryPlanOverviewTableRowAdapter
+    private lateinit var exerciseAdapter: RecoveryPlanOverviewExerciseTableRowAdapter
     private var exercises: MutableList<Exercise> = mutableListOf()
+
+    private lateinit var metricAdapter: RecoveryPlanOverviewMetricTableRowAdapter
+    private var metrics: MutableList<Metric> = mutableListOf()
 
     private val WEEKLY_NOTIFICATION_REQUEST_CODE = 100
     private val DAILY_NOTIFICATION_REQUEST_CODE = 200
@@ -86,12 +91,14 @@ class NotificationsActivity : AppCompatActivity() {
         weeklyTimeInput.setText(SharedPreferencesUtil.getPreference(sharedPreferences, WEEKLY_TIME_KEY, ""))
         dailyTimeInput.setText(SharedPreferencesUtil.getPreference(sharedPreferences, DAILY_TIME_KEY, ""))
 
-        // Setup the adapter
-        exerciseAdapter = RecoveryPlanOverviewTableRowAdapter(exercises, mainActivity)
+        // Setup the adapters
+        exerciseAdapter = RecoveryPlanOverviewExerciseTableRowAdapter(exercises, mainActivity)
+        metricAdapter = RecoveryPlanOverviewMetricTableRowAdapter(metrics, mainActivity)
 
         // Load data for current week on activity start
         val currentWeek = recoveryPlanActivity.calculateWeekRange(Calendar.getInstance())
         recoveryPlanActivity.loadExerciseWeekData(this, exerciseAdapter, currentWeek)
+        recoveryPlanActivity.loadMetricWeekData(this, metricAdapter, currentWeek)
 
         // Set click listeners for the inputs
         weeklyDateInput.setOnClickListener {
@@ -290,7 +297,8 @@ class NotificationsActivity : AppCompatActivity() {
     private fun completedWeeklyProgress(): Boolean {
         val currentWeek = recoveryPlanActivity.calculateWeekRange(Calendar.getInstance())
         val exerciseGoalsForCurrentWeek = exerciseAdapter.getExercises()
-        val weeklyProgress = recoveryPlanActivity.calculateWeeklyProgress(this, exerciseAdapter, exerciseGoalsForCurrentWeek, currentWeek)
+        val metricGoalsForCurrentWeek = metricAdapter.getMetrics()
+        val weeklyProgress = recoveryPlanActivity.calculateWeeklyProgress(this, exerciseAdapter, metricAdapter, exerciseGoalsForCurrentWeek, metricGoalsForCurrentWeek, currentWeek)
         return (weeklyProgress >= 100.0)
     }
 }

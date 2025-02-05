@@ -52,10 +52,10 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
         "Range of Motion (ROM)",
         "An exercise to monitor improvements in flexibility of the ankle joint.",
         """
-        1. Sit comfortably and extend one leg straight in front of you.
-        2. Slowly move your foot in circles, first in the clockwise direction.
-        3. Perform the specified number of reps (rotations).
-        4. After a short break, repeat the exercise in the counterclockwise direction.
+        1. Sit comfortably and extend your leg straight in front of you.
+        2. Slowly move your foot in circles for 5 seconds.
+        3. Complete the rotations repeatedly in the same direction (either clockwise or counterclockwise).
+        4. The app will record live data once the exercise is started, until the timer is complete.
         """.trimIndent(),
         5
     ),
@@ -64,9 +64,8 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
         "An exercise to monitor improvements in the recovery of gait and impact force of the ankle joint.",
         """
         1. Stand with your feet hip-width apart.
-        2. Walk normally in a straight line.
-        3. Perform the specified number of reps (steps).
-        4. After a short break, repeat for the specified number of sets.
+        2. Walk normally in a straight line for 10 seconds.
+        3. The app will record live data once the exercise is started, until the timer is complete.
         """.trimIndent(),
         6
     ),
@@ -86,7 +85,13 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
     companion object {
         fun getAllExerciseNames(): List<String> {
             return values()
-                .filter { it.exerciseName != ERROR.exerciseName }
+                .filter { it.exerciseName != ERROR.exerciseName && it.exerciseName !in listOf(RANGE_OF_MOTION.exerciseName, GAIT_TEST.exerciseName) }
+                .map { it.exerciseName }
+        }
+
+        fun getAllMetricNames(): List<String> {
+            return values()
+                .filter { it.exerciseName != ERROR.exerciseName && it.exerciseName in listOf(RANGE_OF_MOTION.exerciseName, GAIT_TEST.exerciseName) }
                 .map { it.exerciseName }
         }
 

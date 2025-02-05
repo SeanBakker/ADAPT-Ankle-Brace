@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:text="Add Weekly Metric Goal Form"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:paddingBottom="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fill out the details below to add a metric goal."
+            android:textSize="14sp"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/requiredFieldsFormText"
+            android:textSize="14sp"
+            android:textColor="@color/red_1"
+            android:layout_gravity="center"
+            android:paddingBottom="20dp" />
+
+        <!-- Metric Name -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Metric Name:"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asteriskSymbol"
+                android:textSize="16sp"
+                android:paddingHorizontal="5dp"
+                android:textColor="@color/red_1" />
+        </LinearLayout>
+
+        <AutoCompleteTextView
+            android:id="@+id/metricNameDropdown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Select metric name"
+            android:inputType="none"
+            android:focusable="false"
+            android:completionThreshold="0" />
+
+        <!-- Frequency -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Frequency:"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asteriskSymbol"
+                android:textSize="16sp"
+                android:paddingHorizontal="5dp"
+                android:textColor="@color/red_1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/freqNumberInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="e.g., 3"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="times per"
+                android:layout_gravity="center_vertical"
+                android:padding="5dp" />
+
+            <Spinner
+                android:id="@+id/freqCategorySpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:entries="@array/frequency_categories" />
+        </LinearLayout>
+
+        <!-- Comments -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comments:"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/commentsInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g., any additional comments"
+            android:inputType="text" />
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/addMetricGoalBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Metric Goal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp" />
+
+    </LinearLayout>
+</ScrollView>

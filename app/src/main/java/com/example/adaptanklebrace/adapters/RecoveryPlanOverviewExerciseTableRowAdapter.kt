@@ -13,10 +13,11 @@ import com.example.adaptanklebrace.data.Exercise
 import androidx.core.content.ContextCompat.getString
 import com.example.adaptanklebrace.enums.ExerciseType
 
-class RecoveryPlanOverviewTableRowAdapter(
+class RecoveryPlanOverviewExerciseTableRowAdapter(
     private val exercises: MutableList<Exercise>,
     private val mainActivityCallback: MainActivityCallback
-) : RecyclerView.Adapter<RecoveryPlanOverviewTableRowAdapter.ExerciseViewHolder>(), RecoveryPlanAdapter {
+) : RecyclerView.Adapter<RecoveryPlanOverviewExerciseTableRowAdapter.ExerciseViewHolder>(),
+    RecoveryOverviewAdapter, RecoveryExerciseAdapter {
 
     // Define the callback interface
     interface MainActivityCallback {
@@ -111,10 +112,10 @@ class RecoveryPlanOverviewTableRowAdapter(
         // Inflate either header or item row based on the view type
         val view: View = if (viewType == VIEW_TYPE_HEADER) {
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.recovery_plan_overview_table_header, parent, false)
+                .inflate(R.layout.recovery_plan_overview_exercise_table_header, parent, false)
         } else {
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.recovery_plan_overview_row_item, parent, false)
+                .inflate(R.layout.recovery_plan_overview_exercise_row_item, parent, false)
         }
         return ExerciseViewHolder(view)
     }
@@ -159,7 +160,8 @@ class RecoveryPlanOverviewTableRowAdapter(
      *
      * @return integer visible item count
      */
-    fun getVisibleItemCount(): Int {
+    override fun getVisibleItemCount(): Int {
+        exercises.forEach { it.isVisible = it.percentageCompleted < 100 }
         return exercises.count { it.isVisible } + 1 // Count visible exercises + header row
     }
 

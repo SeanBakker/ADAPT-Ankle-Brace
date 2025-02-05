@@ -9,7 +9,7 @@ import android.widget.*
 import androidx.fragment.app.DialogFragment
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.RecoveryDataActivity
-import com.example.adaptanklebrace.adapters.RecoveryPlanAdapter
+import com.example.adaptanklebrace.adapters.RecoveryExerciseAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.utils.ExerciseUtil
@@ -19,7 +19,7 @@ import java.util.Calendar
 
 class AddExerciseDataRowFragment(
     private val context: Context,
-    private val exerciseAdapter: RecoveryPlanAdapter
+    private val exerciseAdapter: RecoveryExerciseAdapter
 ) : DialogFragment() {
 
     private lateinit var timeInput: TextView
@@ -91,7 +91,7 @@ class AddExerciseDataRowFragment(
 
                 // Create the exercise object
                 val exercise = Exercise(
-                    id = ExerciseUtil.generateNewId(exercises),
+                    id = ExerciseUtil.generateNewExerciseId(exercises),
                     name = exerciseName,
                     sets = numSets,
                     reps = numReps,

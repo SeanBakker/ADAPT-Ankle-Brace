@@ -17,33 +17,50 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewTableRowAdapter
+import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewExerciseTableRowAdapter
+import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewMetricTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
+import com.example.adaptanklebrace.data.Metric
 import com.example.adaptanklebrace.services.BluetoothService
+import com.example.adaptanklebrace.utils.ExerciseUtil
 import com.example.adaptanklebrace.utils.GeneralUtil
 import com.example.adaptanklebrace.utils.SharedPreferencesUtil
 import com.google.android.material.navigation.NavigationView
 import java.util.Calendar
+import java.util.concurrent.atomic.AtomicInteger
 
-class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.MainActivityCallback {
+class MainActivity : AppCompatActivity(), RecoveryPlanOverviewExerciseTableRowAdapter.MainActivityCallback,
+    RecoveryPlanOverviewMetricTableRowAdapter.MainActivityCallback {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var weeklyProgressBar: ProgressBar
     private lateinit var weeklyProgressText: TextView
-    private lateinit var exerciseRecyclerView: RecyclerView
     private lateinit var editGoalsBtn: Button
     private lateinit var goalsCompletedText: TextView
     private lateinit var noGoalsSetText: TextView
     private lateinit var setGoalsBtn: Button
 
-    private lateinit var exerciseAdapter: RecoveryPlanOverviewTableRowAdapter
+    // Exercise table variables
+    private lateinit var exerciseTableLayout: ConstraintLayout
+    private lateinit var exerciseRecyclerView: RecyclerView
+    private lateinit var exerciseAdapter: RecoveryPlanOverviewExerciseTableRowAdapter
     private var exercises: MutableList<Exercise> = mutableListOf()
+
+    // Metric table variables
+    private lateinit var metricTableLayout: ConstraintLayout
+    private lateinit var metricRecyclerView: RecyclerView
+    private lateinit var metricAdapter: RecoveryPlanOverviewMetricTableRowAdapter
+    private var metrics: MutableList<Metric> = mutableListOf()
+
+    // Initialize counter for updating the two recycler views
+    private var recyclerViewUpdatedCounter = AtomicInteger(2)
 
     private var settingsActivity = SettingsActivity()
     private var recoveryPlanActivity = RecoveryPlanActivity()
@@ -98,17 +115,26 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         ContextCompat.startForegroundService(this, serviceIntent)
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
 
-        // Setup exercise recovery plan table overview
+        // Initialize the adapters and pass the activity as a callback
+        exerciseAdapter = RecoveryPlanOverviewExerciseTableRowAdapter(exercises, this)
+        metricAdapter = RecoveryPlanOverviewMetricTableRowAdapter(metrics, this)
+
+        // Set up RecyclerView for exercise table
+        exerciseTableLayout = findViewById(R.id.exerciseTableLayout)
         exerciseRecyclerView = findViewById(R.id.exerciseRecyclerView)
         exerciseRecyclerView.layoutManager = LinearLayoutManager(this)
-
-        // Setup the adapter
-        exerciseAdapter = RecoveryPlanOverviewTableRowAdapter(exercises, this)
         exerciseRecyclerView.adapter = exerciseAdapter
+
+        // Set up RecyclerView for metric table
+        metricTableLayout = findViewById(R.id.metricTableLayout)
+        metricRecyclerView = findViewById(R.id.metricRecyclerView)
+        metricRecyclerView.layoutManager = LinearLayoutManager(this)
+        metricRecyclerView.adapter = metricAdapter
 
         // Load data for current week on activity start
         val currentWeek = recoveryPlanActivity.calculateWeekRange(Calendar.getInstance())
         recoveryPlanActivity.loadExerciseWeekData(this, exerciseAdapter, currentWeek)
+        recoveryPlanActivity.loadMetricWeekData(this, metricAdapter, currentWeek)
 
         // Setup the progress bar and text
         weeklyProgressBar = findViewById(R.id.weeklyGoalProgress)
@@ -130,15 +156,22 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         super.onResume()
         val currentWeek = recoveryPlanActivity.calculateWeekRange(Calendar.getInstance())
 
-        // Load weekly exercise data
+        // Load weekly exercise and metric data
         recoveryPlanActivity.loadExerciseWeekData(this, exerciseAdapter, currentWeek)
+        recoveryPlanActivity.loadMetricWeekData(this, metricAdapter, currentWeek)
 
         // Ensure progress is updated when the activity comes to the foreground
         calculateWeeklyProgress(currentWeek)
 
         // Update visibility of recycler view table after the adapter processes the data
+        recyclerViewUpdatedCounter = AtomicInteger(2) // Reset the counter
         exerciseRecyclerView.post {
-            updateRecyclerViewVisibility()
+            ExerciseUtil.updateRecyclerViewOverviewVisibility(exerciseAdapter, exerciseTableLayout)
+            checkIfBothRecyclerViewsCompleted()
+        }
+        metricRecyclerView.post {
+            ExerciseUtil.updateRecyclerViewOverviewVisibility(metricAdapter, metricTableLayout)
+            checkIfBothRecyclerViewsCompleted()
         }
     }
 
@@ -178,6 +211,10 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         recoveryPlanActivity.onStartExerciseActivity(this, exercise)
     }
 
+    override fun onClickStartMetricWithoutWarning(metric: Metric) {
+        recoveryPlanActivity.onStartMetricActivity(this, metric)
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == BLUETOOTH_PERMISSION_REQUEST_CODE) {
@@ -197,38 +234,15 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
     @SuppressLint("DefaultLocale", "SetTextI18n")
     private fun calculateWeeklyProgress(currentWeek: String) {
         val exerciseGoalsForCurrentWeek = exerciseAdapter.getExercises()
+        val metricGoalsForCurrentWeek = metricAdapter.getMetrics()
 
-        // Get reference to RecoveryPlanActivity
-        val weeklyProgress = recoveryPlanActivity.calculateWeeklyProgress(this, exerciseAdapter, exerciseGoalsForCurrentWeek, currentWeek)
+        // Calculate weekly progress of goals
+        val weeklyProgress = recoveryPlanActivity.calculateWeeklyProgress(this, exerciseAdapter, metricAdapter, exerciseGoalsForCurrentWeek, metricGoalsForCurrentWeek, currentWeek)
         val truncatedWeeklyProgress = String.format("%.2f", weeklyProgress)
 
         // Update progress bar and text
         weeklyProgressBar.progress = weeklyProgress.toInt()
         weeklyProgressText.text = "$truncatedWeeklyProgress%"
-    }
-
-    /**
-     * Updates the visibility of the Recovery Plan Overview table based on exercise count.
-     */
-    private fun updateRecyclerViewVisibility() {
-        if (exerciseAdapter.getVisibleItemCount() <= 1) {
-            exerciseRecyclerView.visibility = View.INVISIBLE
-            editGoalsBtn.visibility = View.GONE
-
-            // Check goals completed percentage
-            val currentProgress = weeklyProgressBar.progress
-            if (currentProgress >= 100) {
-                // All goals completed
-                setGoalsTextVisibility(goalsCompleted = true)
-            } else {
-                // No goals set
-                setGoalsTextVisibility(noGoals = true)
-            }
-        } else {
-            exerciseRecyclerView.visibility = View.VISIBLE
-            editGoalsBtn.visibility = View.VISIBLE
-            setGoalsTextVisibility()
-        }
     }
 
     /**
@@ -247,6 +261,34 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewTableRowAdapter.Ma
         } else {
             noGoalsSetText.visibility = View.GONE
             setGoalsBtn.visibility = View.GONE
+        }
+    }
+
+    /**
+     * Sets the visibility of various text views and buttons after both recycler views have completed updating.
+     */
+    private fun checkIfBothRecyclerViewsCompleted() {
+        if (recyclerViewUpdatedCounter.decrementAndGet() == 0) {
+            // Both recycler views have finished their post actions
+            if (exerciseTableLayout.visibility == View.GONE && metricTableLayout.visibility == View.GONE) {
+                editGoalsBtn.visibility = View.GONE
+
+                // Check goals completed percentage
+                val currentProgress = weeklyProgressBar.progress
+                if (currentProgress >= 100) {
+                    // All goals completed
+                    setGoalsTextVisibility(goalsCompleted = true)
+                } else {
+                    // No goals set
+                    setGoalsTextVisibility(noGoals = true)
+                }
+            } else {
+                editGoalsBtn.visibility = View.VISIBLE
+                setGoalsTextVisibility()
+            }
+
+            // Reset the counter
+            recyclerViewUpdatedCounter = AtomicInteger(2)
         }
     }
 }

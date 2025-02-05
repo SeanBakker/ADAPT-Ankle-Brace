@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:stretchColumns="1"
+    android:gravity="center_horizontal">
+
+    <!-- Table row for header -->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/metricName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:textSize="14sp"
+            android:textColor="?attr/colorOnBackground"
+            android:text="@string/metricName"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/frequency"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:textSize="14sp"
+            android:textColor="?attr/colorOnBackground"
+            android:text="@string/freq"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/percentageCompleted"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.6"
+            android:textSize="14sp"
+            android:textColor="?attr/colorOnBackground"
+            android:text="@string/percentCompleted"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/startMetricBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:padding="0dp"
+            android:layout_marginHorizontal="10dp"
+            android:textSize="14sp"
+            android:textColor="?attr/colorOnBackground"
+            android:text="@string/startMetricBtn"
+            android:textStyle="bold"
+            android:gravity="center" />
+    </TableRow>
+</TableLayout>

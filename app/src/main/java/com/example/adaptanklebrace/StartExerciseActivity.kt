@@ -21,7 +21,7 @@ class StartExerciseActivity : AppCompatActivity() {
     private lateinit var exerciseDataAdapter: ExerciseDataAdapter
     private lateinit var connectToDeviceButton: Button
 
-    private var chosenActivity: Class<*> = StartSetActivity::class.java
+    private val chosenActivity: Class<StartSetActivity> = StartSetActivity::class.java
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,15 +84,6 @@ class StartExerciseActivity : AppCompatActivity() {
 
         connectToDeviceButton.setOnClickListener {
             exercise?.let {
-                // Choose target activity based on provided exercise info
-                if (exerciseInfo != null) {
-                    chosenActivity = when (exerciseInfo.name) {
-                        ExerciseType.RANGE_OF_MOTION.exerciseName -> ROMExerciseActivity::class.java
-                        ExerciseType.GAIT_TEST.exerciseName -> GaitTestExerciseActivity::class.java
-                        else -> StartSetActivity::class.java
-                    }
-                }
-
                 val connectDeviceFragment = ConnectDeviceFragment(this, chosenActivity, it)
                 connectDeviceFragment.show(supportFragmentManager, "connect_device")
             }

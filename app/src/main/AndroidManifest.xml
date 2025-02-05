@@ -51,9 +51,9 @@
             </intent-filter>
         </activity>
 
-        <!-- Exercise Item Activities -->
-        <activity android:name=".ROMExerciseActivity" />
-        <activity android:name=".GaitTestExerciseActivity" />
+        <!-- Metric Activities -->
+        <activity android:name=".ROMMetricActivity" />
+        <activity android:name=".GaitTestMetricActivity" />
 
         <!-- Other Activities -->
         <activity android:name=".SettingsActivity" />
@@ -62,6 +62,7 @@
         <activity android:name=".RecoveryDataActivity" />
         <activity android:name=".NotificationsActivity" />
         <activity android:name=".StartExerciseActivity" />
+        <activity android:name=".StartMetricActivity" />
         <activity android:name=".StartSetActivity" />
     </application>
 </manifest>

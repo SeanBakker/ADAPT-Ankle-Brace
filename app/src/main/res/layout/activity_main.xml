@@ -86,24 +86,99 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="10dp"
             android:padding="16dp"
-            android:text="Overview of Recovery Plan Exercise Goals:"
+            android:text="Overview of Recovery Plan Goals:"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="?attr/colorOnBackground"
             android:gravity="center" />
 
-        <!-- Exercise Plan Table Overview -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/exerciseRecyclerView"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/exerciseTableLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/recoveryPlanOverviewText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_max="600dp"
-            android:padding="16dp"
-            android:layout_gravity="center"
-            android:scrollbars="vertical" />
+            app:layout_constraintHeight_max="400dp"
+            android:paddingHorizontal="32dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/exerciseTableHeaderText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/exerciseTableLayout"
+                android:paddingTop="20dp"
+                android:paddingBottom="10dp"
+                android:text="Recovery Exercises:"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSecondary"
+                android:gravity="start" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/exerciseTableHeaderText"
+                android:paddingBottom="32dp"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <!-- Exercise Plan Table Overview -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/exerciseRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:paddingBottom="50dp"
+                    android:layout_gravity="center"
+                    android:scrollbars="vertical" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/metricTableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/exerciseTableLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_max="300dp"
+            android:paddingHorizontal="32dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/metricTableHeaderText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/metricTableLayout"
+                android:paddingTop="20dp"
+                android:paddingBottom="10dp"
+                android:text="Metrics:"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSecondary"
+                android:gravity="start" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/metricTableHeaderText"
+                android:paddingBottom="32dp"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <!-- Exercise Plan Table -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/metricRecyclerView"
+                    android:layout_width="600dp"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:paddingBottom="50dp"
+                    android:layout_gravity="center"
+                    android:scrollbars="vertical" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/goalsTextLayout"
@@ -123,7 +198,7 @@
                 android:layout_marginTop="20dp"
                 android:text="Congratulations! All goals have been completed for this week!\n New goals can be added from the Recovery Plan page."
                 android:textSize="20sp"
-                android:textColor="?attr/colorOnBackground"
+                android:textColor="?attr/colorOnSecondary"
                 android:lineSpacingExtra="5dp"
                 android:gravity="center" />
 
@@ -137,7 +212,7 @@
                 android:layout_marginTop="20dp"
                 android:text="There are no goals set for this week, click below to set new goals!"
                 android:textSize="20sp"
-                android:textColor="?attr/colorOnBackground"
+                android:textColor="?attr/colorOnSecondary"
                 android:gravity="center" />
 
             <!-- Edit Exercise Goals -->
@@ -158,9 +233,8 @@
             android:id="@+id/editGoalsBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/exerciseRecyclerView"
+            app:layout_constraintTop_toBottomOf="@id/metricTableLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="10dp"
             android:layout_marginEnd="38dp"
             android:text="@string/editGoalsBtn"
             android:layout_gravity="end" />

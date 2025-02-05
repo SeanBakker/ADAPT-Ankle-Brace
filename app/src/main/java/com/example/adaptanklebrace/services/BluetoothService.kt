@@ -155,7 +155,7 @@ class BluetoothService : Service() {
                 if (value.isNotEmpty()) {
                     if (value.size == 1) {
                         // Single integer
-                        val singleValue = value[0].toInt() and 0xFF
+                        val singleValue = value[0].toInt() and 0xFF // todo: read float or double values instead of integers
                         _deviceLiveData.postValue(Pair(singleValue, singleValue)) // Store as a pair for consistency
                         Log.i("Bluetooth", "Characteristic changed (single): $singleValue")
                     } else if (value.size >= 2) {

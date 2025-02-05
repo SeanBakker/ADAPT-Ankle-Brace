@@ -31,6 +31,7 @@ data class ExerciseInfo(
 
     companion object CREATOR : Parcelable.Creator<ExerciseInfo> {
         const val EXERCISE_KEY = "exercise_key"
+        const val METRIC_KEY = "metric_key"
 
         override fun createFromParcel(parcel: Parcel): ExerciseInfo {
             return ExerciseInfo(parcel)

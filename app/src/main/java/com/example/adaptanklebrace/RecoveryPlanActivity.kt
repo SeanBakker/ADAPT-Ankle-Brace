@@ -8,23 +8,29 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.RecoveryDataActivity.Companion.RECOVERY_DATA_PREFERENCE
-import com.example.adaptanklebrace.adapters.RecoveryPlanAdapter
-import com.example.adaptanklebrace.adapters.RecoveryPlanTableRowAdapter
+import com.example.adaptanklebrace.adapters.RecoveryExerciseAdapter
+import com.example.adaptanklebrace.adapters.RecoveryPlanExerciseTableRowAdapter
+import com.example.adaptanklebrace.adapters.RecoveryMetricAdapter
+import com.example.adaptanklebrace.adapters.RecoveryPlanMetricTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
-import com.example.adaptanklebrace.fragments.AddExerciseGoalFreqFragment
+import com.example.adaptanklebrace.data.Metric
+import com.example.adaptanklebrace.fragments.AddGoalFreqFragment
 import com.example.adaptanklebrace.fragments.AddExerciseGoalRowFragment
+import com.example.adaptanklebrace.fragments.AddMetricGoalRowFragment
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import com.example.adaptanklebrace.fragments.StartExerciseWarningFragment
 import com.example.adaptanklebrace.utils.ExerciseDataStore
@@ -34,23 +40,33 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.RecoveryPlanCallback,
-    DeleteRowFragment.OnDeleteListener, StartExerciseWarningFragment.OnStartExerciseListener {
+class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAdapter.RecoveryPlanCallback,
+    RecoveryPlanMetricTableRowAdapter.RecoveryPlanCallback, DeleteRowFragment.OnDeleteListener,
+    StartExerciseWarningFragment.OnStartExerciseOrMetricListener {
 
     private lateinit var dateTextView: TextView
     private lateinit var datePickerButton: Button
     private lateinit var difficultyProgressBar: ProgressBar
     private lateinit var difficultyTextView: TextView
     private lateinit var commentsEditText: EditText
-    private lateinit var exerciseRecyclerView: RecyclerView
     private lateinit var exportButton: Button
     private lateinit var importButton: Button
     private lateinit var updatePercentagesButton: Button
-    private lateinit var addExerciseButton: Button
-    private lateinit var deleteExerciseButton: Button
+    private lateinit var deleteRowButton: Button
 
-    private lateinit var exerciseAdapter: RecoveryPlanTableRowAdapter
+    // Exercise table variables
+    private lateinit var exerciseTableLayout: ConstraintLayout
+    private lateinit var exerciseRecyclerView: RecyclerView
+    private lateinit var exerciseAdapter: RecoveryPlanExerciseTableRowAdapter
     private var exercises: MutableList<Exercise> = mutableListOf()
+    private lateinit var addExerciseButton: Button
+
+    // Metric table variables
+    private lateinit var metricTableLayout: ConstraintLayout
+    private lateinit var metricRecyclerView: RecyclerView
+    private lateinit var metricAdapter: RecoveryPlanMetricTableRowAdapter
+    private var metrics: MutableList<Metric> = mutableListOf()
+    private lateinit var addMetricButton: Button
 
     companion object {
         const val RECOVERY_PLAN_PREFERENCE = "RecoveryPlan"
@@ -74,11 +90,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         toolbar.setNavigationOnClickListener {
             // Save current state of the data
             saveCurrentDateExerciseData()
-
-            val week = dateTextView.text.toString()
-
-            // Calculate weekly progress when navigating off the page
-            calculateWeeklyProgress(this, exerciseAdapter, exercises, week)
+            saveCurrentDateMetricData()
 
             @Suppress("DEPRECATION")
             onBackPressed()
@@ -91,19 +103,28 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         difficultyProgressBar.progressTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.red_1))
         difficultyTextView = findViewById(R.id.difficultyText)
         commentsEditText = findViewById(R.id.commentsEditText)
-        exerciseRecyclerView = findViewById(R.id.exerciseRecyclerView)
         exportButton = findViewById(R.id.exportButton)
         importButton = findViewById(R.id.importButton)
         updatePercentagesButton = findViewById(R.id.updatePercentagesButton)
         addExerciseButton = findViewById(R.id.addExerciseButton)
-        deleteExerciseButton = findViewById(R.id.deleteExerciseButton)
+        addMetricButton = findViewById(R.id.addMetricButton)
+        deleteRowButton = findViewById(R.id.deleteRowButton)
 
-        // Initialize the adapter and pass the activity as a callback
-        exerciseAdapter = RecoveryPlanTableRowAdapter(exercises, this)
+        // Initialize the adapters and pass the activity as a callback
+        exerciseAdapter = RecoveryPlanExerciseTableRowAdapter(exercises, this)
+        metricAdapter = RecoveryPlanMetricTableRowAdapter(metrics, this)
 
-        // Set up RecyclerView
+        // Set up RecyclerView for exercise table
+        exerciseTableLayout = findViewById(R.id.exerciseTableLayout)
+        exerciseRecyclerView = findViewById(R.id.exerciseRecyclerView)
         exerciseRecyclerView.layoutManager = LinearLayoutManager(this)
         exerciseRecyclerView.adapter = exerciseAdapter
+
+        // Set up RecyclerView for metric table
+        metricTableLayout = findViewById(R.id.metricTableLayout)
+        metricRecyclerView = findViewById(R.id.metricRecyclerView)
+        metricRecyclerView.layoutManager = LinearLayoutManager(this)
+        metricRecyclerView.adapter = metricAdapter
 
         // Set up date picker
         datePickerButton.setOnClickListener { showDatePicker() }
@@ -146,25 +167,32 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
         // Handle update percentages button click
         updatePercentagesButton.setOnClickListener {
-            calculateExerciseCompletionForAllRows(this, exerciseAdapter, getExerciseGoals(exerciseAdapter), dateTextView.text.toString())
+            val currentWeek = dateTextView.text.toString()
+            calculateExerciseCompletionForAllRows(this, exerciseAdapter, getExerciseGoals(exerciseAdapter), currentWeek)
+            calculateMetricCompletionForAllRows(this, metricAdapter, getMetricGoals(metricAdapter), currentWeek)
         }
 
         // Handle add exercise button click
         addExerciseButton.setOnClickListener { showAddExerciseDialog() }
 
-        // Handle delete exercise button click
-        deleteExerciseButton.setOnClickListener { showDeleteExerciseDialog() }
+        // Handle add metric button click
+        addMetricButton.setOnClickListener { showAddMetricDialog() }
+
+        // Handle delete row button click
+        deleteRowButton.setOnClickListener { showDeleteRowDialog() }
 
         // Load data for current week on activity start
         val currentWeek = calculateWeekRange(Calendar.getInstance())
         dateTextView.text = currentWeek
         loadWeekData(currentWeek)
 
-        // Get the list of all exercise goals from the adapter
-        val exerciseGoals = getExerciseGoals(exerciseAdapter)
-
         // Load data for exercise goal completion percentages
-        calculateExerciseCompletionForAllRows(this, exerciseAdapter, exerciseGoals, currentWeek)
+        calculateExerciseCompletionForAllRows(this, exerciseAdapter, getExerciseGoals(exerciseAdapter), currentWeek)
+        calculateMetricCompletionForAllRows(this, metricAdapter, getMetricGoals(metricAdapter), currentWeek)
+
+        // todo: fix import/export
+        importButton.visibility = View.GONE
+        exportButton.visibility = View.GONE
     }
 
     override fun onResume() {
@@ -173,6 +201,10 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         // Load data for current week on resuming
         val currentWeek = dateTextView.text.toString()
         loadWeekData(currentWeek)
+
+        // Update visibility of recycler view tables
+        updateExerciseTableVisibility()
+        updateMetricTableVisibility()
     }
 
     // Save exercise data for the selected date to the apps storage
@@ -182,16 +214,35 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveExercisesForDate(week, exercises)
     }
 
+    // Save metric data for the selected date to the apps storage
+    override fun saveCurrentDateMetricData() {
+        val week = dateTextView.text.toString()
+        val metrics = getMetricGoals(metricAdapter)
+        ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveMetricsForDate(week, metrics)
+    }
+
     override fun onFocusFrequencyText(exercise: Exercise, position: Int) {
         showSetExerciseFrequencyDialog(exercise, position)
+    }
+
+    override fun onFocusFrequencyText(metric: Metric, position: Int) {
+        showSetMetricFrequencyDialog(metric, position)
     }
 
     override fun onClickStartExerciseWithWarning(exercise: Exercise) {
         showStartExerciseWarningDialog(exercise)
     }
 
+    override fun onClickStartMetricWithWarning(metric: Metric) {
+        showStartMetricWarningDialog(metric)
+    }
+
     override fun onClickStartExerciseWithoutWarning(exercise: Exercise) {
         onStartExerciseActivity(this, exercise)
+    }
+
+    override fun onClickStartMetricWithoutWarning(metric: Metric) {
+        onStartMetricActivity(this, metric)
     }
 
     override fun onStartExerciseActivity(context: Context, exercise: Exercise) {
@@ -201,20 +252,46 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         ContextCompat.startActivity(context, startExerciseIntent, null)
     }
 
-    override fun onDeleteRow() {
-        deleteExerciseRow()
+    override fun onStartMetricActivity(context: Context, metric: Metric) {
+        val startMetricIntent = Intent(context, StartMetricActivity::class.java)
+        val parcelableMetric = metric as Parcelable
+        startMetricIntent.putExtra(ExerciseInfo.METRIC_KEY, parcelableMetric)
+        ContextCompat.startActivity(context, startMetricIntent, null)
     }
 
-    fun onAddRow(exercise: Exercise) {
+    override fun onClickViewAllMetricDetails(metric: Metric) {
+        // todo: show pop-up of all saved metric details for that week
+    }
+
+    override fun onDeleteRow() {
+        deleteRow()
+    }
+
+    fun onAddExerciseRow(exercise: Exercise) {
         addExerciseRow(exercise)
     }
 
-    fun getExerciseGoals(adapter: RecoveryPlanAdapter): List<Exercise> {
+    fun onAddMetricRow(metric: Metric) {
+        addMetricRow(metric)
+    }
+
+    fun getExerciseGoals(adapter: RecoveryExerciseAdapter): List<Exercise> {
         return adapter.getExercises()
     }
 
-    fun calculateWeeklyProgress(context: Context, adapter: RecoveryPlanAdapter, exerciseGoals: List<Exercise>, week: String): Double {
-        return calculateExerciseCompletionForAllRows(context, adapter, exerciseGoals, week)
+    fun getMetricGoals(adapter: RecoveryMetricAdapter): List<Metric> {
+        return adapter.getMetrics()
+    }
+
+    fun calculateWeeklyProgress(context: Context, exerciseAdapter: RecoveryExerciseAdapter, metricAdapter: RecoveryMetricAdapter, exerciseGoals: List<Exercise>, metricGoals: List<Metric>, week: String): Double {
+        val exerciseProgress = calculateExerciseCompletionForAllRows(context, exerciseAdapter, exerciseGoals, week)
+        val metricProgress = calculateMetricCompletionForAllRows(context, metricAdapter, metricGoals, week)
+
+        return if (exerciseGoals.isEmpty() && metricGoals.isEmpty()) {
+            0.0
+        } else {
+            (exerciseProgress + metricProgress) / (exerciseGoals.size + metricGoals.size)
+        }
     }
 
     fun calculateWeekRange(calendar: Calendar): String {
@@ -238,14 +315,28 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
     }
 
     // Load exercise data for the selected week from the apps storage
-    fun loadExerciseWeekData(context: Context, adapter: RecoveryPlanAdapter, week: String) {
+    fun loadExerciseWeekData(context: Context, adapter: RecoveryExerciseAdapter, week: String) {
         val exercises = ExerciseDataStore(context, RECOVERY_PLAN_PREFERENCE).getExercisesForDate(week)
         adapter.setExercises(exercises)
     }
 
-    private fun deleteExerciseRow() {
+    // Load metric data for the selected week from the apps storage
+    fun loadMetricWeekData(context: Context, adapter: RecoveryMetricAdapter, week: String) {
+        val metrics = ExerciseDataStore(context, RECOVERY_PLAN_PREFERENCE).getMetricsForDate(week)
+        adapter.setMetrics(metrics)
+    }
+
+    private fun deleteRow() {
         exerciseAdapter.deleteExerciseRow()
-        saveCurrentDateExerciseData() // Save data after deleting rows
+        metricAdapter.deleteMetricRow()
+
+        // Save data after deleting rows
+        saveCurrentDateExerciseData()
+        saveCurrentDateMetricData()
+
+        // Update visibility of recycler view tables
+        updateExerciseTableVisibility()
+        updateMetricTableVisibility()
     }
 
     private fun addExerciseRow(exercise: Exercise) {
@@ -255,6 +346,21 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         // Fill details of exercise completion
         val week = dateTextView.text.toString()
         calculateExerciseCompletionForRow(this, exerciseAdapter, exercise, week)
+
+        // Update visibility of recycler view table
+        updateExerciseTableVisibility()
+    }
+
+    private fun addMetricRow(metric: Metric) {
+        metricAdapter.addMetricRow(metric)
+        saveCurrentDateMetricData() // Save data after adding new row
+
+        // Fill details of metric completion
+        val week = dateTextView.text.toString()
+        calculateMetricCompletionForRow(this, metricAdapter, metric, week)
+
+        // Update visibility of recycler view table
+        updateMetricTableVisibility()
     }
 
     private fun showDatePicker() {
@@ -278,7 +384,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
                 loadWeekData(chosenWeek)
 
                 // Recalculate percentages for that week
-                calculateWeeklyProgress(this, exerciseAdapter, getExerciseGoals(exerciseAdapter), chosenWeek)
+                calculateWeeklyProgress(this, exerciseAdapter, metricAdapter, getExerciseGoals(exerciseAdapter), getMetricGoals(metricAdapter), chosenWeek)
             },
             year,
             month,
@@ -298,6 +404,13 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
         // Load the exercises for the week
         loadExerciseWeekData(this, exerciseAdapter, week)
+
+        // Load the metrics for the week
+        loadMetricWeekData(this, metricAdapter, week)
+
+        // Update visibility of recycler view tables
+        updateExerciseTableVisibility()
+        updateMetricTableVisibility()
     }
 
     // Save difficulty & comments data for the selected week to the apps storage
@@ -308,37 +421,55 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveDifficultyAndCommentsPairForDate(week, difficulty, comments)
     }
 
-    // Show pop-up dialog for adding exercise goal row to the table
+    // Show pop-up dialog for adding an exercise goal row to the table
     private fun showAddExerciseDialog() {
         val addExerciseGoalRowFragment = AddExerciseGoalRowFragment(this, exerciseAdapter)
         addExerciseGoalRowFragment.show(supportFragmentManager, "add_exercise_goal_row")
     }
 
-    // Show pop-up dialog for deleting an exercise row from the table
-    private fun showDeleteExerciseDialog() {
+    // Show pop-up dialog for adding a metric goal row to the table
+    private fun showAddMetricDialog() {
+        val addMetricGoalRowFragment = AddMetricGoalRowFragment(this, metricAdapter)
+        addMetricGoalRowFragment.show(supportFragmentManager, "add_metric_goal_row")
+    }
+
+    // Show pop-up dialog for deleting an exercise/metric row from the table
+    private fun showDeleteRowDialog() {
         val deleteRowFragment = DeleteRowFragment()
         deleteRowFragment.show(supportFragmentManager, "delete_row")
     }
 
     // Show pop-up dialog for setting exercise goal frequency for a row
     private fun showSetExerciseFrequencyDialog(exercise: Exercise, position: Int) {
-        val addExerciseGoalFreqFragment = AddExerciseGoalFreqFragment(this, exerciseAdapter, exercise, position)
-        addExerciseGoalFreqFragment.show(supportFragmentManager, "add_exercise_goal_freq")
+        val addGoalFreqFragment = AddGoalFreqFragment(this, exerciseAdapter = exerciseAdapter, exercise = exercise, position = position)
+        addGoalFreqFragment.show(supportFragmentManager, "add_goal_freq")
+    }
+
+    // Show pop-up dialog for setting metric goal frequency for a row
+    private fun showSetMetricFrequencyDialog(metric: Metric, position: Int) {
+        val addGoalFreqFragment = AddGoalFreqFragment(this, metricAdapter = metricAdapter, metric = metric, position = position)
+        addGoalFreqFragment.show(supportFragmentManager, "add_goal_freq")
     }
 
     // Show pop-up dialog for warning of starting an exercise that has above 100% completion
     private fun showStartExerciseWarningDialog(exercise: Exercise) {
-        val startExerciseWarningFragment = StartExerciseWarningFragment(this, exercise)
+        val startExerciseWarningFragment = StartExerciseWarningFragment(this, exercise = exercise)
         startExerciseWarningFragment.show(supportFragmentManager, "start_exercise_warning")
     }
 
+    // Show pop-up dialog for warning of starting an metric that has above 100% completion
+    private fun showStartMetricWarningDialog(metric: Metric) {
+        val startExerciseWarningFragment = StartExerciseWarningFragment(this, metric = metric)
+        startExerciseWarningFragment.show(supportFragmentManager, "start_metric_warning")
+    }
+
     // Calculate the % completed value for all exercise goal rows
-    private fun calculateExerciseCompletionForAllRows(context: Context, adapter: RecoveryPlanAdapter, exerciseGoals: List<Exercise>, week: String): Double {
+    private fun calculateExerciseCompletionForAllRows(context: Context, exerciseAdapter: RecoveryExerciseAdapter, exerciseGoals: List<Exercise>, week: String): Double {
         var totalPercentageCompleted = 0.0
 
         // Loop through each exercise in the Recovery Plan table
         for (exercise in exerciseGoals) {
-            var percentageCompleted = calculateExerciseCompletionForRow(context, adapter, exercise, week)
+            var percentageCompleted = calculateExerciseCompletionForRow(context, exerciseAdapter, exercise, week)
 
             if (percentageCompleted > 100) {
                 percentageCompleted = 100.0
@@ -346,11 +477,28 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
             totalPercentageCompleted += percentageCompleted
         }
 
-        return if (exerciseGoals.isEmpty()) 0.0 else (totalPercentageCompleted / exerciseGoals.size)
+        return if (exerciseGoals.isEmpty()) 0.0 else totalPercentageCompleted
+    }
+
+    // Calculate the % completed value for all metric goal rows
+    private fun calculateMetricCompletionForAllRows(context: Context, metricAdapter: RecoveryMetricAdapter, metricGoals: List<Metric>, week: String): Double {
+        var totalPercentageCompleted = 0.0
+
+        // Loop through each metric in the Recovery Plan table
+        for (metric in metricGoals) {
+            var percentageCompleted = calculateMetricCompletionForRow(context, metricAdapter, metric, week)
+
+            if (percentageCompleted > 100) {
+                percentageCompleted = 100.0
+            }
+            totalPercentageCompleted += percentageCompleted
+        }
+
+        return if (metricGoals.isEmpty()) 0.0 else totalPercentageCompleted
     }
 
     // Calculate the % completed value for a single exercise goal row
-    private fun calculateExerciseCompletionForRow(context: Context, adapter: RecoveryPlanAdapter, exerciseGoal: Exercise, week: String): Double {
+    private fun calculateExerciseCompletionForRow(context: Context, exerciseAdapter: RecoveryExerciseAdapter, exerciseGoal: Exercise, week: String): Double {
         val exerciseName = exerciseGoal.name
 
         // Fetch the completed data for this exercise from the Recovery Data table
@@ -386,7 +534,46 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         // Notify the adapter to update the UI for the row if it has changed
         if (previousPercentage != percentageCompleted) {
             val position = exercises.indexOf(exerciseGoal) + 1 // +1 to account for the header
-            adapter.notifyItemChangedAndRefresh(position)
+            exerciseAdapter.notifyItemChangedAndRefresh(position)
+        }
+
+        return percentageCompleted
+    }
+
+    // Calculate the % completed value for a single metric goal row
+    private fun calculateMetricCompletionForRow(context: Context, metricAdapter: RecoveryMetricAdapter, metricGoal: Metric, week: String): Double {
+        val metricName = metricGoal.name
+
+        // Fetch the completed data for this metric from the Recovery Data table
+        val recoveryDataMetricList = fetchRecoveryDataForMetricGoal(context, metricName, week)
+
+        // Calculate the total completed value from the Recovery Data table
+        val totalCompletedValue = recoveryDataMetricList.size
+
+        // Calculate the goal value from the Recovery Plan table row
+        val freqFactors = metricGoal.frequency.split("x/")
+        val freqNumber = freqFactors[0].toInt()
+        val freqCategory = when (freqFactors[1]) {
+            "day" -> 7
+            "week" -> 1
+            else -> 1
+        }
+        val goalValue = freqNumber * freqCategory
+
+        // Calculate the percentage of completion
+        var percentageCompleted = 0.0
+        if (goalValue != 0) {
+            percentageCompleted = (totalCompletedValue.toDouble() / goalValue) * 100
+        }
+
+        // Update the metric data
+        val previousPercentage = metricGoal.percentageCompleted
+        metricGoal.percentageCompleted = percentageCompleted
+
+        // Notify the adapter to update the UI for the row if it has changed
+        if (previousPercentage != percentageCompleted) {
+            val position = metrics.indexOf(metricGoal) + 1 // +1 to account for the header
+            metricAdapter.notifyItemChangedAndRefresh(position)
         }
 
         return percentageCompleted
@@ -420,6 +607,52 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
         }
 
         return exercises
+    }
+
+    // Fetch metric data from Recovery Data table with corresponding metric name
+    private fun fetchRecoveryDataForMetricGoal(context: Context, metricName: String, week: String): List<Metric> {
+        // Fetch all metrics with same name for each day of the week
+        val firstDateString = week.split(" - ")[0] // Get the first date (start of the week)
+
+        // Parse the first date into a Calendar object
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.time = dateFormat.parse(firstDateString) ?: throw IllegalArgumentException("Invalid date format")
+
+        val metrics: MutableList<Metric> = mutableListOf()
+
+        // Loop over the 7 days in the week
+        for (i in 0..6) {
+            // Format the current date as a string
+            val currentDate = dateFormat.format(calendar.time)
+
+            // Fetch metrics for the current date and filter by metricName
+            val dailyMetrics = ExerciseDataStore(context, RECOVERY_DATA_PREFERENCE)
+                .getMetricsForDate(currentDate)
+                .filter { it.name == metricName }
+            metrics.addAll(dailyMetrics)
+
+            // Move to the next day
+            calendar.add(Calendar.DATE, 1)
+        }
+
+        return metrics
+    }
+
+    // Update the visibility of the exercise table
+    private fun updateExerciseTableVisibility() {
+        // Update visibility of recycler view table after the adapter processes the data
+        exerciseRecyclerView.post {
+            ExerciseUtil.updateRecyclerViewVisibility(exerciseAdapter, exerciseTableLayout)
+        }
+    }
+
+    // Update the visibility of the metric table
+    private fun updateMetricTableVisibility() {
+        // Update visibility of recycler view table after the adapter processes the data
+        metricRecyclerView.post {
+            ExerciseUtil.updateRecyclerViewVisibility(metricAdapter, metricTableLayout)
+        }
     }
 
     //todo: fix export/import functions for the table
@@ -467,7 +700,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanTableRowAdapter.Re
 
                 exercises.add(
                     Exercise(
-                        id = ExerciseUtil.generateNewId(exercises),
+                        id = ExerciseUtil.generateNewExerciseId(exercises),
                         name = columns[0],
                         sets = columns[1].toInt(),
                         reps = columns[2].toInt(),

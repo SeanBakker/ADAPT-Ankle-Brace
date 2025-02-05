@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:text="Add Completed Metric Data Form"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:paddingBottom="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fill out the details below to add metric data."
+            android:textSize="14sp"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/requiredFieldsFormText"
+            android:textSize="14sp"
+            android:textColor="@color/red_1"
+            android:layout_gravity="center"
+            android:paddingBottom="20dp" />
+
+        <!-- Metric Name -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Metric Name:"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asteriskSymbol"
+                android:textSize="16sp"
+                android:paddingHorizontal="5dp"
+                android:textColor="@color/red_1" />
+        </LinearLayout>
+
+        <AutoCompleteTextView
+            android:id="@+id/metricNameDropdown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Select metric name"
+            android:inputType="none"
+            android:focusable="false"
+            android:completionThreshold="0" />
+
+        <!-- Time of Completion -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time of completion:"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/timeInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Select time"
+            android:paddingVertical="12dp"
+            android:gravity="center_vertical"
+            android:focusable="false"
+            android:clickable="true"
+            android:cursorVisible="false"
+            android:inputType="none"
+            android:textSize="16sp" />
+
+        <!-- Difficulty Level -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Difficulty Level (1-10):"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/difficultyLevelInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g., 5"
+            android:inputType="number" />
+
+        <!-- Comments -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comments:"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/commentsInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g., comments about difficulty"
+            android:inputType="text" />
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/addMetricDataBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Metric Data"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp" />
+
+    </LinearLayout>
+</ScrollView>

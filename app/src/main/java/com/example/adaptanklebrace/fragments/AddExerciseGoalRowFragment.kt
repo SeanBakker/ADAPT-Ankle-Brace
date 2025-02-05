@@ -13,7 +13,7 @@ import android.widget.Spinner
 import androidx.fragment.app.DialogFragment
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.RecoveryPlanActivity
-import com.example.adaptanklebrace.adapters.RecoveryPlanAdapter
+import com.example.adaptanklebrace.adapters.RecoveryExerciseAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.utils.ExerciseUtil
@@ -21,7 +21,7 @@ import com.example.adaptanklebrace.utils.GeneralUtil
 
 class AddExerciseGoalRowFragment(
     private val context: Context,
-    private val exerciseAdapter: RecoveryPlanAdapter
+    private val exerciseAdapter: RecoveryExerciseAdapter
 ) : DialogFragment() {
 
     override fun onCreateView(
@@ -92,7 +92,7 @@ class AddExerciseGoalRowFragment(
             } else {
                 // Create the exercise object
                 val exercise = Exercise(
-                    id = ExerciseUtil.generateNewId(exerciseGoals),
+                    id = ExerciseUtil.generateNewExerciseId(exerciseGoals),
                     name = exerciseName,
                     sets = numSets,
                     reps = numReps,
@@ -103,7 +103,7 @@ class AddExerciseGoalRowFragment(
                 )
 
                 // Call the RecoveryPlanActivity function to add the goal
-                recoveryPlanActivity?.onAddRow(exercise)
+                recoveryPlanActivity?.onAddExerciseRow(exercise)
                 dismiss() // Close the dialog
             }
         }

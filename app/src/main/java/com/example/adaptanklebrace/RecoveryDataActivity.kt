@@ -5,19 +5,24 @@ import android.app.DatePickerDialog
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.adaptanklebrace.adapters.RecoveryDataTableRowAdapter
+import com.example.adaptanklebrace.adapters.RecoveryDataExerciseTableRowAdapter
+import com.example.adaptanklebrace.adapters.RecoveryDataMetricTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
+import com.example.adaptanklebrace.data.Metric
 import com.example.adaptanklebrace.fragments.AddExerciseDataRowFragment
+import com.example.adaptanklebrace.fragments.AddMetricDataRowFragment
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
@@ -27,22 +32,31 @@ import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.util.*
 
-class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.RecoveryDataCallback,
-    DeleteRowFragment.OnDeleteListener {
+class RecoveryDataActivity : AppCompatActivity(), RecoveryDataExerciseTableRowAdapter.RecoveryDataCallback,
+    RecoveryDataMetricTableRowAdapter.RecoveryDataCallback, DeleteRowFragment.OnDeleteListener {
 
     private lateinit var dateTextView: TextView
     private lateinit var datePickerButton: Button
     private lateinit var difficultyProgressBar: ProgressBar
     private lateinit var difficultyTextView: TextView
     private lateinit var commentsEditText: EditText
-    private lateinit var exerciseRecyclerView: RecyclerView
     private lateinit var exportButton: Button
     private lateinit var importButton: Button
-    private lateinit var addExerciseButton: Button
-    private lateinit var deleteExerciseButton: Button
+    private lateinit var deleteRowButton: Button
 
-    private lateinit var exerciseAdapter: RecoveryDataTableRowAdapter
+    // Exercise table variables
+    private lateinit var exerciseTableLayout: ConstraintLayout
+    private lateinit var exerciseRecyclerView: RecyclerView
+    private lateinit var exerciseAdapter: RecoveryDataExerciseTableRowAdapter
     private var exercises: MutableList<Exercise> = mutableListOf()
+    private lateinit var addExerciseButton: Button
+
+    // Metric table variables
+    private lateinit var metricTableLayout: ConstraintLayout
+    private lateinit var metricRecyclerView: RecyclerView
+    private lateinit var metricAdapter: RecoveryDataMetricTableRowAdapter
+    private var metrics: MutableList<Metric> = mutableListOf()
+    private lateinit var addMetricButton: Button
 
     companion object {
         const val RECOVERY_DATA_PREFERENCE = "RecoveryData"
@@ -64,6 +78,10 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
 
         // Handle the back button click
         toolbar.setNavigationOnClickListener {
+            // Save current state of the data
+            saveCurrentDateExerciseData()
+            saveCurrentDateMetricData()
+
             GeneralUtil.returnToMainActivity(this)
             // Apply a smooth transition
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
@@ -77,18 +95,27 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
         difficultyProgressBar.progressTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.red_1))
         difficultyTextView = findViewById(R.id.difficultyText)
         commentsEditText = findViewById(R.id.commentsEditText)
-        exerciseRecyclerView = findViewById(R.id.exerciseRecyclerView)
         exportButton = findViewById(R.id.exportButton)
         importButton = findViewById(R.id.importButton)
         addExerciseButton = findViewById(R.id.addExerciseButton)
-        deleteExerciseButton = findViewById(R.id.deleteExerciseButton)
+        addMetricButton = findViewById(R.id.addMetricButton)
+        deleteRowButton = findViewById(R.id.deleteRowButton)
 
-        // Initialize the adapter and pass the activity as a callback
-        exerciseAdapter = RecoveryDataTableRowAdapter(exercises, this)
+        // Initialize the adapters and pass the activity as a callback
+        exerciseAdapter = RecoveryDataExerciseTableRowAdapter(exercises, this)
+        metricAdapter = RecoveryDataMetricTableRowAdapter(metrics, this)
 
-        // Set up RecyclerView
+        // Set up RecyclerView for exercise table
+        exerciseTableLayout = findViewById(R.id.exerciseTableLayout)
+        exerciseRecyclerView = findViewById(R.id.exerciseRecyclerView)
         exerciseRecyclerView.layoutManager = LinearLayoutManager(this)
         exerciseRecyclerView.adapter = exerciseAdapter
+
+        // Set up RecyclerView for metric table
+        metricTableLayout = findViewById(R.id.metricTableLayout)
+        metricRecyclerView = findViewById(R.id.metricRecyclerView)
+        metricRecyclerView.layoutManager = LinearLayoutManager(this)
+        metricRecyclerView.adapter = metricAdapter
 
         // Set up date picker
         datePickerButton.setOnClickListener { showDatePicker() }
@@ -132,13 +159,28 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
         // Handle add exercise button click
         addExerciseButton.setOnClickListener { showAddExerciseDialog() }
 
+        // Handle add metric button click
+        addMetricButton.setOnClickListener { showAddMetricDialog() }
+
         // Handle delete exercise button click
-        deleteExerciseButton.setOnClickListener { showDeleteExerciseDialog() }
+        deleteRowButton.setOnClickListener { showDeleteRowDialog() }
 
         // Load data for today's date on activity start
         val currentDate = GeneralUtil.getCurrentDate()
         dateTextView.text = currentDate
         loadDateData(currentDate)
+
+        // todo: fix import/export
+        importButton.visibility = View.GONE
+        exportButton.visibility = View.GONE
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Update visibility of recycler view tables
+        updateExerciseTableVisibility()
+        updateMetricTableVisibility()
     }
 
     // Save exercise data for the selected date to the apps storage
@@ -148,22 +190,56 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
         ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).saveExercisesForDate(date, exercises)
     }
 
+    // Save metric data for the selected date to the apps storage
+    override fun saveCurrentDateMetricData() {
+        val date = dateTextView.text.toString()
+        val metrics = metricAdapter.getMetrics()
+        ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).saveMetricsForDate(date, metrics)
+    }
+
+    override fun onClickViewMetricDetails(metric: Metric) {
+        // todo: show pop-up of the specific saved metric details (only for this metric data row)
+    }
+
     override fun onDeleteRow() {
-        deleteExerciseRow()
+        deleteRow()
     }
 
     fun onAddRow(exercise: Exercise) {
         addExerciseRow(exercise)
     }
 
-    private fun deleteExerciseRow() {
+    fun onAddRow(metric: Metric) {
+        addMetricRow(metric)
+    }
+
+    private fun deleteRow() {
         exerciseAdapter.deleteExerciseRow()
-        saveCurrentDateExerciseData() // Save data after deleting rows
+        metricAdapter.deleteMetricRow()
+
+        // Save data after deleting rows
+        saveCurrentDateExerciseData()
+        saveCurrentDateMetricData()
+
+        // Update visibility of recycler view tables
+        updateExerciseTableVisibility()
+        updateMetricTableVisibility()
     }
 
     private fun addExerciseRow(exercise: Exercise) {
         exerciseAdapter.addExerciseRow(exercise)
         saveCurrentDateExerciseData() // Save data after adding new row
+
+        // Update visibility of recycler view table
+        updateExerciseTableVisibility()
+    }
+
+    private fun addMetricRow(metric: Metric) {
+        metricAdapter.addMetricRow(metric)
+        saveCurrentDateMetricData() // Save data after adding new row
+
+        // Update visibility of recycler view table
+        updateMetricTableVisibility()
     }
 
     private fun showDatePicker() {
@@ -206,6 +282,14 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
         // Load the exercises for the date
         val exercises = ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).getExercisesForDate(date)
         exerciseAdapter.setExercises(exercises)
+
+        // Load the metrics for the date
+        val metrics = ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).getMetricsForDate(date)
+        metricAdapter.setMetrics(metrics)
+
+        // Update visibility of recycler view tables
+        updateExerciseTableVisibility()
+        updateMetricTableVisibility()
     }
 
     // Save difficulty & comments data for the selected date to the apps storage
@@ -216,16 +300,38 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
         ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).saveDifficultyAndCommentsPairForDate(date, difficulty, comments)
     }
 
-    // Show pop-up dialog for adding exercise data row to the table
+    // Show pop-up dialog for adding an exercise data row to the table
     private fun showAddExerciseDialog() {
         val addExerciseDataRowFragment = AddExerciseDataRowFragment(this, exerciseAdapter)
         addExerciseDataRowFragment.show(supportFragmentManager, "add_exercise_data_row")
     }
 
-    // Show pop-up dialog for deleting an exercise row from the table
-    private fun showDeleteExerciseDialog() {
+    // Show pop-up dialog for adding a metric data row to the table
+    private fun showAddMetricDialog() {
+        val addMetricDataRowFragment = AddMetricDataRowFragment(this, metricAdapter)
+        addMetricDataRowFragment.show(supportFragmentManager, "add_metric_data_row")
+    }
+
+    // Show pop-up dialog for deleting an exercise/metric row from the table
+    private fun showDeleteRowDialog() {
         val deleteRowFragment = DeleteRowFragment()
         deleteRowFragment.show(supportFragmentManager, "delete_row")
+    }
+
+    // Update the visibility of the exercise table
+    private fun updateExerciseTableVisibility() {
+        // Update visibility of recycler view table after the adapter processes the data
+        exerciseRecyclerView.post {
+            ExerciseUtil.updateRecyclerViewVisibility(exerciseAdapter, exerciseTableLayout)
+        }
+    }
+
+    // Update the visibility of the metric table
+    private fun updateMetricTableVisibility() {
+        // Update visibility of recycler view table after the adapter processes the data
+        metricRecyclerView.post {
+            ExerciseUtil.updateRecyclerViewVisibility(metricAdapter, metricTableLayout)
+        }
     }
 
     //todo: fix export/import functions for the table
@@ -273,7 +379,7 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataTableRowAdapter.Re
 
                 exercises.add(
                     Exercise(
-                        id = ExerciseUtil.generateNewId(exercises),
+                        id = ExerciseUtil.generateNewExerciseId(exercises),
                         name = columns[0],
                         sets = columns[1].toInt(),
                         reps = columns[2].toInt(),

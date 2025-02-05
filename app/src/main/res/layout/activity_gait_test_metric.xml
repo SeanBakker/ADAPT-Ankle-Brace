@@ -11,11 +11,11 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/gaitTestExerciseToolbar"
+            android:id="@+id/gaitTestMetricToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            android:title="@string/gait_test_exercise"
+            android:title="@string/gait_test_metric"
             app:titleTextColor="?attr/colorOnPrimary"
             app:navigationIcon="@drawable/baseline_arrow_back_24"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -32,7 +32,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- ViewPagerInfo for exercise info details -->
+            <!-- ViewPagerInfo for metric info details -->
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPagerInfo"
                 android:layout_width="match_parent"
@@ -42,21 +42,11 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginBottom="16dp" />
 
-            <!-- ViewPagerData for exercise data details -->
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewPagerData"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/viewPagerInfo"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="16dp" />
-
             <LinearLayout
                 android:id="@+id/gaitResultsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/viewPagerData"
+                app:layout_constraintTop_toBottomOf="@id/viewPagerInfo"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:orientation="vertical"
@@ -184,56 +174,16 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/setBtnLayout"
-                android:layout_width="match_parent"
+            <!-- Finish Metric -->
+            <Button
+                android:id="@+id/finishMetricBtn"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/gaitResultsLayout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="10dp"
-                android:padding="10dp"
-                android:gravity="center">
-
-                <!-- Start Set -->
-                <Button
-                    android:id="@+id/startSetBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="30dp"
-                    android:text="@string/startSetBtn" />
-
-                <!-- End Set -->
-                <Button
-                    android:id="@+id/endSetBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="30dp"
-                    android:text="@string/endSetBtn" />
-            </LinearLayout>
-
-            <!-- Exercise Sets & Reps Tracking Table -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/setsRecyclerView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/setBtnLayout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHeight_max="250dp"
-                android:layout_gravity="center_horizontal"
-                android:scrollbars="vertical" />
-
-            <!-- Finish Exercise -->
-            <Button
-                android:id="@+id/finishExerciseBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/setsRecyclerView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="30dp"
-                android:text="@string/finishExerciseBtn"
+                android:text="@string/finishMetricBtn"
                 android:layout_gravity="center"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

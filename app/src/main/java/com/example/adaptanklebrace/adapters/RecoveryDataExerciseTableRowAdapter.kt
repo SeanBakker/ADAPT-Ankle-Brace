@@ -1,11 +1,9 @@
 package com.example.adaptanklebrace.adapters
 
-import android.annotation.SuppressLint
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.CheckBox
 import android.widget.TextView
@@ -13,22 +11,18 @@ import androidx.core.content.ContextCompat.getString
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
-import com.example.adaptanklebrace.SettingsActivity
 import com.example.adaptanklebrace.data.Exercise
-import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.utils.GeneralUtil
+import java.time.LocalTime
 
-class RecoveryPlanTableRowAdapter(
+class RecoveryDataExerciseTableRowAdapter(
     private val exercises: MutableList<Exercise>,
-    private val recoveryPlanCallback: RecoveryPlanCallback
-) : RecyclerView.Adapter<RecoveryPlanTableRowAdapter.ExerciseViewHolder>(), RecoveryPlanAdapter {
+    private val recoveryDataCallback: RecoveryDataCallback
+) : RecyclerView.Adapter<RecoveryDataExerciseTableRowAdapter.ExerciseViewHolder>(), RecoveryExerciseAdapter {
 
     // Define the callback interface
-    interface RecoveryPlanCallback {
+    interface RecoveryDataCallback {
         fun saveCurrentDateExerciseData()
-        fun onFocusFrequencyText(exercise: Exercise, position: Int)
-        fun onClickStartExerciseWithWarning(exercise: Exercise)
-        fun onClickStartExerciseWithoutWarning(exercise: Exercise)
     }
 
     init {
@@ -53,15 +47,13 @@ class RecoveryPlanTableRowAdapter(
         val reps: View = view.findViewById(R.id.reps)
         val hold: View = view.findViewById(R.id.hold)
         val tension: View = view.findViewById(R.id.tension)
-        val frequency: View = view.findViewById(R.id.frequency)
-        private val percentageCompleted: View = view.findViewById(R.id.percentageCompleted)
-        private val startExerciseButton: View = view.findViewById(R.id.startExerciseBtn)
+        val time: View = view.findViewById(R.id.time)
+        val difficulty: View = view.findViewById(R.id.difficulty)
         val comments: View = view.findViewById(R.id.comments)
         private val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
 
         // Bind method will update based on the view type
-        @SuppressLint("DefaultLocale")
-        fun bind(exercise: Exercise?, position: Int, viewType: Int) {
+        fun bind(exercise: Exercise?, viewType: Int) {
             val context = itemView.context
             if (viewType == VIEW_TYPE_HEADER) {
                 // Cast to TextView for header
@@ -70,11 +62,8 @@ class RecoveryPlanTableRowAdapter(
                 (reps as? TextView)?.text = getString(context, R.string.reps)
                 (hold as? TextView)?.text = getString(context, R.string.holdSecs)
                 (tension as? TextView)?.text = getString(context, R.string.tension)
-                (frequency as? TextView)?.text = getString(context, R.string.freq)
-                (percentageCompleted as? TextView)?.text =
-                    getString(context, R.string.percentCompleted)
-                (startExerciseButton as? TextView)?.text =
-                    getString(context, R.string.startExerciseBtn)
+                (time as? TextView)?.text = getString(context, R.string.timeOfCompletion)
+                (difficulty as? TextView)?.text = getString(context, R.string.difficulty)
                 (comments as? TextView)?.text = getString(context, R.string.comments)
             } else {
                 // Bind editable fields for exercise data rows
@@ -83,29 +72,11 @@ class RecoveryPlanTableRowAdapter(
                 (reps as? EditText)?.setText(exercise?.reps.toString())
                 (hold as? EditText)?.setText(exercise?.hold.toString())
                 (tension as? EditText)?.setText(exercise?.tension.toString())
-                (frequency as? EditText)?.setText(exercise?.frequency)
-                (percentageCompleted as? TextView)?.text =
-                    String.format("%.2f%%", exercise?.percentageCompleted)
-                (startExerciseButton as? Button)?.text = getString(context, R.string.startBtn)
+                (time as? EditText)?.setText(
+                    exercise?.timeCompleted?.format(GeneralUtil.timeFormatter) ?: LocalTime.now().format(GeneralUtil.timeFormatter))
+                (difficulty as? EditText)?.setText(exercise?.difficulty.toString())
                 (comments as? EditText)?.setText(exercise?.comments)
                 (selectRowCheckBox as? CheckBox)?.isChecked = exercise?.isSelected ?: false
-
-                // Update color of startExerciseButton
-                if (exercise != null) {
-                    if (exercise.percentageCompleted >= 100 || !ExerciseType.getAllExerciseNames().contains(exercise.name)) {
-                        (startExerciseButton as? Button)?.apply {
-                            setBackgroundColor(context.getColor(R.color.grey_1))
-                        }
-                    } else {
-                        (startExerciseButton as? Button)?.apply {
-                            if (SettingsActivity.nightMode) {
-                                setBackgroundColor(context.getColor(R.color.nightPrimary))
-                            } else {
-                                setBackgroundColor(context.getColor(R.color.lightPrimary))
-                            }
-                        }
-                    }
-                }
 
                 // Set up listeners for editable fields
                 (sets as? EditText)?.apply {
@@ -191,27 +162,34 @@ class RecoveryPlanTableRowAdapter(
                         }
                     }
                 }
-                (frequency as? EditText)?.apply {
+                (time as? EditText)?.apply {
                     // Remove previous listener to avoid duplicate events
                     onFocusChangeListener = null
 
                     setOnFocusChangeListener { _, hasFocus ->
                         if (hasFocus) {
                             exercise?.let {
-                                recoveryPlanCallback.onFocusFrequencyText(it, position)
-                                frequency.clearFocus()
+                                GeneralUtil.showTimePickerDialog(context, this) { selectedTime ->
+                                    exercise.timeCompleted = selectedTime
+                                    markAsChanged()
+                                }
+                                time.clearFocus()
                             }
                         }
                     }
                 }
-                (startExerciseButton as? Button)?.setOnClickListener {
-                    exercise?.let {
-                        if (it.percentageCompleted >= 100) {
-                            recoveryPlanCallback.onClickStartExerciseWithWarning(it)
-                        } else {
-                            recoveryPlanCallback.onClickStartExerciseWithoutWarning(it)
-                        }
+                (difficulty as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
                     }
+
+                    val newWatcher = addTextChangedListener {
+                        exercise?.difficulty = it.toString().toIntOrNull() ?: 0
+                        markAsChanged()
+                    }
+                    tag = newWatcher
                 }
                 (comments as? EditText)?.apply {
                     // Remove previous listener to avoid duplicate events
@@ -235,7 +213,7 @@ class RecoveryPlanTableRowAdapter(
 
         private fun markAsChanged() {
             // This can be used to flag that a change occurred and data needs saving.
-            recoveryPlanCallback.saveCurrentDateExerciseData()
+            recoveryDataCallback.saveCurrentDateExerciseData()
         }
     }
 
@@ -249,10 +227,10 @@ class RecoveryPlanTableRowAdapter(
         // Inflate either header or item row based on the view type
         val view: View = if (viewType == VIEW_TYPE_HEADER) {
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.recovery_plan_table_header, parent, false)
+                .inflate(R.layout.recovery_data_exercise_table_header, parent, false)
         } else {
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.recovery_plan_row_item, parent, false)
+                .inflate(R.layout.recovery_data_exercise_row_item, parent, false)
         }
         return ExerciseViewHolder(view)
     }
@@ -267,9 +245,9 @@ class RecoveryPlanTableRowAdapter(
 
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         if (position == 0) {
-            holder.bind(null, 0, VIEW_TYPE_HEADER) // No exercise data for header
-        } else if (position != RecyclerView.NO_POSITION) {
-            holder.bind(exercises[position - 1], position, VIEW_TYPE_ITEM) // Bind data for exercise rows
+            holder.bind(null, VIEW_TYPE_HEADER) // No exercise data for header
+        } else {
+            holder.bind(exercises[position - 1], VIEW_TYPE_ITEM) // Bind data for exercise rows
         }
     }
 
@@ -298,6 +276,13 @@ class RecoveryPlanTableRowAdapter(
             }
         }
         (holder.tension as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
+        }
+        (holder.difficulty as? EditText)?.apply {
             val currentWatcher = tag as? TextWatcher
             if (currentWatcher != null) {
                 removeTextChangedListener(currentWatcher)
@@ -350,6 +335,6 @@ class RecoveryPlanTableRowAdapter(
 
     override fun notifyItemChangedAndRefresh(position: Int) {
         super.notifyItemChanged(position)
-        recoveryPlanCallback.saveCurrentDateExerciseData()
+        recoveryDataCallback.saveCurrentDateExerciseData()
     }
 }
