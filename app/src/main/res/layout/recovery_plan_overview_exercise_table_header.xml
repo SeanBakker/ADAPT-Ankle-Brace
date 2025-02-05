@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:stretchColumns="1"
-    android:gravity="center_horizontal">
+    app:cardCornerRadius="24dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="?attr/colorSecondary">
 
-    <!-- Table row for header -->
-    <TableRow
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:layout_marginTop="10dp">
+        android:padding="6dp"
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/exerciseName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2.5"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
             android:text="@string/exerciseName"
             android:textStyle="bold"
@@ -28,7 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
             android:text="@string/sets"
             android:textStyle="bold"
@@ -39,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
             android:text="@string/reps"
             android:textStyle="bold"
@@ -50,7 +53,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
             android:text="@string/holdSecs"
             android:textStyle="bold"
@@ -61,7 +64,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
             android:text="@string/tension"
             android:textStyle="bold"
@@ -72,7 +75,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
             android:text="@string/freq"
             android:textStyle="bold"
@@ -83,7 +86,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.6"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
             android:text="@string/percentCompleted"
             android:textStyle="bold"
@@ -96,10 +99,10 @@
             android:layout_weight="1.1"
             android:padding="0dp"
             android:layout_marginHorizontal="10dp"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
             android:text="@string/startExerciseBtn"
             android:textStyle="bold"
             android:gravity="center" />
-    </TableRow>
-</TableLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

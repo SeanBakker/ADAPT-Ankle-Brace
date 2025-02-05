@@ -145,6 +145,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingBottom="50dp"
+                    android:layout_marginBottom="6dp"
+                    android:clipToPadding="false"
                     android:scrollbars="vertical" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -176,13 +178,15 @@
                 app:layout_constraintTop_toBottomOf="@id/metricTableHeaderText"
                 android:orientation="horizontal">
 
-                <!-- Exercise Plan Table -->
+                <!-- Metric Plan Table -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/metricRecyclerView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingBottom="50dp"
+                    android:layout_marginBottom="6dp"
+                    android:clipToPadding="false"
                     android:scrollbars="vertical" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

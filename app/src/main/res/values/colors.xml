@@ -5,8 +5,8 @@
     <color name="lightPrimaryVariant">@color/blue_5</color>
     <color name="lightOnPrimary">@color/blue_6</color>
 
-    <color name="lightSecondary">@color/blue_5</color>
-    <color name="lightSecondaryVariant">@color/blue_6</color>
+    <color name="lightSecondary">@color/purple_1</color>
+    <color name="lightSecondaryVariant">@color/blue_2</color>
     <color name="lightOnSecondary">@color/black</color>
 
     <color name="lightBackground">@color/blue_1</color>
@@ -17,18 +17,20 @@
     <color name="nightPrimaryVariant">@color/purple_3</color>
     <color name="nightOnPrimary">@color/purple_4</color>
 
-    <color name="nightSecondary">@color/blue_5</color>
-    <color name="nightSecondaryVariant">@color/blue_6</color>
+    <color name="nightSecondary">@color/blue_3</color>
+    <color name="nightSecondaryVariant">@color/purple_5</color>
     <color name="nightOnSecondary">@color/black</color>
 
-    <color name="nightBackground">@color/purple_4</color>
+    <color name="nightBackground">@color/purple_6</color>
     <color name="nightOnBackground">@color/purple_1</color>
 
     <!-- Extra Colors -->
     <color name="purple_1">#D3BAF6</color>
     <color name="purple_2">#B88BF4</color>
-    <color name="purple_3">#9060F4</color>
-    <color name="purple_4">#D31D0052</color>
+    <color name="purple_3">#A47FEF</color>
+    <color name="purple_4">#9060F4</color>
+    <color name="purple_5">#D34103A0</color>
+    <color name="purple_6">#D31D0052</color>
     <color name="blue_1">#CFF3F8</color>
     <color name="blue_2">#ADF0F4</color>
     <color name="blue_3">#76D3D6</color>

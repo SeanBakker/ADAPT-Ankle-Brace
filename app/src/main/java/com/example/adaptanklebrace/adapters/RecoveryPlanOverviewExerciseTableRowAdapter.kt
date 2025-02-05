@@ -165,6 +165,16 @@ class RecoveryPlanOverviewExerciseTableRowAdapter(
         return exercises.count { it.isVisible } + 1 // Count visible exercises + header row
     }
 
+    /**
+     * Returns if the row is visible at the specified position
+     *
+     * @param position Int position of the row
+     * @return Boolean whether the row is visible
+     */
+    override fun isRowVisibleByPosition(position: Int): Boolean {
+        return exercises[position - 1].isVisible
+    }
+
     // Add exercise row to the list
     override fun addExerciseRow(exercise: Exercise) {
         exercises.add(exercise)

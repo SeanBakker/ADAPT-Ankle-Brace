@@ -152,6 +152,16 @@ class RecoveryPlanOverviewMetricTableRowAdapter(
         return metrics.count { it.isVisible } + 1 // Count visible metrics + header row
     }
 
+    /**
+     * Returns if the row is visible at the specified position
+     *
+     * @param position Int position of the row
+     * @return Boolean whether the row is visible
+     */
+    override fun isRowVisibleByPosition(position: Int): Boolean {
+        return metrics[position - 1].isVisible
+    }
+
     // Add metric row to the list
     override fun addMetricRow(metric: Metric) {
         metrics.add(metric)

@@ -110,12 +110,14 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataExerciseTableRowAd
         exerciseRecyclerView = findViewById(R.id.exerciseRecyclerView)
         exerciseRecyclerView.layoutManager = LinearLayoutManager(this)
         exerciseRecyclerView.adapter = exerciseAdapter
+        ExerciseUtil.addItemDecorationToRecyclerView(exerciseRecyclerView)
 
         // Set up RecyclerView for metric table
         metricTableLayout = findViewById(R.id.metricTableLayout)
         metricRecyclerView = findViewById(R.id.metricRecyclerView)
         metricRecyclerView.layoutManager = LinearLayoutManager(this)
         metricRecyclerView.adapter = metricAdapter
+        ExerciseUtil.addItemDecorationToRecyclerView(metricRecyclerView)
 
         // Set up date picker
         datePickerButton.setOnClickListener { showDatePicker() }

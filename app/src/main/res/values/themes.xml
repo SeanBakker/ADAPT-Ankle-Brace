@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.AdaptAnkleBrace" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -9,11 +9,29 @@
         <item name="colorSecondary">@color/lightSecondary</item>
         <item name="colorSecondaryVariant">@color/lightSecondaryVariant</item>
         <item name="colorOnSecondary">@color/lightOnSecondary</item>
+        <!-- Tertiary brand color. -->
+        <item name="colorTertiary">@color/nightPrimaryVariant</item>
+        <item name="colorOnTertiary">@color/nightSecondaryVariant</item>
         <!-- Background color. -->
         <item name="backgroundColor">@color/lightBackground</item>
         <item name="android:colorBackground">?attr/backgroundColor</item>
         <item name="colorOnBackground">@color/lightOnBackground</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/black</item>
+        <!-- Date picker style-->
+        <item name="android:datePickerDialogTheme">@style/AdaptDateTimePickerStyle</item>
+        <item name="android:timePickerDialogTheme">@style/AdaptDateTimePickerStyle</item>
+    </style>
+
+    <style name="AdaptDateTimePickerStyle" parent="Theme.Material3.DayNight.Dialog">
+        <item name="colorAccent">@color/lightPrimaryVariant</item>
+        <item name="android:windowBackground">@color/lightBackground</item>
+        <item name="android:textColorPrimary">@color/lightOnPrimary</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/DateTimePickerButtonStyle</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/DateTimePickerButtonStyle</item>
+    </style>
+
+    <style name="DateTimePickerButtonStyle" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">@color/lightOnPrimary</item>
     </style>
 </resources>

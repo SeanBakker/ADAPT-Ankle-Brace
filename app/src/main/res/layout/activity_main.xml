@@ -84,8 +84,7 @@
             app:layout_constraintTop_toBottomOf="@id/weeklyGoalFrame"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="10dp"
-            android:padding="16dp"
+            android:layout_marginTop="30dp"
             android:text="Overview of Recovery Plan Goals:"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -131,6 +130,8 @@
                     android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:paddingBottom="50dp"
+                    android:layout_marginBottom="6dp"
+                    android:clipToPadding="false"
                     android:layout_gravity="center"
                     android:scrollbars="vertical" />
             </LinearLayout>
@@ -164,17 +165,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/metricTableHeaderText"
-                android:paddingBottom="32dp"
+                android:paddingBottom="8dp"
                 android:orientation="horizontal"
                 android:gravity="center">
 
-                <!-- Exercise Plan Table -->
+                <!-- Metric Plan Table Overview -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/metricRecyclerView"
                     android:layout_width="600dp"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:paddingBottom="50dp"
+                    android:layout_marginBottom="6dp"
+                    android:clipToPadding="false"
                     android:layout_gravity="center"
                     android:scrollbars="vertical" />
             </LinearLayout>

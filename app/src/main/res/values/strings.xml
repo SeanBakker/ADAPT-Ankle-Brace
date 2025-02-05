@@ -25,6 +25,7 @@
     <string name="tension">Tension</string>
     <string name="freq">Freq.</string>
     <string name="percentCompleted">% Completed</string>
+    <string name="percentSymbol">%</string>
     <string name="time">Time</string>
     <string name="timeOfCompletion">Time of Completion</string>
     <string name="difficulty">Difficulty</string>

@@ -1,7 +1,9 @@
 package com.example.adaptanklebrace.utils
 
+import android.graphics.Rect
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.adapters.ExerciseSetsTableRowAdapter
 import com.example.adaptanklebrace.adapters.RecoveryAdapter
 import com.example.adaptanklebrace.adapters.RecoveryOverviewAdapter
@@ -88,6 +90,57 @@ class ExerciseUtil {
             } else {
                 tableLayout.visibility = View.VISIBLE
             }
+        }
+
+        /**
+         * Adds spacing between rows of a recycler view overview table.
+         *
+         * @param recyclerView RecyclerView table to add spacing
+         * @param adapter RecoveryOverviewAdapter to check if rows are visible
+         * @param bottomSpacing Int spacing to be added
+         */
+        fun addItemDecorationToRecyclerViewOverview(recyclerView: RecyclerView, adapter: RecoveryOverviewAdapter, bottomSpacing: Int = 12) {
+            recyclerView.addItemDecoration(
+                object : RecyclerView.ItemDecoration() {
+                    override fun getItemOffsets(
+                        outRect: Rect,
+                        view: View,
+                        parent: RecyclerView,
+                        state: RecyclerView.State
+                    ) {
+                        val position = parent.getChildAdapterPosition(view)
+
+                        if (position == 0) {
+                            outRect.bottom = bottomSpacing // Apply spacing
+                        } else if (position > 0 && position < adapter.getItemCount() && adapter.isRowVisibleByPosition(position)) {
+                            outRect.bottom = bottomSpacing // Apply spacing
+                        } else {
+                            outRect.bottom = 0 // No spacing for hidden rows
+                        }
+                    }
+                }
+            )
+        }
+
+        /**
+         * Adds spacing between rows of a recycler view table.
+         *
+         * @param recyclerView RecyclerView table to add spacing
+         * @param bottomSpacing Int spacing to be added
+         */
+        fun addItemDecorationToRecyclerView(recyclerView: RecyclerView, bottomSpacing: Int = 12) {
+            recyclerView.addItemDecoration(
+                object : RecyclerView.ItemDecoration() {
+                    override fun getItemOffsets(
+                        outRect: Rect,
+                        view: View,
+                        parent: RecyclerView,
+                        state: RecyclerView.State
+                    ) {
+                        outRect.bottom = bottomSpacing
+                    }
+                }
+            )
         }
     }
 }

@@ -124,12 +124,14 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewExerciseTableRowAd
         exerciseRecyclerView = findViewById(R.id.exerciseRecyclerView)
         exerciseRecyclerView.layoutManager = LinearLayoutManager(this)
         exerciseRecyclerView.adapter = exerciseAdapter
+        ExerciseUtil.addItemDecorationToRecyclerViewOverview(exerciseRecyclerView, exerciseAdapter)
 
         // Set up RecyclerView for metric table
         metricTableLayout = findViewById(R.id.metricTableLayout)
         metricRecyclerView = findViewById(R.id.metricRecyclerView)
         metricRecyclerView.layoutManager = LinearLayoutManager(this)
         metricRecyclerView.adapter = metricAdapter
+        ExerciseUtil.addItemDecorationToRecyclerViewOverview(metricRecyclerView, metricAdapter)
 
         // Load data for current week on activity start
         val currentWeek = recoveryPlanActivity.calculateWeekRange(Calendar.getInstance())

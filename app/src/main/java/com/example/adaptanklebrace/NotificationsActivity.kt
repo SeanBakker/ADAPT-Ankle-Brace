@@ -134,12 +134,12 @@ class NotificationsActivity : AppCompatActivity() {
             if (isChecked) {
                 if (weeklyDateInput.text.toString().isNotEmpty()) {
                     if (weeklyTimeInput.text.toString().isNotEmpty()) {
-                        SharedPreferencesUtil.savePreference(
-                            sharedPreferences,
-                            WEEKLY_NOTIFICATION_KEY,
-                            true
-                        )
                         if (notificationsEnabled) {
+                            SharedPreferencesUtil.savePreference(
+                                sharedPreferences,
+                                WEEKLY_NOTIFICATION_KEY,
+                                true
+                            )
                             weeklyNotificationEnabled = true
                             if (!completedWeeklyProgress()) {
                                 scheduleWeeklyNotification()
@@ -171,17 +171,23 @@ class NotificationsActivity : AppCompatActivity() {
             } else {
                 // Cancel notification when checkbox is no longer checked
                 cancelWeeklyNotification()
+
+                SharedPreferencesUtil.savePreference(
+                    sharedPreferences,
+                    WEEKLY_NOTIFICATION_KEY,
+                    false
+                )
             }
         }
         dailyNotificationCheckbox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 if (dailyTimeInput.text.toString().isNotEmpty()) {
-                    SharedPreferencesUtil.savePreference(
-                        sharedPreferences,
-                        DAILY_NOTIFICATION_KEY,
-                        true
-                    )
                     if (notificationsEnabled) {
+                        SharedPreferencesUtil.savePreference(
+                            sharedPreferences,
+                            DAILY_NOTIFICATION_KEY,
+                            true
+                        )
                         dailyNotificationEnabled = true
                         scheduleDailyNotification()
                     } else {
@@ -203,6 +209,12 @@ class NotificationsActivity : AppCompatActivity() {
             } else {
                 // Cancel notification when checkbox is no longer checked
                 cancelDailyNotification()
+
+                SharedPreferencesUtil.savePreference(
+                    sharedPreferences,
+                    DAILY_NOTIFICATION_KEY,
+                    false
+                )
             }
         }
     }
