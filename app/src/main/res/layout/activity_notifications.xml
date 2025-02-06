@@ -54,7 +54,8 @@
             <CheckBox
                 android:id="@+id/weeklyNotificationPermissionCheckbox"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:buttonTint="?attr/colorPrimaryVariant" />
 
             <EditText
                 android:id="@+id/weeklyDateInput"
@@ -108,7 +109,8 @@
             <CheckBox
                 android:id="@+id/dailyNotificationPermissionCheckbox"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:buttonTint="?attr/colorPrimaryVariant" />
 
             <EditText
                 android:id="@+id/dailyTimeInput"

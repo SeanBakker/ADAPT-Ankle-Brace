@@ -24,14 +24,14 @@
     </style>
 
     <style name="AdaptDateTimePickerStyle" parent="Theme.Material3.DayNight.Dialog">
-        <item name="colorAccent">@color/lightPrimaryVariant</item>
-        <item name="android:windowBackground">@color/lightBackground</item>
-        <item name="android:textColorPrimary">@color/lightOnPrimary</item>
+        <item name="colorAccent">@color/nightPrimaryVariant</item>
+        <item name="android:windowBackground">@color/nightBackground</item>
+        <item name="android:textColorPrimary">@color/nightOnPrimary</item>
         <item name="android:buttonBarPositiveButtonStyle">@style/DateTimePickerButtonStyle</item>
         <item name="android:buttonBarNegativeButtonStyle">@style/DateTimePickerButtonStyle</item>
     </style>
 
     <style name="DateTimePickerButtonStyle" parent="Widget.Material3.Button.TextButton">
-        <item name="android:textColor">@color/lightOnPrimary</item>
+        <item name="android:textColor">@color/nightOnPrimary</item>
     </style>
 </resources>
