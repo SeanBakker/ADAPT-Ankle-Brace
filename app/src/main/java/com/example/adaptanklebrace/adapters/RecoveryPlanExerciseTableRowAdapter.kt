@@ -85,7 +85,7 @@ class RecoveryPlanExerciseTableRowAdapter(
                 (tension as? EditText)?.setText(exercise?.tension.toString())
                 (frequency as? EditText)?.setText(exercise?.frequency)
                 (percentageCompleted as? TextView)?.text =
-                    String.format("%.2f%%", exercise?.percentageCompleted)
+                    String.format("%.0f%%", exercise?.percentageCompleted)
                 (startExerciseButton as? Button)?.text = getString(context, R.string.startBtn)
                 (comments as? EditText)?.setText(exercise?.comments)
                 (selectRowCheckBox as? CheckBox)?.isChecked = exercise?.isSelected ?: false

@@ -72,7 +72,7 @@ class RecoveryPlanOverviewExerciseTableRowAdapter(
                 (hold as? TextView)?.text = exercise?.hold.toString()
                 (tension as? TextView)?.text = exercise?.tension.toString()
                 (frequency as? TextView)?.text = exercise?.frequency
-                (percentageCompleted as? TextView)?.text = String.format("%.2f%%", exercise?.percentageCompleted)
+                (percentageCompleted as? TextView)?.text = String.format("%.0f%%", exercise?.percentageCompleted)
                 (startExerciseButton as? Button)?.text = getString(context, R.string.startBtn)
 
                 // Update color of startExerciseButton

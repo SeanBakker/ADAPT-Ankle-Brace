@@ -240,7 +240,7 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewExerciseTableRowAd
 
         // Calculate weekly progress of goals
         val weeklyProgress = recoveryPlanActivity.calculateWeeklyProgress(this, exerciseAdapter, metricAdapter, exerciseGoalsForCurrentWeek, metricGoalsForCurrentWeek, currentWeek)
-        val truncatedWeeklyProgress = String.format("%.2f", weeklyProgress)
+        val truncatedWeeklyProgress = String.format("%.0f", weeklyProgress)
 
         // Update progress bar and text
         weeklyProgressBar.progress = weeklyProgress.toInt()

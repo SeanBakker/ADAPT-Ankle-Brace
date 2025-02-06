@@ -59,7 +59,7 @@ class RecoveryPlanOverviewMetricTableRowAdapter(
                 // Bind editable fields for metric data rows
                 (metricName as? TextView)?.text = metric?.name
                 (frequency as? TextView)?.text = metric?.frequency
-                (percentageCompleted as? TextView)?.text = String.format("%.2f%%", metric?.percentageCompleted)
+                (percentageCompleted as? TextView)?.text = String.format("%.0f%%", metric?.percentageCompleted)
                 (startMetricButton as? Button)?.text = getString(context, R.string.startBtn)
 
                 // Update color of startMetricButton

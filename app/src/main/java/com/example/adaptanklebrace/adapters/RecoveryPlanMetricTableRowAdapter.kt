@@ -74,7 +74,7 @@ class RecoveryPlanMetricTableRowAdapter(
                 (metricName as? TextView)?.text = metric?.name
                 (frequency as? EditText)?.setText(metric?.frequency)
                 (percentageCompleted as? TextView)?.text =
-                    String.format("%.2f%%", metric?.percentageCompleted)
+                    String.format("%.0f%%", metric?.percentageCompleted)
                 (viewMetricsButton as? Button)?.text = getString(context, R.string.viewBtn)
                 (startMetricButton as? Button)?.text = getString(context, R.string.startBtn)
                 (comments as? EditText)?.setText(metric?.comments)
