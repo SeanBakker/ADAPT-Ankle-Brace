@@ -51,8 +51,6 @@ class NotificationsActivity : AppCompatActivity() {
         const val DAILY_TIME_KEY= "dailyTimeInput"
 
         var notificationsEnabled: Boolean = false
-        var weeklyNotificationEnabled: Boolean = false
-        var dailyNotificationEnabled: Boolean = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,7 +138,6 @@ class NotificationsActivity : AppCompatActivity() {
                                 WEEKLY_NOTIFICATION_KEY,
                                 true
                             )
-                            weeklyNotificationEnabled = true
                             if (!completedWeeklyProgress()) {
                                 scheduleWeeklyNotification()
                             }
@@ -188,7 +185,6 @@ class NotificationsActivity : AppCompatActivity() {
                             DAILY_NOTIFICATION_KEY,
                             true
                         )
-                        dailyNotificationEnabled = true
                         scheduleDailyNotification()
                     } else {
                         GeneralUtil.showToast(
@@ -225,6 +221,23 @@ class NotificationsActivity : AppCompatActivity() {
         // Get permissions from SettingsActivity
         sharedPreferencesSettings = getSharedPreferences(SettingsActivity.SETTINGS_PREFERENCE, MODE_PRIVATE)
         notificationsEnabled = SharedPreferencesUtil.getPreference(sharedPreferencesSettings, SettingsActivity.NOTIFICATIONS_PERMISSION_KEY, false)
+
+        // Update checkboxes
+        if (notificationsEnabled) {
+            weeklyNotificationCheckbox.isChecked = SharedPreferencesUtil.getPreference(
+                sharedPreferences,
+                WEEKLY_NOTIFICATION_KEY,
+                false
+            )
+            dailyNotificationCheckbox.isChecked = SharedPreferencesUtil.getPreference(
+                sharedPreferences,
+                DAILY_NOTIFICATION_KEY,
+                false
+            )
+        } else {
+            weeklyNotificationCheckbox.isChecked = false
+            dailyNotificationCheckbox.isChecked = false
+        }
     }
 
     private fun scheduleWeeklyNotification() {
