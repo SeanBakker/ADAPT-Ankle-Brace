@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal">
+    android:layout_marginBottom="6dp"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="?attr/colorSecondary">
 
-    <!-- Table row for header -->
-    <TableRow
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:layout_marginTop="10dp">
+        android:padding="6dp"
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <!-- Set # -->
         <TextView
@@ -34,5 +39,5 @@
             android:text="@string/reps"
             android:textStyle="bold"
             android:gravity="center" />
-    </TableRow>
-</TableLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

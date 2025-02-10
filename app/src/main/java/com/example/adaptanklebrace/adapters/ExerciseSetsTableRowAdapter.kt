@@ -1,44 +1,73 @@
 package com.example.adaptanklebrace.adapters
 
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getString
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
+import com.example.adaptanklebrace.data.ExerciseSet
 
 class ExerciseSetsTableRowAdapter(
-    private val sets: MutableList<Pair<Int, Int>>, // Pair<Set #, Reps Count>
+    private val sets: MutableList<ExerciseSet>,
 ) : RecyclerView.Adapter<ExerciseSetsTableRowAdapter.SetViewHolder>() {
+
+    init {
+        // Enable stable IDs useful for the RecyclerView to uniquely identify each row
+        setHasStableIds(true)
+    }
+
+    override fun getItemId(position: Int): Long {
+        // Header row has a fixed ID of 0, while metric rows use their unique IDs
+        return if (position == 0) {
+            Long.MIN_VALUE
+        } else {
+            sets[position - 1].id.toLong() // Use the `id` property of a metric as the stable ID
+        }
+    }
 
     // ViewHolder for both header and item rows
     inner class SetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val setNumber: View = view.findViewById(R.id.setNumber)
-        private val repsCount: View = view.findViewById(R.id.repsCount)
-
-        // todo: fix bug with overwriting reps counts
+        val repsCount: View = view.findViewById(R.id.repsCount)
 
         // Bind method will update based on the view type
-        fun bind(set: Pair<Int, Int>?, viewType: Int) {
+        fun bind(set: ExerciseSet?, viewType: Int) {
+            val context = itemView.context
             if (viewType == VIEW_TYPE_HEADER) {
                 // Header titles
-                (setNumber as? TextView)?.text = "Set #"
-                (repsCount as? TextView)?.text = "Reps"
+                (setNumber as? TextView)?.text = getString(context, R.string.setNumber)
+                (repsCount as? TextView)?.text = getString(context, R.string.reps)
             } else {
                 // Row data
-                (setNumber as? TextView)?.text = set?.first.toString()
-                (repsCount as? EditText)?.setText(set?.second.toString())
+                (setNumber as? TextView)?.text = set?.id.toString()
+                (repsCount as? EditText)?.setText(set?.reps.toString())
 
                 // Set up listeners for editable fields
-                (repsCount as? EditText)?.addTextChangedListener {
-                    val index = set?.first?.minus(1) ?: 0
-                    val reps = it.toString().toIntOrNull() ?: 0
-                    sets[index] = Pair(index + 1, reps)
+                (repsCount as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
+                    val newWatcher = addTextChangedListener {
+                        set?.reps = it.toString().toIntOrNull() ?: 0
+                    }
+                    tag = newWatcher
                 }
             }
         }
+    }
+
+    // Constants for view types
+    companion object {
+        const val VIEW_TYPE_HEADER = 0
+        const val VIEW_TYPE_ITEM = 1
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetViewHolder {
@@ -67,6 +96,18 @@ class ExerciseSetsTableRowAdapter(
         }
     }
 
+    // Ensure listeners are properly cleared when view is detached from the window
+    override fun onViewRecycled(holder: SetViewHolder) {
+        super.onViewRecycled(holder)
+        (holder.repsCount as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
+        }
+    }
+
     override fun getItemCount(): Int = sets.size + 1 // +1 for the header row
 
     /**
@@ -78,30 +119,29 @@ class ExerciseSetsTableRowAdapter(
         return getSetsWithNonZeroReps().size
     }
 
-    // Constants for view types
-    companion object {
-        const val VIEW_TYPE_HEADER = 0
-        const val VIEW_TYPE_ITEM = 1
-    }
-
     /**
      * Retrieves the current list of sets with non-zero rep counts.
      *
-     * @return list of integer pairs
+     * @return list of ExerciseSets
      */
-    private fun getSetsWithNonZeroReps(): List<Pair<Int, Int>> {
-        return sets.filter { it.second > 0 }.toList() // Return a copy of the list to avoid external modifications
+    private fun getSetsWithNonZeroReps(): List<ExerciseSet> {
+        return sets.filter { it.reps > 0 }.toList() // Return a copy of the list to avoid external modifications
     }
 
     /**
      * Creates a new list of sets.
      *
-     * @param newSets list of integer pairs
+     * @param newSets list of ExerciseSets
      */
-    fun createSets(newSets: List<Pair<Int, Int>>) {
+    fun createSets(newSets: List<ExerciseSet>) {
+        // Clear the existing data
+        val previousSize = getItemCount()
         sets.clear()
+        notifyItemRangeRemoved(1, previousSize)
+
+        // Add new metrics
         sets.addAll(newSets)
-        notifyItemRangeChanged(1, getItemCount())
+        notifyItemRangeInserted(1, getItemCount())
     }
 
     /**
@@ -115,7 +155,7 @@ class ExerciseSetsTableRowAdapter(
         if (sets.isNotEmpty()) {
             var repsTotal = 0
             for (set in sets) {
-                repsTotal += set.second
+                repsTotal += set.reps
             }
             return repsTotal.floorDiv(sets.size)
         } else {

@@ -8,6 +8,7 @@ import com.example.adaptanklebrace.adapters.ExerciseSetsTableRowAdapter
 import com.example.adaptanklebrace.adapters.RecoveryAdapter
 import com.example.adaptanklebrace.adapters.RecoveryOverviewAdapter
 import com.example.adaptanklebrace.data.Exercise
+import com.example.adaptanklebrace.data.ExerciseSet
 import com.example.adaptanklebrace.data.Metric
 
 class ExerciseUtil {
@@ -53,11 +54,13 @@ class ExerciseUtil {
          * @param exerciseGoal exercise goal to be performed
          */
         fun loadSetsData(setsAdapter: ExerciseSetsTableRowAdapter, exerciseGoal: Exercise) {
-            val sets: MutableList<Pair<Int, Int>> = mutableListOf()
+            val sets: MutableList<ExerciseSet> = mutableListOf()
 
             // Create an element in the list for each set
             for (setNumber in 0 until exerciseGoal.sets) {
-                sets.add(Pair(setNumber+1, 0))
+                sets.add(ExerciseSet(
+                    id = setNumber + 1
+                ))
             }
 
             // Load the sets for the table

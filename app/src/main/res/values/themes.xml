@@ -1,24 +1,28 @@
 <resources>
-    <!-- Base application theme. -->
+    <!-- Base application theme -->
     <style name="Theme.AdaptAnkleBrace" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
+        <!-- Primary brand color -->
         <item name="colorPrimary">@color/lightPrimary</item>
         <item name="colorPrimaryVariant">@color/lightPrimaryVariant</item>
         <item name="colorOnPrimary">@color/lightOnPrimary</item>
-        <!-- Secondary brand color. -->
+        <!-- Secondary brand color -->
         <item name="colorSecondary">@color/lightSecondary</item>
         <item name="colorSecondaryVariant">@color/lightSecondaryVariant</item>
         <item name="colorOnSecondary">@color/lightOnSecondary</item>
-        <!-- Tertiary brand color. -->
+        <!-- Tertiary brand color -->
         <item name="colorTertiary">@color/nightPrimaryVariant</item>
         <item name="colorOnTertiary">@color/nightSecondaryVariant</item>
-        <!-- Background color. -->
+        <!-- Background color -->
         <item name="backgroundColor">@color/lightBackground</item>
         <item name="android:colorBackground">?attr/backgroundColor</item>
         <item name="colorOnBackground">@color/lightOnBackground</item>
-        <!-- Status bar color. -->
+        <!-- Additional colors -->
+        <item name="colorControlNormal">@color/lightPrimaryVariant</item>
+        <item name="colorControlActivated">@color/lightPrimaryVariant</item>
+        <item name="colorAccent">@color/lightPrimaryVariant</item>
+        <!-- Status bar color -->
         <item name="android:statusBarColor">@color/black</item>
-        <!-- Date picker style-->
+        <!-- Date picker style -->
         <item name="android:datePickerDialogTheme">@style/AdaptDateTimePickerStyle</item>
         <item name="android:timePickerDialogTheme">@style/AdaptDateTimePickerStyle</item>
     </style>

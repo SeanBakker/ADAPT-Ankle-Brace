@@ -31,8 +31,15 @@
     <string name="difficulty">Difficulty</string>
     <string name="comments">Comments</string>
     <string name="viewMetrics">View Metrics</string>
+    <string name="defaultZero">0</string>
     <string name="noData">---</string>
     <string name="NA">N/A</string>
+
+    <!-- Data -->
+    <string name="minText">Min</string>
+    <string name="maxText">Max</string>
+    <string name="zeroDegrees">0°</string>
+    <string name="fullDegrees">360°</string>
 
     <!-- Settings Options -->
     <string name="weeklyGoalReminder">Weekly Goal Reminder</string>
@@ -57,6 +64,7 @@
     <!-- Fragments -->
     <string name="requiredFieldsFormText">Fields marked with * are required.</string>
     <string name="asteriskSymbol">*</string>
+    <string name="degreesSymbol">°</string>
 
     <string-array name="frequency_categories">
         <item>day</item>

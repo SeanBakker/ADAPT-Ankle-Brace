@@ -21,6 +21,7 @@ import com.example.adaptanklebrace.adapters.ExerciseInfoAdapter
 import com.example.adaptanklebrace.adapters.ExerciseSetsTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
+import com.example.adaptanklebrace.data.ExerciseSet
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.services.BluetoothService
 import com.example.adaptanklebrace.utils.ExerciseDataStore
@@ -50,7 +51,7 @@ class StartSetActivity : AppCompatActivity() {
     private var maxAngle: Int = 360
 
     private lateinit var setsAdapter: ExerciseSetsTableRowAdapter
-    private var sets: MutableList<Pair<Int, Int>> = mutableListOf()
+    private var sets: MutableList<ExerciseSet> = mutableListOf()
 
     @Suppress("DEPRECATION")
     @SuppressLint("SetTextI18n")
@@ -138,7 +139,6 @@ class StartSetActivity : AppCompatActivity() {
         setProgressMaxText = findViewById(R.id.setProgressMaxText)
 
         // todo: implement start/end set buttons
-        // todo: once sets are complete, data must be saved in the Recovery Data table on clicking finish button
         // todo: on finishing an exercise, add simple dropdown to set the tension level manually
 
         // Periodically read angle from ADAPT device
