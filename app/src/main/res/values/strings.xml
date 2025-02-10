@@ -60,6 +60,7 @@
     <string name="setGoalsBtn">Set Goals</string>
     <string name="viewMetricsBtn">View Metrics</string>
     <string name="viewBtn">View</string>
+    <string name="saveDataBtn">Save Data</string>
 
     <!-- Fragments -->
     <string name="requiredFieldsFormText">Fields marked with * are required.</string>

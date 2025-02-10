@@ -23,6 +23,7 @@ import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
 import com.example.adaptanklebrace.data.ExerciseSet
 import com.example.adaptanklebrace.enums.ExerciseType
+import com.example.adaptanklebrace.fragments.AddDifficultyAndCommentsFragment
 import com.example.adaptanklebrace.services.BluetoothService
 import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
@@ -46,6 +47,7 @@ class StartSetActivity : AppCompatActivity() {
     private lateinit var bluetoothService: BluetoothService
     private val handler = Handler(Looper.getMainLooper())
 
+    private var exercise: Exercise? = null
     private var isFirstRun = true
     private var minAngle: Int = 0
     private var maxAngle: Int = 360
@@ -88,13 +90,13 @@ class StartSetActivity : AppCompatActivity() {
         bluetoothService = BluetoothService.instance!!
 
         // Retrieve the passed Exercise object with the intent
-        val exercise: Exercise? = intent.getParcelableExtra(ExerciseInfo.EXERCISE_KEY)
+        exercise = intent.getParcelableExtra(ExerciseInfo.EXERCISE_KEY)
         var exerciseInfo: ExerciseInfo? = null
 
         // Retrieve the exercise info for the chosen exercise & set the exercise data adapter
         if (exercise != null) {
-            exerciseInfo = ExerciseType.getExerciseInfoByName(exercise.name)
-            exerciseDataAdapter = ExerciseDataAdapter(this, listOf(exercise))
+            exerciseInfo = ExerciseType.getExerciseInfoByName(exercise!!.name)
+            exerciseDataAdapter = ExerciseDataAdapter(this, listOf(exercise!!))
         } else {
             exerciseDataAdapter = ExerciseDataAdapter(this, listOf(ExerciseType.getErrorExercise()))
         }
@@ -121,7 +123,7 @@ class StartSetActivity : AppCompatActivity() {
 
         // Load sets data
         if (exercise != null) {
-            ExerciseUtil.loadSetsData(setsAdapter, exercise)
+            ExerciseUtil.loadSetsData(setsAdapter, exercise!!)
         }
 
         // Initialize and set up the RecyclerView
@@ -175,36 +177,59 @@ class StartSetActivity : AppCompatActivity() {
                 // Send finish flag to device to end the exercise
                 bluetoothService.writeDeviceData("finish")
 
-                // Save the exercise data to the Recovery Data table
-                val currentDate = GeneralUtil.getCurrentDate()
-                val existingExercises =
-                    ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).getExercisesForDate(
-                        currentDate
-                    )
-
-                // Calculate sets completed as all >0 reps rows in the table
-                val setsCompleted = setsAdapter.getNonZeroRowsCount()
-
-                // Calculate reps completed as an average of all >0 reps in the table
-                val repsCompleted = setsAdapter.getAverageReps()
-
-                // todo: ask for difficulty rating & comments before saving data
-                val completedExercise = Exercise(
-                    id = ExerciseUtil.generateNewExerciseId(existingExercises),
-                    name = exercise.name,
-                    sets = setsCompleted,
-                    reps = repsCompleted,
-                    hold = exercise.hold,
-                    tension = exercise.tension, // todo: update with actual tension from device
-                )
-                ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).saveExercisesForDate(
-                    currentDate,
-                    existingExercises + completedExercise
-                )
+                // Prompt user to input difficulty & comments
+                val addDifficultyAndCommentsFragment = AddDifficultyAndCommentsFragment(this)
+                addDifficultyAndCommentsFragment.show(supportFragmentManager, "add_difficulty_and_comments")
+            } else {
+                // Redirect the user back to the Recovery Data page
+                startActivity(Intent(this, RecoveryDataActivity::class.java))
             }
+        }
+    }
+
+    /**
+     * Save set data to the Recovery Data table.
+     *
+     * @param difficulty the difficulty to save
+     * @param comments the comments to save
+     */
+    fun saveSetData(difficulty: Int = 0, comments: String = "") {
+        // Get existing exercise data from the Recovery Data table
+        val currentDate = GeneralUtil.getCurrentDate()
+        val existingExercises =
+            ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).getExercisesForDate(
+                currentDate
+            )
+
+        // Calculate sets completed as all >0 reps rows in the table
+        val setsCompleted = setsAdapter.getNonZeroRowsCount()
+
+        // Calculate reps completed as an average of all >0 reps in the table
+        val repsCompleted = setsAdapter.getAverageReps()
+
+        // Sets and reps must be >0 to save data
+        if (setsCompleted > 0 && repsCompleted > 0) {
+            // Save the exercise data to the Recovery Data table
+            val completedExercise = Exercise(
+                id = ExerciseUtil.generateNewExerciseId(existingExercises),
+                name = exercise!!.name,
+                sets = setsCompleted,
+                reps = repsCompleted,
+                hold = exercise!!.hold,
+                tension = exercise!!.tension, // todo: update with actual tension from device
+                difficulty = difficulty,
+                comments = comments
+            )
+            ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).saveExercisesForDate(
+                currentDate,
+                existingExercises + completedExercise
+            )
 
             // Redirect the user back to the Recovery Data page
             startActivity(Intent(this, RecoveryDataActivity::class.java))
+        } else {
+            // Warn user of no data to save
+            GeneralUtil.showToast(this, layoutInflater, "No sets and/or reps submitted. Please complete 1 rep before saving data.")
         }
     }
 
