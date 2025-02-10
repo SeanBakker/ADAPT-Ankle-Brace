@@ -95,16 +95,47 @@ class RecoveryDataMetricTableRowAdapter(
                 }
                 (difficulty as? EditText)?.apply {
                     // Remove previous listener to avoid duplicate events
+                    onFocusChangeListener = null
                     val currentWatcher = tag as? TextWatcher
                     if (currentWatcher != null) {
                         removeTextChangedListener(currentWatcher)
                     }
 
+                    var initialDifficulty: Int? = null  // Variable to store the original difficulty value
+
+                    // Add TextChangedListener to handle real-time changes to the text
                     val newWatcher = addTextChangedListener {
-                        metric?.difficulty = it.toString().toIntOrNull() ?: 0
+                        val currentDifficulty = text.toString().toIntOrNull()
+
+                        // Restrict difficulty level between 0-10
+                        if (currentDifficulty == null || currentDifficulty !in 0..10) {
+                            GeneralUtil.showToast(context, LayoutInflater.from(context), "Please enter a difficulty level between 0 and 10.")
+                        } else {
+                            metric?.difficulty = currentDifficulty
+                        }
                         markAsChanged()
                     }
                     tag = newWatcher
+
+                    // Add OnFocusChangeListener to handle focus loss and reset value if invalid
+                    setOnFocusChangeListener { _, hasFocus ->
+                        if (hasFocus) {
+                            // Store the original difficulty value when the field gains focus
+                            initialDifficulty = metric?.difficulty
+                        } else {
+                            val currentdifficulty = text.toString().toIntOrNull()
+
+                            // If the input is invalid, reset to the original difficulty value
+                            if (currentdifficulty !in 0..10) {
+                                // Use the initial value when focus was first gained
+                                initialDifficulty?.let {
+                                    metric?.difficulty = it
+                                    setText(it.toString())  // Reset the text to the original difficulty
+                                }
+                            }
+                            markAsChanged()
+                        }
+                    }
                 }
                 (comments as? EditText)?.apply {
                     // Remove previous listener to avoid duplicate events
