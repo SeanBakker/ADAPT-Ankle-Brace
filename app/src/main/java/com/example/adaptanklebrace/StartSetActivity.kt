@@ -174,12 +174,21 @@ class StartSetActivity : AppCompatActivity() {
         // Configure finish button
         finishButton.setOnClickListener {
             if (exercise != null) {
-                // Send finish flag to device to end the exercise
-                bluetoothService.writeDeviceData("finish")
+                // Prevent saving of data when no reps are completed
+                if (setsAdapter.getAverageReps() > 0) {
+                    // Send finish flag to device to end the exercise
+                    bluetoothService.writeDeviceData("finish")
 
-                // Prompt user to input difficulty & comments
-                val addDifficultyAndCommentsFragment = AddDifficultyAndCommentsFragment(this)
-                addDifficultyAndCommentsFragment.show(supportFragmentManager, "add_difficulty_and_comments")
+                    // Prompt user to input difficulty & comments
+                    val addDifficultyAndCommentsFragment = AddDifficultyAndCommentsFragment(this, exercise!!.tension)
+                    addDifficultyAndCommentsFragment.show(
+                        supportFragmentManager,
+                        "add_difficulty_and_comments"
+                    )
+                } else {
+                    // Warn user of no data to save
+                    GeneralUtil.showToast(this, layoutInflater, "No sets and/or reps submitted. Please complete 1 rep before saving data.")
+                }
             } else {
                 // Redirect the user back to the Recovery Data page
                 startActivity(Intent(this, RecoveryDataActivity::class.java))
@@ -190,10 +199,11 @@ class StartSetActivity : AppCompatActivity() {
     /**
      * Save set data to the Recovery Data table.
      *
+     * @param tension the tension to save
      * @param difficulty the difficulty to save
      * @param comments the comments to save
      */
-    fun saveSetData(difficulty: Int = 0, comments: String = "") {
+    fun saveSetData(tension: Int = exercise!!.tension, difficulty: Int = 0, comments: String = "") {
         // Get existing exercise data from the Recovery Data table
         val currentDate = GeneralUtil.getCurrentDate()
         val existingExercises =
@@ -216,7 +226,7 @@ class StartSetActivity : AppCompatActivity() {
                 sets = setsCompleted,
                 reps = repsCompleted,
                 hold = exercise!!.hold,
-                tension = exercise!!.tension, // todo: update with actual tension from device
+                tension = tension,
                 difficulty = difficulty,
                 comments = comments
             )

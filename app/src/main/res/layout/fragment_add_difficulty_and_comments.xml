@@ -24,8 +24,44 @@
             android:layout_height="wrap_content"
             android:text="Add a difficulty rating and any additional comments for the completed activity."
             android:textSize="14sp"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/requiredFieldsFormText"
+            android:textSize="14sp"
+            android:textColor="@color/red_1"
             android:layout_gravity="center"
             android:paddingBottom="20dp" />
+
+        <!-- Tension Level -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tension Level (1-10):"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/asteriskSymbol"
+                android:textSize="16sp"
+                android:paddingHorizontal="5dp"
+                android:textColor="@color/red_1" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/tensionLevelInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g., 5"
+            android:inputType="number" />
 
         <!-- Difficulty Level -->
         <TextView
