@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,8 @@ class ROMMetricActivity : AppCompatActivity() {
     private lateinit var inversionPercentageText: TextView
     private lateinit var flexionTotalROM: TextView
     private lateinit var inversionTotalROM: TextView
+    private lateinit var startButton: Button
+    private lateinit var finishButton: Button
     private lateinit var bluetoothService: BluetoothService
     private val handler = Handler(Looper.getMainLooper())
 
@@ -57,7 +60,9 @@ class ROMMetricActivity : AppCompatActivity() {
         }
         bluetoothService = BluetoothService.instance!!
 
-        // Setup the progress bars and text
+        // Initialize progress bar, buttons & text views
+        startButton = findViewById(R.id.startROMBtn)
+        finishButton = findViewById(R.id.finishMetricBtn)
         flexionProgressBar = findViewById(R.id.flexionProgress)
         inversionProgressBar = findViewById(R.id.inversionProgress)
         flexionPercentageText = findViewById(R.id.flexionPercentageText)
@@ -74,8 +79,18 @@ class ROMMetricActivity : AppCompatActivity() {
             }
         }
 
-        // todo: add sets and start/end buttons to be able to calculate the total ROM at the end after each set
-        //updateTotalROM()
+        // Configure start set button
+        startButton.setOnClickListener {
+            // Send start_ROM flag to device to prepare metric data collection (of ROM Test)
+            bluetoothService.writeDeviceData("start_ROM")
+        }
+
+        // todo: hide the visibility of the finish button until the test is complete?
+        // Configure finish button
+        finishButton.setOnClickListener {
+            // todo: implement finish button
+            //updateTotalROM()
+        }
     }
 
     @SuppressLint("SetTextI18n")

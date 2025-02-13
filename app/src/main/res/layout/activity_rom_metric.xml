@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="0°"
+            android:text="@string/zeroDegrees"
             android:textSize="30sp"
             android:textStyle="bold" />
     </FrameLayout>
@@ -78,7 +78,7 @@
             android:id="@+id/flexionROMTotalText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total ROM:"
+            android:text="@string/totalROM"
             android:textSize="18sp"
             tools:ignore="NotSibling" />
 
@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/flexionROMTotalText"
             android:layout_marginStart="10dp"
-            android:text="---"
+            android:text="@string/dashesSymbol"
             android:textSize="18sp"
             android:textStyle="bold"
             tools:ignore="NotSibling" />
@@ -132,7 +132,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="0°"
+            android:text="@string/zeroDegrees"
             android:textSize="30sp"
             android:textStyle="bold" />
     </FrameLayout>
@@ -150,7 +150,7 @@
             android:id="@+id/inversionROMTotalText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total ROM:"
+            android:text="@string/totalROM"
             android:textSize="18sp"
             tools:ignore="NotSibling" />
 
@@ -160,10 +160,32 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/inversionROMTotalText"
             android:layout_marginStart="10dp"
-            android:text="---"
+            android:text="@string/dashesSymbol"
             android:textSize="18sp"
             android:textStyle="bold"
             tools:ignore="NotSibling" />
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/inversionTotalFrame"
+        android:layout_marginTop="30dp"
+        android:gravity="center">
+
+        <!-- Start ROM Test -->
+        <Button
+            android:id="@+id/startROMBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:text="@string/startROMBtn" />
+
+        <!-- Finish Metric -->
+        <Button
+            android:id="@+id/finishMetricBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/finishMetricBtn" />
+    </LinearLayout>
 </RelativeLayout>

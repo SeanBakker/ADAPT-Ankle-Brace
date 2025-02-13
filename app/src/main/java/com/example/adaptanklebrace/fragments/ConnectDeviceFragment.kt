@@ -31,7 +31,7 @@ class ConnectDeviceFragment(
 ) : DialogFragment() {
 
     private var isManuallyDismissed: Boolean = false
-    private var isTensionCorrect: Boolean = true
+    private var isTensionCorrect: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,6 +77,7 @@ class ConnectDeviceFragment(
                 if (bluetoothService.connectToBluetoothDevice(it)) {
                     Thread.sleep(1000) // Wait for device to load
                     bluetoothService.writeDeviceData("ready")
+                    Thread.sleep(1000) // Wait for device to load
 
                     // Check the device for the configured tension level
                     Handler(Looper.getMainLooper()).postDelayed({
@@ -116,12 +117,8 @@ class ConnectDeviceFragment(
                         } else {
                             Thread.sleep(2000) // Wait for device to load
 
-                            // Send start flag to device to prepare exercise data collection (of sets)
-                            when (targetActivity) {
-                                ROMMetricActivity::class.java -> bluetoothService.writeDeviceData("start_ROM")
-                                GaitTestMetricActivity::class.java -> bluetoothService.writeDeviceData("start_Gait")
-                                else -> bluetoothService.writeDeviceData(getString(R.string.error))
-                            }
+                            // Send no_test_rep flag to device to skip test rep
+                            bluetoothService.writeDeviceData("no_test_rep")
 
                             // Start target activity to perform sets
                             // Use METRIC_KEY since only metrics will start the target activity through this execution path

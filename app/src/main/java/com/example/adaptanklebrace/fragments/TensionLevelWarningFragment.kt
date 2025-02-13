@@ -39,15 +39,15 @@ class TensionLevelWarningFragment(
         val actualTensionText: TextView = view.findViewById(R.id.actualTension)
         actualTensionText.text = actualTensionLevel.toString()
 
-        val startExerciseButton: Button = view.findViewById(R.id.startExerciseBtn)
-        startExerciseButton.setOnClickListener {
-            startExercise()
+        val startButton: Button = view.findViewById(R.id.startBtn)
+        startButton.setOnClickListener {
+            startExerciseOrMetric()
         }
 
         return view
     }
 
-    private fun startExercise() {
+    private fun startExerciseOrMetric() {
         // Send test rep flag to device to prepare exercise data collection (of test rep)
         if (targetActivity == StartSetActivity::class.java) {
             val testRepFragment = TestRepFragment(context, bluetoothService, exercise)
@@ -55,12 +55,8 @@ class TensionLevelWarningFragment(
         } else {
             Thread.sleep(2000) // Wait for device to load
 
-            // Send start flag to device to prepare exercise data collection (of sets)
-            when (targetActivity) {
-                ROMMetricActivity::class.java -> bluetoothService.writeDeviceData("start_ROM")
-                GaitTestMetricActivity::class.java -> bluetoothService.writeDeviceData("start_Gait")
-                else -> bluetoothService.writeDeviceData(getString(R.string.error))
-            }
+            // Send no_test_rep flag to device to skip test rep
+            bluetoothService.writeDeviceData("no_test_rep")
 
             // Start target activity to perform sets
             // Use METRIC_KEY since only metrics will start the target activity through this execution path

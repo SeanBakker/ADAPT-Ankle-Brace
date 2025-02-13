@@ -35,6 +35,9 @@
     <string name="noData">---</string>
     <string name="NA">N/A</string>
 
+    <!-- Page Text -->
+    <string name="totalROM">Total ROM:</string>
+
     <!-- Data -->
     <string name="minText">Min</string>
     <string name="maxText">Max</string>
@@ -50,6 +53,8 @@
     <string name="startBtn">Start</string>
     <string name="startExerciseBtn">Start Exercise</string>
     <string name="startMetricBtn">Start Metric</string>
+    <string name="startROMBtn">Start ROM Test</string>
+    <string name="startGaitBtn">Start Gait Test</string>
     <string name="startSetBtn">Start Set</string>
     <string name="endSetBtn">End Set</string>
     <string name="startTestRepBtn">Start Test Rep</string>
@@ -64,8 +69,11 @@
 
     <!-- Fragments -->
     <string name="requiredFieldsFormText">Fields marked with * are required.</string>
+
+    <!-- Symbols -->
     <string name="asteriskSymbol">*</string>
     <string name="degreesSymbol">°</string>
+    <string name="dashesSymbol">---</string>
 
     <string-array name="frequency_categories">
         <item>day</item>

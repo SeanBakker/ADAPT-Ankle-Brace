@@ -78,10 +78,10 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/startExerciseBtn"
+        android:id="@+id/startBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:text="@string/startExerciseBtn" />
+        android:text="@string/startBtn" />
 </LinearLayout>
