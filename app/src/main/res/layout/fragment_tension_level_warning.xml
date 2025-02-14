@@ -10,6 +10,8 @@
         android:layout_height="wrap_content"
         android:text="Device Tension Level Warning!"
         android:textSize="16sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:layout_gravity="center" />
 
     <ImageView
@@ -23,8 +25,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textStyle="bold"
         android:text="The tension level on the device is configured incorrectly."
         android:textSize="16sp"
         android:layout_gravity="center" />
