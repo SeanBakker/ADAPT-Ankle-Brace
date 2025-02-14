@@ -140,22 +140,21 @@ class StartSetActivity : AppCompatActivity() {
         setProgressMinText = findViewById(R.id.setProgressMinText)
         setProgressMaxText = findViewById(R.id.setProgressMaxText)
 
-        // todo: implement start/end set buttons
-        // todo: on finishing an exercise, add simple dropdown to set the tension level manually
+        // todo: implement end set buttons
 
         // Periodically read angle from ADAPT device
         handler.post(updateAngleTask)
         bluetoothService.deviceLiveData.observe(this) { pair ->
             pair?.let {
                 if (isFirstRun) {
-                    Log.i("ANGLE", "Min angle received: ${it.first}")
-                    Log.i("ANGLE", "Max angle received: ${it.second}")
-                    updateMinMaxAngles(it.first, it.second)
+                    Log.i("SET", "Min angle received: ${it.first}")
+                    Log.i("SET", "Max angle received: ${it.second}")
+                    updateMinMaxAngles(it.first.toInt(), it.second.toInt())
                     isFirstRun = false // Mark that the first run is complete
                 } else {
                     // This runs after the first time
                     updateProgress(it.first.toDouble())
-                    Log.i("ANGLE", "Angle data received: ${it.first}")
+                    Log.i("SET", "Angle data received: ${it.first}")
                 }
             }
         }
@@ -176,11 +175,8 @@ class StartSetActivity : AppCompatActivity() {
             if (exercise != null) {
                 // Prevent saving of data when no reps are completed
                 if (setsAdapter.getAverageReps() > 0) {
-                    // Send finish flag to device to end the exercise
-                    bluetoothService.writeDeviceData("finish")
-
                     // Prompt user to input difficulty & comments
-                    val addDifficultyAndCommentsFragment = AddDifficultyAndCommentsFragment(this, exercise!!.tension)
+                    val addDifficultyAndCommentsFragment = AddDifficultyAndCommentsFragment(this, expectedTension = exercise!!.tension)
                     addDifficultyAndCommentsFragment.show(
                         supportFragmentManager,
                         "add_difficulty_and_comments"

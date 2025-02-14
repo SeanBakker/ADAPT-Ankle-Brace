@@ -15,7 +15,9 @@ data class Metric(
     var comments: String = "",
     var isSelected: Boolean = false,
     var percentageCompleted: Double = 0.0,
-    var isVisible: Boolean = true
+    var isVisible: Boolean = true,
+    var romPlantarDorsiflexionRange: Double = 0.0,
+    var romInversionEversionRange: Double = 0.0
 ) : Parcelable, Serializable {
 
     constructor(parcel: Parcel) : this(
@@ -27,7 +29,9 @@ data class Metric(
         parcel.readString() ?: "",
         parcel.readBoolean(),
         parcel.readDouble(),
-        parcel.readBoolean()
+        parcel.readBoolean(),
+        parcel.readDouble(),
+        parcel.readDouble()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -40,6 +44,8 @@ data class Metric(
         parcel.writeBoolean(isSelected)
         parcel.writeDouble(percentageCompleted)
         parcel.writeBoolean(isVisible)
+        parcel.writeDouble(romPlantarDorsiflexionRange)
+        parcel.writeDouble(romInversionEversionRange)
     }
 
     override fun describeContents(): Int {

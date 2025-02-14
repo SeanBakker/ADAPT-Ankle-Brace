@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/romExerciseToolbar"
+            android:id="@+id/romMetricToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -21,171 +21,219 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <TextView
-        android:id="@+id/flexionText"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/romExerciseToolbar"
-        android:layout_marginTop="100dp"
-        android:layout_marginStart="20dp"
-        android:text="Plantar Flexion &amp; Dorsiflexion Range:"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        tools:ignore="NotSibling" />
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <!-- Flexion Progress Bar with Text -->
-    <FrameLayout
-        android:id="@+id/flexionFrame"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:layout_below="@id/romExerciseToolbar"
-        android:layout_marginTop="120dp"
-        tools:ignore="NotSibling">
-
-        <ProgressBar
-            android:id="@+id/flexionProgress"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:indeterminate="false"
-            android:max="360"
-            android:rotationX="180"
-            android:progressDrawable="@drawable/circular_progress_bar" />
-
-        <TextView
-            android:id="@+id/flexionPercentageText"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/zeroDegrees"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-    </FrameLayout>
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <!-- Flexion Total ROM -->
-    <RelativeLayout
-        android:id="@+id/flexionTotalFrame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/flexionFrame"
-        tools:ignore="NotSibling">
+            <!-- ViewPagerInfo for metric info details -->
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPagerInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="16dp" />
 
-        <TextView
-            android:id="@+id/flexionROMTotalText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/totalROM"
-            android:textSize="18sp"
-            tools:ignore="NotSibling" />
+            <LinearLayout
+                android:id="@+id/romResultsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/viewPagerInfo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:orientation="vertical"
+                android:padding="10dp">
 
-        <TextView
-            android:id="@+id/flexionROMTotal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/flexionROMTotalText"
-            android:layout_marginStart="10dp"
-            android:text="@string/dashesSymbol"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:ignore="NotSibling" />
-    </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ROM Test Results: "
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorOnBackground"
+                    android:layout_marginTop="8dp" />
 
-    <TextView
-        android:id="@+id/inversionText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/romExerciseToolbar"
-        android:layout_marginTop="400dp"
-        android:layout_marginStart="20dp"
-        android:text="Inversion &amp; Eversion Range:"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        tools:ignore="NotSibling" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-    <!-- Inversion Progress Bar with Text -->
-    <FrameLayout
-        android:id="@+id/inversionFrame"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="420dp"
-        android:layout_below="@id/romExerciseToolbar"
-        tools:ignore="NotSibling">
+                    <LinearLayout
+                        android:layout_width="380dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-        <ProgressBar
-            android:id="@+id/inversionProgress"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:indeterminate="false"
-            android:max="360"
-            android:rotationX="180"
-            android:progressDrawable="@drawable/circular_progress_bar" />
+                        <TextView
+                            android:id="@+id/flexionText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Plantar Flexion &amp; Dorsiflexion Range:"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="?attr/colorOnSecondary"
+                            android:gravity="center" />
 
-        <TextView
-            android:id="@+id/inversionPercentageText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/zeroDegrees"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-    </FrameLayout>
+                        <!-- Flexion Progress Bar with Text -->
+                        <FrameLayout
+                            android:id="@+id/flexionFrame"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_gravity="center">
 
-    <!-- Inversion Total ROM -->
-    <RelativeLayout
-        android:id="@+id/inversionTotalFrame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/inversionFrame"
-        tools:ignore="NotSibling">
+                            <ProgressBar
+                                android:id="@+id/flexionProgress"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:indeterminate="false"
+                                android:max="360"
+                                android:rotationX="180"
+                                android:progressDrawable="@drawable/circular_progress_bar" />
 
-        <TextView
-            android:id="@+id/inversionROMTotalText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/totalROM"
-            android:textSize="18sp"
-            tools:ignore="NotSibling" />
+                            <TextView
+                                android:id="@+id/flexionPercentageText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/zeroDegrees"
+                                android:textSize="30sp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
 
-        <TextView
-            android:id="@+id/inversionROMTotal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/inversionROMTotalText"
-            android:layout_marginStart="10dp"
-            android:text="@string/dashesSymbol"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:ignore="NotSibling" />
-    </RelativeLayout>
+                        <!-- Flexion Total ROM -->
+                        <LinearLayout
+                            android:id="@+id/flexionTotalFrame"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/inversionTotalFrame"
-        android:layout_marginTop="30dp"
-        android:gravity="center">
+                            <TextView
+                                android:id="@+id/flexionROMTotalText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/totalROM"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="?attr/colorOnSecondary" />
 
-        <!-- Start ROM Test -->
-        <Button
-            android:id="@+id/startROMBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="30dp"
-            android:text="@string/startROMBtn" />
+                            <TextView
+                                android:id="@+id/flexionROMTotal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:text="@string/dashesSymbol"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="?attr/colorOnSecondary" />
+                        </LinearLayout>
+                    </LinearLayout>
 
-        <!-- Finish Metric -->
-        <Button
-            android:id="@+id/finishMetricBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/finishMetricBtn" />
-    </LinearLayout>
-</RelativeLayout>
+                    <LinearLayout
+                        android:layout_width="380dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/inversionText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Inversion &amp; Eversion Range:"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="?attr/colorOnSecondary"
+                            android:gravity="center" />
+
+                        <!-- Inversion Progress Bar with Text -->
+                        <FrameLayout
+                            android:id="@+id/inversionFrame"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_gravity="center">
+
+                            <ProgressBar
+                                android:id="@+id/inversionProgress"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:indeterminate="false"
+                                android:max="360"
+                                android:rotationX="180"
+                                android:progressDrawable="@drawable/circular_progress_bar" />
+
+                            <TextView
+                                android:id="@+id/inversionPercentageText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/zeroDegrees"
+                                android:textSize="30sp"
+                                android:textStyle="bold" />
+                        </FrameLayout>
+
+                        <!-- Inversion Total ROM -->
+                        <LinearLayout
+                            android:id="@+id/inversionTotalFrame"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:id="@+id/inversionROMTotalText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/totalROM"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="?attr/colorOnSecondary" />
+
+                            <TextView
+                                android:id="@+id/inversionROMTotal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:text="@string/dashesSymbol"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="?attr/colorOnSecondary" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/romResultsLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="30dp"
+                android:gravity="center">
+
+                <!-- Start ROM Test -->
+                <Button
+                    android:id="@+id/startROMBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="30dp"
+                    android:text="@string/startROMBtn" />
+
+                <!-- Finish Metric -->
+                <Button
+                    android:id="@+id/finishMetricBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/finishMetricBtn" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

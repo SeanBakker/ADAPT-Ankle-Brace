@@ -34,6 +34,7 @@ float filteredPitchExternal = 0;
 // Test-related variables
 bool testInProgress = false;
 bool testComplete = false;
+float triggerTestComplete = -1;
 bool continuousPrint = false;       // If true, sensor values are printed continuously during the test
 unsigned long testStartTime = 0;    // Start time of the test
 const unsigned long testDuration = 5000;  // 5 seconds
@@ -42,11 +43,32 @@ float minPlantarDorsiAngle = 1e6;   // Start with very high number
 float maxInversionEversionAngle = -1e6; // For tracking inversion/eversion
 float minInversionEversionAngle = 1e6;  // For tracking inversion/eversion
 
-// Variables to hold readings as uint8_t
-uint8_t livePlantarDorsiAngle = 0;
-uint8_t liveInversionEversionAngle = 0;
-uint8_t finalPlantarDorsiRange = 0;
-uint8_t finalInversionEversionRange = 0;
+
+// Helper function to read data from the characteristic
+String readCharacteristicData() {
+    uint8_t value[20] = {0}; // Create a buffer to store up to 20 bytes of received data
+    int length = readCharacteristic.readValue(value, sizeof(value));
+
+    String receivedData = "";
+    for (int i = 0; i < length; i++) {
+        if (value[i] == 0) break; // Stop at null terminator if present
+        receivedData += (char)value[i];
+    }
+    return receivedData;
+}
+
+// Helper function to write data to the characteristic
+void writeCharacteristicData(float data1, float data2 = NAN) {
+    uint8_t floatBytes[8];  // Maximum needed for two floats (4 bytes each)
+    memcpy(floatBytes, &data1, sizeof(float));  // Copy first float into byte array
+
+    if (!isnan(data2)) {  // Check if second float is provided
+        memcpy(floatBytes + 4, &data2, sizeof(float));  // Copy second float
+        writeCharacteristic.writeValue(floatBytes, 8);  // Send 8 bytes
+    } else {
+        writeCharacteristic.writeValue(floatBytes, 4);  // Send only 4 bytes
+    }
+}
 
 
 /***** REQUIRED SETUP *****/
@@ -72,8 +94,8 @@ void setup() {
     // Add the service
     BLE.addService(customService);
     // Set the initial value for the characteristic
-    writeCharacteristic.writeValue((uint8_t) 0); // Cast 0 to uint8_t
-    readCharacteristic.writeValue((uint8_t) 0); // Cast 0 to uint8_t
+    writeCharacteristicData((float) 0);
+    readCharacteristic.writeValue((uint8_t) 0);
     // Start advertising the BLE service
     BLE.advertise();
     Serial.println("BLE device is now advertising...");
@@ -127,8 +149,8 @@ void loop() {
 
                     /***** SEND TENSION LEVEL *****/
                     // Send the configured tension level from the device
-                    uint8_t tensionLevel = (uint8_t) 4; // todo: replace with actual tension on device
-                    writeCharacteristic.writeValue(tensionLevel);
+                    float tensionLevel = 4; // todo: replace with actual tension on device
+                    writeCharacteristicData(tensionLevel);
                     Serial.print("Sending tension level: ");
                     Serial.println(tensionLevel);
 
@@ -153,7 +175,7 @@ void loop() {
 
                                     /***** TEST REP - START PLANTAR FLEXION *****/
                                     // todo: replace with actual test rep calculating live angle
-                                    writeCharacteristic.writeValue((uint8_t) 35);
+                                    writeCharacteristicData((float) 35);
                                     /***** TEST REP - END PLANTAR FLEXION *****/
 
                                     /***** FINISH TEST REP - DEVICE LOOP *****/
@@ -167,10 +189,9 @@ void loop() {
 
                                         if (receivedData == "finish") {
                                             /***** TEST REP - CALCULATE MIN/MAX ANGLES *****/
-                                            uint8_t minAngle = 10; // todo: replace with actual min/max values
-                                            uint8_t maxAngle = 70;
-                                            uint8_t data[2] = {minAngle, maxAngle}; // Combined two 8-bit values
-                                            writeCharacteristic.writeValue(data, sizeof(data));
+                                            float minAngle = 10; // todo: replace with actual min/max values
+                                            float maxAngle = 70;
+                                            writeCharacteristicData(minAngle, maxAngle);
                                             Serial.print("Sending min/max Angles: ");
                                             Serial.println("(" + String(minAngle) + ", " + String(maxAngle) + ")");
                                             /***** TEST REP - CALCULATE MIN/MAX ANGLES *****/
@@ -195,7 +216,7 @@ void loop() {
                             } else if (finishTestRep || receivedData == "no_test_rep" || receivedData == "error") {
                                 Serial.println("Device is skipping test rep!");
                                 // Clear the tension value
-                                writeCharacteristic.writeValue((uint8_t)0);
+                                writeCharacteristicData((float) 0);
                                 break;
                             }
                         }
@@ -219,6 +240,9 @@ void loop() {
                                 // todo: replace with each exercise live data
                                 performExerciseRoutine();
                             } else if (receivedData == "start_ROM") {
+                                // Setup variables for ROM test
+                                testComplete = false;
+
                                 Serial.println("Device is starting ROM Test metric!");
                                 delay(50);
 
@@ -252,24 +276,12 @@ void loop() {
     }
 }
 
-// Helper function to read data from the characteristic
-String readCharacteristicData() {
-    uint8_t value[20] = {0}; // Create a buffer to store up to 20 bytes of received data
-    int length = readCharacteristic.readValue(value, sizeof(value));
-
-    String receivedData = "";
-    for (int i = 0; i < length; i++) {
-        if (value[i] == 0) break; // Stop at null terminator if present
-        receivedData += (char)value[i];
-    }
-    return receivedData;
-}
 
 // Function to simulate an exercise routine
 void performExerciseRoutine() {
     for (int angle = 0; angle <= 180; angle++) {
-        uint8_t angleValue = (uint8_t)(angle % 256); // Limit to 0-255
-        writeCharacteristic.writeValue(angleValue);
+        float angleValue = (float) angle;
+        writeCharacteristicData(angleValue);
 
         Serial.print("Sent angle: ");
         Serial.println(angle);
@@ -381,35 +393,28 @@ void performROMMetricRoutine() {
             maxInversionEversionAngle = max(maxInversionEversionAngle, inversionEversionAngle);
             minInversionEversionAngle = min(minInversionEversionAngle, inversionEversionAngle);
 
-            // Store live values as uint8_t
-            livePlantarDorsiAngle = (uint8_t) round(plantarDorsiAngle);
-            liveInversionEversionAngle = (uint8_t) round(inversionEversionAngle);
-
-            uint8_t liveData[2] = {livePlantarDorsiAngle, liveInversionEversionAngle};
-            writeCharacteristic.writeValue(liveData, sizeof(liveData));
+            writeCharacteristicData(plantarDorsiAngle, inversionEversionAngle);
             Serial.print("Sending live angles (plantar/dorsi, inver/ever): ");
-            Serial.println("(" + String(livePlantarDorsiAngle) + ", " +
-                           String(liveInversionEversionAngle) + ")");
+            Serial.println("(" + String(plantarDorsiAngle) + ", " +
+                           String(inversionEversionAngle) + ")");
         }
 
         // If the test is in progress, check if 5 seconds have elapsed
         if (testInProgress && millis() - testStartTime >= testDuration) {
+            testInProgress = false;
             testComplete = true;
+
+            // Send flag to app that test is completed
+            writeCharacteristicData(triggerTestComplete);
+            Serial.println("ROM Test Complete!");
+            delay(1000);
 
             // Calculate the maximum range of motion for plantar/dorsi and inversion/eversion
             float plantarDorsiRange = maxPlantarDorsiAngle - minPlantarDorsiAngle;
             float inversionEversionRange = maxInversionEversionAngle - minInversionEversionAngle;
 
-            // Bluetooth final values
-            finalPlantarDorsiRange = (uint8_t) round(finalPlantarDorsiRange);
-            finalInversionEversionRange = (uint8_t) round(finalInversionEversionRange);
-
             // Send final values to app
-            uint8_t finalData[2] = {finalPlantarDorsiRange, finalInversionEversionRange};
-            writeCharacteristic.writeValue(finalData, sizeof(finalData));
-            Serial.print("Sending final ranges (plantar/dorsi, inver/ever): ");
-            Serial.println("(" + String(finalPlantarDorsiRange) + ", " +
-                           String(finalInversionEversionRange) + ")");
+            writeCharacteristicData(plantarDorsiRange, inversionEversionRange);
 
             // Output the test results
             Serial.println("\n5-second Range of Motion Test Results:");
@@ -417,8 +422,7 @@ void performROMMetricRoutine() {
             Serial.println(plantarDorsiRange, 2);
             Serial.print("Maximum Inversion / Eversion Range (degrees): ");
             Serial.println(inversionEversionRange, 2);
-            Serial.println(
-                    "-------------------------------------------------------------------------------------");
+            Serial.println("-------------------------------------------------------------------------------------");
         }
 
         delay(50);  // Sampling delay

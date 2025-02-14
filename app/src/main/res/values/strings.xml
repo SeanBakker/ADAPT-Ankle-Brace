@@ -11,7 +11,7 @@
     <string name="start_set">Start Exercise Set</string>
 
     <!-- Metrics -->
-    <string name="rom_metric">Range of Motion (ROM) Metric</string>
+    <string name="rom_metric">Range of Motion (ROM) Test Metric</string>
     <string name="gait_test_metric">Gait Test Metric</string>
 
     <!-- Table Text -->
