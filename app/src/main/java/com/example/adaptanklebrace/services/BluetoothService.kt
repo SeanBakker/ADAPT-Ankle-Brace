@@ -26,6 +26,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.utils.GeneralUtil
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.util.UUID
 
 class BluetoothService : Service() {
@@ -40,8 +42,8 @@ class BluetoothService : Service() {
     private val writeCharacteristicUUID: UUID = UUID.fromString("f8c2f5f0-4e8c-4a95-b9c1-3c8c33b457c4")
     private val BLUETOOTH_PERMISSION_REQUEST_CODE = 1002
 
-    val _deviceLiveData = MutableLiveData<Pair<Int, Int>?>()
-    val deviceLiveData: LiveData<Pair<Int, Int>?> get() = _deviceLiveData
+    val _deviceLiveData = MutableLiveData<Pair<Float, Float>?>()
+    val deviceLiveData: LiveData<Pair<Float, Float>?> get() = _deviceLiveData
 
     companion object {
         var instance: BluetoothService? = null
@@ -112,17 +114,22 @@ class BluetoothService : Service() {
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     val value = characteristic.value
                     if (value.isNotEmpty()) {
-                        if (value.size == 1) {
-                            // Single integer
-                            val singleValue = value[0].toInt() and 0xFF
-                            _deviceLiveData.postValue(Pair(singleValue, singleValue)) // Store as a pair for consistency
-                            Log.i("Bluetooth", "Characteristic read (single): $singleValue")
-                        } else if (value.size >= 2) {
-                            // Pair of integers
-                            val firstValue = value[0].toInt() and 0xFF
-                            val secondValue = value[1].toInt() and 0xFF
-                            _deviceLiveData.postValue(Pair(firstValue, secondValue))
-                            Log.i("Bluetooth", "Characteristic read (pair): ($firstValue, $secondValue)")
+                        when (value.size) {
+                            4 -> { // Single float (4 bytes in IEEE 754 format)
+                                val singleValue = ByteBuffer.wrap(value).order(ByteOrder.LITTLE_ENDIAN).float
+                                _deviceLiveData.postValue(Pair(singleValue, singleValue)) // Store as a pair for consistency
+                                Log.i("Bluetooth", "Characteristic read (single float): $singleValue")
+                            }
+                            8 -> { // Pair of floats (8 bytes total, 4 bytes each)
+                                val buffer = ByteBuffer.wrap(value).order(ByteOrder.LITTLE_ENDIAN)
+                                val firstValue = buffer.float
+                                val secondValue = buffer.float
+                                _deviceLiveData.postValue(Pair(firstValue, secondValue))
+                                Log.i("Bluetooth", "Characteristic read (pair of floats): ($firstValue, $secondValue)")
+                            }
+                            else -> {
+                                Log.w("Bluetooth", "Unexpected data length: ${value.size} bytes")
+                            }
                         }
                     } else {
                         Log.w("Bluetooth", "Characteristic read: no data received")
@@ -153,17 +160,22 @@ class BluetoothService : Service() {
             ) {
                 val value = characteristic.value
                 if (value.isNotEmpty()) {
-                    if (value.size == 1) {
-                        // Single integer
-                        val singleValue = value[0].toInt() and 0xFF // todo: read float or double values instead of integers
-                        _deviceLiveData.postValue(Pair(singleValue, singleValue)) // Store as a pair for consistency
-                        Log.i("Bluetooth", "Characteristic changed (single): $singleValue")
-                    } else if (value.size >= 2) {
-                        // Pair of integers
-                        val firstValue = value[0].toInt() and 0xFF
-                        val secondValue = value[1].toInt() and 0xFF
-                        _deviceLiveData.postValue(Pair(firstValue, secondValue))
-                        Log.i("Bluetooth", "Characteristic changed (pair): ($firstValue, $secondValue)")
+                    when (value.size) {
+                        4 -> { // Single float (4 bytes in IEEE 754 format)
+                            val singleValue = ByteBuffer.wrap(value).order(ByteOrder.LITTLE_ENDIAN).float
+                            _deviceLiveData.postValue(Pair(singleValue, singleValue)) // Store as a pair for consistency
+                            Log.i("Bluetooth", "Characteristic read (single float): $singleValue")
+                        }
+                        8 -> { // Pair of floats (8 bytes total, 4 bytes each)
+                            val buffer = ByteBuffer.wrap(value).order(ByteOrder.LITTLE_ENDIAN)
+                            val firstValue = buffer.float
+                            val secondValue = buffer.float
+                            _deviceLiveData.postValue(Pair(firstValue, secondValue))
+                            Log.i("Bluetooth", "Characteristic read (pair of floats): ($firstValue, $secondValue)")
+                        }
+                        else -> {
+                            Log.w("Bluetooth", "Unexpected data length: ${value.size} bytes")
+                        }
                     }
                 } else {
                     Log.w("Bluetooth", "Characteristic changed: no data received")
