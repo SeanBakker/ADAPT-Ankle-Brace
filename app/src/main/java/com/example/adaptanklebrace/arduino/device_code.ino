@@ -16,6 +16,10 @@ BLECharacteristic writeCharacteristic("f8c2f5f0-4e8c-4a95-b9c1-3c8c33b457c3", BL
 BLECharacteristic readCharacteristic("f8c2f5f0-4e8c-4a95-b9c1-3c8c33b457c4", BLERead | BLEWrite | BLENotify, 20); // Custom characteristic UUID, read/write/notify, 20 byte size
 
 
+/***** EXERCISE VARIABLES *****/
+float repsCount = 0;
+
+
 /***** ROM VARIABLES *****/
 // Create sensor object for the external IMU
 Adafruit_ISM330DHCX externalIMU;  // External IMU object
@@ -33,8 +37,8 @@ float filteredPitchExternal = 0;
 
 // Test-related variables
 bool testInProgress = false;
-bool testComplete = false;
-float triggerTestComplete = -1;
+bool timedTestComplete = false;
+float triggerTimedTestComplete = -1;
 bool continuousPrint = false;       // If true, sensor values are printed continuously during the test
 unsigned long testStartTime = 0;    // Start time of the test
 const unsigned long testDuration = 5000;  // 5 seconds
@@ -120,207 +124,147 @@ void setup() {
 //    Serial.println("Success.");
 }
 
-/***** MAIN LOOP *****/
-void loop() {
-    // Listen for BLE peripherals to connect
-    BLEDevice central = BLE.central();
-    bool finishTestRep = false;
 
-    // If a device is connected
-    if (central) {
-        Serial.print("Connected to central: ");
-        Serial.println(central.address());
-        digitalWrite(LED_BUILTIN, HIGH);
+// Function to send live angle data for exercise routines
+void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false) {
+    // Variable to keep track of counting the current rep
+    bool repsCounted;
 
-        // While the device is connected
-        while (central.connected()) {
-            /***** READY - DEVICE LOOP *****/
-            if (readCharacteristic.written()) {
-                String receivedData = readCharacteristicData();
-                Serial.print("Data received from Bluetooth: ");
-                Serial.println(receivedData);
+    // Initial setup before test starts
+    if (!testInProgress) {
+        repsCounted = false;
+        testInProgress = true;
+        continuousPrint = true; // todo: may be false
 
-                // Clear the value after reading
-                readCharacteristic.writeValue((uint8_t)0);
+        // Reset angles for new test
+        maxPlantarDorsiAngle = -1e6;
+        minPlantarDorsiAngle = 1e6;
+        maxInversionEversionAngle = -1e6;
+        minInversionEversionAngle = 1e6;
+    }
 
-                /***** CHECK APP IS READY *****/
-                if (receivedData == "ready") {
-                    Serial.println("Device is ready!");
+    // Variables for the built-in IMU
+    float accX, accY, accZ;
 
-                    /***** SEND TENSION LEVEL *****/
-                    // Send the configured tension level from the device
-                    float tensionLevel = 4; // todo: replace with actual tension on device
-                    writeCharacteristicData(tensionLevel);
-                    Serial.print("Sending tension level: ");
-                    Serial.println(tensionLevel);
+    // Variables for the external IMU (foot-mounted)
+    sensors_event_t accel, dummyGyro, dummyTemp;
 
-                    // Wait on next received instruction from the app
-                    while (central.connected()) {
-                        /***** TEST REP - DEVICE LOOP *****/
-                        if (readCharacteristic.written()) {
-                            String receivedData = readCharacteristicData();
-                            Serial.print("Data received from Bluetooth: ");
-                            Serial.println(receivedData);
+    // Read data from the built-in IMU
+    if (IMU.accelerationAvailable()) {
+        IMU.readAcceleration(accX, accY, accZ);
 
-                            // Clear the value after reading
-                            readCharacteristic.writeValue((uint8_t)0);
+        // Calculate the raw roll and pitch for the built-in IMU (calf-mounted)
+        float roll = atan2(accY, accZ) * 180.0 / PI;
+        float rawPitch = atan2(fabs(accX), sqrt(accY * accY + accZ * accZ)) * 180.0 / PI;
+        float pitch = (accZ < 0) ? -rawPitch : rawPitch;
 
-                            /***** CHECK EXERCISE TYPE TO START TEST REP *****/
-                            if (receivedData == "test_plantar") {
-                                Serial.println("Device is starting test rep for Plantar Flexion!");
+        // Apply gimbal lock protection near ±90°
+        if (fabs(pitch - 90.0) <= GIMBAL_LOCK_THRESHOLD) {
+            pitch = 90.0;
+        } else if (fabs(pitch + 90.0) <= GIMBAL_LOCK_THRESHOLD) {
+            pitch = -90.0;
+        }
 
-                                // Wait on next received instruction from the app
-                                while (central.connected()) {
-                                    delay(50);
+        // Convert negative pitch values to continuous range
+        if (pitch < 0) {
+            pitch = 180.0 + pitch;  // Convert negative pitch to range [90,180]
+        }
 
-                                    /***** TEST REP - START PLANTAR FLEXION *****/
-                                    // todo: replace with actual test rep calculating live angle
-                                    writeCharacteristicData((float) 35);
-                                    /***** TEST REP - END PLANTAR FLEXION *****/
+        // Apply a low-pass filter to smooth values
+        filteredRollBuiltIn = alpha * filteredRollBuiltIn + (1 - alpha) * roll;
+        filteredPitchBuiltIn = alpha * filteredPitchBuiltIn + (1 - alpha) * pitch;
+    }
 
-                                    /***** FINISH TEST REP - DEVICE LOOP *****/
-                                    if (readCharacteristic.written()) {
-                                        String receivedData = readCharacteristicData();
-                                        Serial.print("Data received from Bluetooth: ");
-                                        Serial.println(receivedData);
+    // Read data from the external IMU (foot-mounted)
+    externalIMU.getEvent(&accel, &dummyGyro, &dummyTemp);
 
-                                        // Clear the value after reading
-                                        readCharacteristic.writeValue((uint8_t) 0);
+    // Calculate roll and pitch for the external IMU
+    float extAccX = accel.acceleration.x;
+    float extAccY = accel.acceleration.y;
+    float extAccZ = accel.acceleration.z;
 
-                                        if (receivedData == "finish") {
-                                            /***** TEST REP - CALCULATE MIN/MAX ANGLES *****/
-                                            float minAngle = 10; // todo: replace with actual min/max values
-                                            float maxAngle = 70;
-                                            writeCharacteristicData(minAngle, maxAngle);
-                                            Serial.print("Sending min/max Angles: ");
-                                            Serial.println("(" + String(minAngle) + ", " + String(maxAngle) + ")");
-                                            /***** TEST REP - CALCULATE MIN/MAX ANGLES *****/
+    float extRoll = atan2(extAccY, extAccZ) * 180.0 / PI;
+    float extPitch = atan2(-extAccX, sqrt(extAccY * extAccY + extAccZ * extAccZ)) * 180.0 / PI;
 
-                                            finishTestRep = true;
-                                            break;
-                                        }
-                                    }
-                                } // end while
-                            } else if (receivedData == "test_dorsiflexion") {
-                                Serial.println("Device is starting test rep for Dorsiflexion!");
-                                delay(50);
-                                performDorsiflexionExerciseRoutine();
-                            } else if (receivedData == "test_inversion") {
-                                Serial.println("Device is starting test rep for Inversion!");
-                                delay(50);
-                                performInversionExerciseRoutine();
-                            } else if (receivedData == "test_eversion") {
-                                Serial.println("Device is starting test rep for Eversion!");
-                                delay(50);
-                                performEversionExerciseRoutine();
-                            } else if (finishTestRep || receivedData == "no_test_rep" || receivedData == "error") {
-                                Serial.println("Device is skipping test rep!");
-                                // Clear the tension value
-                                writeCharacteristicData((float) 0);
-                                break;
-                            }
-                        }
-                    } // end while
+    // Apply a low-pass filter to the external IMU data
+    filteredRollExternal = alpha * filteredRollExternal + (1 - alpha) * extRoll;
+    filteredPitchExternal = alpha * filteredPitchExternal + (1 - alpha) * extPitch;
 
-                    // Wait on next received instruction from the app
-                    while (central.connected()) {
-                        /***** START - DEVICE LOOP *****/
-                        if (readCharacteristic.written()) {
-                            String receivedData = readCharacteristicData();
-                            Serial.print("Data received from Bluetooth: ");
-                            Serial.println(receivedData);
+    // Calculate angles
+    float plantarDorsiAngle = fabs(filteredPitchBuiltIn - filteredPitchExternal);
+    float inversionEversionAngle = fabs(filteredRollExternal);
 
-                            // Clear the value after reading
-                            readCharacteristic.writeValue((uint8_t)0);
-
-                            /***** CHECK EXERCISE TYPE TO START *****/
-                            if (receivedData == "start") {
-                                Serial.println("Device is starting basic exercises!");
-                                delay(50);
-                                // todo: replace with each exercise live data
-                                performExerciseRoutine();
-                            } else if (receivedData == "start_ROM") {
-                                // Setup variables for ROM test
-                                testComplete = false;
-
-                                Serial.println("Device is starting ROM Test metric!");
-                                delay(50);
-
-                                /***** START ROM METRIC *****/
-                                while (central.connected()) {
-                                    delay(50);
-                                    /***** SEND LIVE DATA *****/
-                                    performROMMetricRoutine();
-                                } // end while
-                            } else if (receivedData == "start_Gait") {
-                                Serial.println("Device is starting Gait Test metric!");
-                                delay(50);
-
-                                /***** START GAIT METRIC *****/
-                                while (central.connected()) {
-                                    delay(50);
-                                    /***** SEND LIVE DATA *****/
-                                    performGaitMetricRoutine();
-                                } // end while
-                            }
-                        }
-                    } // end while
+    if (testInProgress) {
+        if (isPlantarDorsiExercise) {
+            if (isTestRep) {
+                // Update range tracking
+                maxPlantarDorsiAngle = max(maxPlantarDorsiAngle, plantarDorsiAngle);
+                minPlantarDorsiAngle = min(minPlantarDorsiAngle, plantarDorsiAngle);
+            } else {
+                // Calculate reps count
+                if (!repsCounted) {
+                    // Check if a rep is completed (within 10% of the max angle)
+                    if (plantarDorsiAngle >= (maxPlantarDorsiAngle - (maxPlantarDorsiAngle * 0.1))) {
+                        repsCount++;
+                        repsCounted = true;
+                    }
+                } else {
+                    // Check if the next rep is started (within 10% of the min angle)
+                    if (plantarDorsiAngle <= (minPlantarDorsiAngle + (minPlantarDorsiAngle * 0.1))) {
+                        repsCounted = false;
+                    }
                 }
             }
-        } // end while
 
-        // Once the central device disconnects
-        Serial.print("Disconnected from central: ");
-        Serial.println(central.address());
-        digitalWrite(LED_BUILTIN, LOW);
+            // Send live data
+            writeCharacteristicData(plantarDorsiAngle);
+            Serial.print("Sending live angle (plantar/dorsi): ");
+            Serial.println(String(plantarDorsiAngle));
+        } else {
+            if (isTestRep) {
+                // Update range tracking
+                maxInversionEversionAngle = max(maxInversionEversionAngle, inversionEversionAngle);
+                minInversionEversionAngle = min(minInversionEversionAngle, inversionEversionAngle);
+            } else {
+                // Calculate reps count
+                // todo: test this with both IMUs
+                if (!repsCounted) {
+                    // Check if a rep is completed (within 10% of the max angle)
+                    if (inversionEversionAngle >= (maxInversionEversionAngle - (maxInversionEversionAngle * 0.1))) {
+                        repsCount++;
+                        repsCounted = true;
+                    }
+                } else {
+                    // Check if the next rep is started (within 10% of the min angle)
+                    if (inversionEversionAngle <= (minInversionEversionAngle + (minInversionEversionAngle * 0.1))) {
+                        repsCounted = false;
+                    }
+                }
+            }
+
+            // Send live data
+            writeCharacteristicData(inversionEversionAngle);
+            Serial.print("Sending live angle (inver/ever): ");
+            Serial.println(String(inversionEversionAngle));
+        }
     }
-}
 
-
-// Function to simulate an exercise routine
-void performExerciseRoutine() {
-    for (int angle = 0; angle <= 180; angle++) {
-        float angleValue = (float) angle;
-        writeCharacteristicData(angleValue);
-
-        Serial.print("Sent angle: ");
-        Serial.println(angle);
-
-        delay(50); // Wait before sending the next value
-    }
-}
-
-// Function to run Plantar flexion exercise routine
-void performPlantarFlexionExerciseRoutine() {
-
-}
-
-// Function to run Dorsiflexion exercise routine
-void performDorsiflexionExerciseRoutine() {
-
-}
-
-// Function to run Inversion exercise routine
-void performInversionExerciseRoutine() {
-
-}
-
-// Function to run Eversion exercise routine
-void performEversionExerciseRoutine() {
-
+    delay(50);  // Sampling delay
 }
 
 // Function to run ROM metric routine
 void performROMMetricRoutine() {
-    if (!testComplete) {
+    if (!timedTestComplete) {
         // Initial setup before test starts
         if (!testInProgress) {
             // Start the 5-second test with continuous printing
             testInProgress = true;
             continuousPrint = true; // todo: may be false
             testStartTime = millis();
-            maxPlantarDorsiAngle = -1e6; // Reset for new test
-            minPlantarDorsiAngle = 1e6;  // Reset for new test
+
+            // Reset angles for new test
+            maxPlantarDorsiAngle = -1e6;
+            minPlantarDorsiAngle = 1e6;
             maxInversionEversionAngle = -1e6;
             minInversionEversionAngle = 1e6;
             Serial.println(
@@ -402,10 +346,10 @@ void performROMMetricRoutine() {
         // If the test is in progress, check if 5 seconds have elapsed
         if (testInProgress && millis() - testStartTime >= testDuration) {
             testInProgress = false;
-            testComplete = true;
+            timedTestComplete = true;
 
             // Send flag to app that test is completed
-            writeCharacteristicData(triggerTestComplete);
+            writeCharacteristicData(triggerTimedTestComplete);
             Serial.println("ROM Test Complete!");
             delay(1000);
 
@@ -432,4 +376,370 @@ void performROMMetricRoutine() {
 // Function to run Gait metric routine
 void performGaitMetricRoutine() {
 
+}
+
+
+/***** MAIN LOOP *****/
+void loop() {
+    // Listen for BLE peripherals to connect
+    BLEDevice central = BLE.central();
+    bool finishTestRep = false;
+
+    // If a device is connected
+    if (central) {
+        Serial.print("Connected to central: ");
+        Serial.println(central.address());
+        digitalWrite(LED_BUILTIN, HIGH);
+
+        // While the device is connected
+        while (central.connected()) {
+            /***** READY - DEVICE LOOP *****/
+            if (readCharacteristic.written()) {
+                String receivedData = readCharacteristicData();
+                Serial.print("Data received from Bluetooth: ");
+                Serial.println(receivedData);
+
+                // Clear the value after reading
+                readCharacteristic.writeValue((uint8_t)0);
+
+                /***** CHECK APP IS READY *****/
+                if (receivedData == "ready") {
+                    Serial.println("Device is ready!");
+
+                    /***** SEND TENSION LEVEL *****/
+                    // Send the configured tension level from the device
+                    float tensionLevel = 4; // todo: replace with actual tension on device
+                    writeCharacteristicData(tensionLevel);
+                    Serial.print("Sending tension level: ");
+                    Serial.println(tensionLevel);
+
+                    // Wait on next received instruction from the app
+                    while (central.connected()) {
+                        /***** TEST REP - DEVICE LOOP *****/
+                        if (readCharacteristic.written()) {
+                            String receivedData = readCharacteristicData();
+                            Serial.print("Data received from Bluetooth: ");
+                            Serial.println(receivedData);
+
+                            // Clear the value after reading
+                            readCharacteristic.writeValue((uint8_t) 0);
+
+                            /***** CHECK EXERCISE TYPE TO START TEST REP *****/
+                            if (receivedData == "test_plantar") {
+                                Serial.println("Device is starting test rep for Plantar Flexion!");
+
+                                // Wait on next received instruction from the app
+                                while (central.connected()) {
+                                    delay(50);
+
+                                    /***** TEST REP - START PLANTAR FLEXION *****/
+                                    performExerciseRoutine(true, true);
+
+                                    /***** FINISH TEST REP *****/
+                                    if (readCharacteristic.written()) {
+                                        String receivedData = readCharacteristicData();
+                                        Serial.print("Data received from Bluetooth: ");
+                                        Serial.println(receivedData);
+
+                                        // Clear the value after reading
+                                        readCharacteristic.writeValue((uint8_t) 0);
+
+                                        if (receivedData == "test_complete") {
+                                            /***** TEST REP - CALCULATE MIN/MAX ANGLES *****/
+                                            writeCharacteristicData(minPlantarDorsiAngle, maxPlantarDorsiAngle);
+                                            Serial.print("Sending min/max Angles: ");
+                                            Serial.println("(" + String(minPlantarDorsiAngle) + ", " + String(maxPlantarDorsiAngle) + ")");
+                                            finishTestRep = true;
+                                            break;
+                                        }
+                                    }
+                                } // end while
+                            } else if (receivedData == "test_dorsiflexion") {
+                                Serial.println("Device is starting test rep for Dorsiflexion!");
+
+                                // Wait on next received instruction from the app
+                                while (central.connected()) {
+                                    delay(50);
+
+                                    /***** TEST REP - START DORSIFLEXION *****/
+                                    performExerciseRoutine(true, true);
+
+                                    /***** FINISH TEST REP *****/
+                                    if (readCharacteristic.written()) {
+                                        String receivedData = readCharacteristicData();
+                                        Serial.print("Data received from Bluetooth: ");
+                                        Serial.println(receivedData);
+
+                                        // Clear the value after reading
+                                        readCharacteristic.writeValue((uint8_t) 0);
+
+                                        if (receivedData == "test_complete") {
+                                            /***** TEST REP - CALCULATE MIN/MAX ANGLES *****/
+                                            writeCharacteristicData(minPlantarDorsiAngle, maxPlantarDorsiAngle);
+                                            Serial.print("Sending min/max Angles: ");
+                                            Serial.println("(" + String(minPlantarDorsiAngle) + ", " + String(maxPlantarDorsiAngle) + ")");
+                                            finishTestRep = true;
+                                            break;
+                                        }
+                                    }
+                                } // end while
+                            } else if (receivedData == "test_inversion") {
+                                Serial.println("Device is starting test rep for Inversion!");
+
+                                // Wait on next received instruction from the app
+                                while (central.connected()) {
+                                    delay(50);
+
+                                    /***** TEST REP - START INVERSION *****/
+                                    performExerciseRoutine(false, true);
+
+                                    /***** FINISH TEST REP *****/
+                                    if (readCharacteristic.written()) {
+                                        String receivedData = readCharacteristicData();
+                                        Serial.print("Data received from Bluetooth: ");
+                                        Serial.println(receivedData);
+
+                                        // Clear the value after reading
+                                        readCharacteristic.writeValue((uint8_t) 0);
+
+                                        if (receivedData == "test_complete") {
+                                            /***** TEST REP - CALCULATE MIN/MAX ANGLES *****/
+                                            writeCharacteristicData(minInversionEversionAngle, maxInversionEversionAngle);
+                                            Serial.print("Sending min/max Angles: ");
+                                            Serial.println("(" + String(minInversionEversionAngle) + ", " + String(maxInversionEversionAngle) + ")");
+                                            finishTestRep = true;
+                                            break;
+                                        }
+                                    }
+                                } // end while
+                            } else if (receivedData == "test_eversion") {
+                                Serial.println("Device is starting test rep for Eversion!");
+
+                                // Wait on next received instruction from the app
+                                while (central.connected()) {
+                                    delay(50);
+
+                                    /***** TEST REP - START EVERSION *****/
+                                    performExerciseRoutine(false, true);
+
+                                    /***** FINISH TEST REP *****/
+                                    if (readCharacteristic.written()) {
+                                        String receivedData = readCharacteristicData();
+                                        Serial.print("Data received from Bluetooth: ");
+                                        Serial.println(receivedData);
+
+                                        // Clear the value after reading
+                                        readCharacteristic.writeValue((uint8_t) 0);
+
+                                        if (receivedData == "test_complete") {
+                                            /***** TEST REP - CALCULATE MIN/MAX ANGLES *****/
+                                            writeCharacteristicData(minInversionEversionAngle, maxInversionEversionAngle);
+                                            Serial.print("Sending min/max Angles: ");
+                                            Serial.println("(" + String(minInversionEversionAngle) + ", " + String(maxInversionEversionAngle) + ")");
+                                            finishTestRep = true;
+                                            break;
+                                        }
+                                    }
+                                } // end while
+                            } else if (receivedData == "no_test_rep" || receivedData == "error") {
+                                Serial.println("Device is skipping test rep!");
+                                // Clear the tension value
+                                writeCharacteristicData((float) 0);
+                                break;
+                            }
+                            // Finish test rep
+                            if (finishTestRep) {
+                                Serial.println("Device is finishing test rep!");
+                                break;
+                            }
+                        }
+                    } // end while
+
+                    // Wait on next received instruction from the app
+                    while (central.connected()) {
+                        // Setup variables
+                        testInProgress = false;
+
+                        /***** START - DEVICE LOOP *****/
+                        if (readCharacteristic.written()) {
+                            String receivedData = readCharacteristicData();
+                            Serial.print("Data received from Bluetooth: ");
+                            Serial.println(receivedData);
+
+                            // Clear the value after reading
+                            readCharacteristic.writeValue((uint8_t) 0);
+
+                            /***** CHECK EXERCISE TYPE TO START *****/
+                            if (receivedData == "start_plantar") {
+                                // Setup variables for exercise
+                                repsCount = 0;
+
+                                Serial.println("Device is starting Plantar Flexion exercise!");
+                                delay(50);
+
+                                /***** START PLANTAR FLEXION EXERCISE *****/
+                                while (central.connected()) {
+                                    delay(50);
+
+                                    /***** SEND LIVE DATA *****/
+                                    performExerciseRoutine(true);
+
+                                    /***** FINISH SET *****/
+                                    if (readCharacteristic.written()) {
+                                        String receivedData = readCharacteristicData();
+                                        Serial.print("Data received from Bluetooth: ");
+                                        Serial.println(receivedData);
+
+                                        // Clear the value after reading
+                                        readCharacteristic.writeValue((uint8_t) 0);
+
+                                        if (receivedData == "end_set") {
+                                            /***** SET - SEND REPS COMPLETED *****/
+                                            Serial.println("Set Complete!");
+                                            writeCharacteristicData(repsCount);
+                                            Serial.print("Sending reps count: ");
+                                            Serial.println(String(repsCount));
+                                            break;
+                                        }
+                                    }
+                                } // end while
+                            } else if (receivedData == "start_dorsiflexion") {
+                                // Setup variables for exercise
+                                repsCount = 0;
+
+                                Serial.println("Device is starting Dorsiflexion exercise!");
+                                delay(50);
+
+                                /***** START DORSIFLEXION EXERCISE *****/
+                                while (central.connected()) {
+                                    delay(50);
+
+                                    /***** SEND LIVE DATA *****/
+                                    performExerciseRoutine(true);
+
+                                    /***** FINISH SET *****/
+                                    if (readCharacteristic.written()) {
+                                        String receivedData = readCharacteristicData();
+                                        Serial.print("Data received from Bluetooth: ");
+                                        Serial.println(receivedData);
+
+                                        // Clear the value after reading
+                                        readCharacteristic.writeValue((uint8_t) 0);
+
+                                        if (receivedData == "end_set") {
+                                            /***** SET - SEND REPS COMPLETED *****/
+                                            Serial.println("Set Complete!");
+                                            writeCharacteristicData(repsCount);
+                                            Serial.print("Sending reps count: ");
+                                            Serial.println(String(repsCount));
+                                            break;
+                                        }
+                                    }
+                                } // end while
+                            } else if (receivedData == "start_inversion") {
+                                // Setup variables for exercise
+                                repsCount = 0;
+
+                                Serial.println("Device is starting Inversion exercise!");
+                                delay(50);
+
+                                /***** START INVERSION EXERCISE *****/
+                                while (central.connected()) {
+                                    delay(50);
+
+                                    /***** SEND LIVE DATA *****/
+                                    performExerciseRoutine(false);
+
+                                    /***** FINISH SET *****/
+                                    if (readCharacteristic.written()) {
+                                        String receivedData = readCharacteristicData();
+                                        Serial.print("Data received from Bluetooth: ");
+                                        Serial.println(receivedData);
+
+                                        // Clear the value after reading
+                                        readCharacteristic.writeValue((uint8_t) 0);
+
+                                        if (receivedData == "end_set") {
+                                            /***** SET - SEND REPS COMPLETED *****/
+                                            Serial.println("Set Complete!");
+                                            writeCharacteristicData(repsCount);
+                                            Serial.print("Sending reps count: ");
+                                            Serial.println(String(repsCount));
+                                            break;
+                                        }
+                                    }
+                                } // end while
+                            } else if (receivedData == "start_eversion") {
+                                // Setup variables for exercise
+                                repsCount = 0;
+
+                                Serial.println("Device is starting Eversion exercise!");
+                                delay(50);
+
+                                /***** START EVERSION EXERCISE *****/
+                                while (central.connected()) {
+                                    delay(50);
+
+                                    /***** SEND LIVE DATA *****/
+                                    performExerciseRoutine(false);
+
+                                    /***** FINISH SET *****/
+                                    if (readCharacteristic.written()) {
+                                        String receivedData = readCharacteristicData();
+                                        Serial.print("Data received from Bluetooth: ");
+                                        Serial.println(receivedData);
+
+                                        // Clear the value after reading
+                                        readCharacteristic.writeValue((uint8_t) 0);
+
+                                        if (receivedData == "end_set") {
+                                            /***** SET - SEND REPS COMPLETED *****/
+                                            Serial.println("Set Complete!");
+                                            writeCharacteristicData(repsCount);
+                                            Serial.print("Sending reps count: ");
+                                            Serial.println(String(repsCount));
+                                            break;
+                                        }
+                                    }
+                                } // end while
+                            } else if (receivedData == "start_ROM") {
+                                // Setup variables for ROM test
+                                timedTestComplete = false;
+
+                                Serial.println("Device is starting ROM Test metric!");
+                                delay(50);
+
+                                /***** START ROM METRIC *****/
+                                while (central.connected()) {
+                                    delay(50);
+
+                                    /***** SEND LIVE DATA *****/
+                                    performROMMetricRoutine();
+                                } // end while
+                            } else if (receivedData == "start_Gait") {
+                                // Setup variables for Gait test
+                                timedTestComplete = false;
+
+                                Serial.println("Device is starting Gait Test metric!");
+                                delay(50);
+
+                                /***** START GAIT METRIC *****/
+                                while (central.connected()) {
+                                    delay(50);
+
+                                    /***** SEND LIVE DATA *****/
+                                    performGaitMetricRoutine();
+                                } // end while
+                            }
+                        }
+                    } // end while
+                }
+            }
+        } // end while
+
+        // Once the central device disconnects
+        Serial.print("Disconnected from central: ");
+        Serial.println(central.address());
+        digitalWrite(LED_BUILTIN, LOW);
+    }
 }

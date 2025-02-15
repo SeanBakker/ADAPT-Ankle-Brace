@@ -31,6 +31,23 @@ class ExerciseUtil {
         }
 
         /**
+         * Generate IDs for existing sets.
+         *
+         * @param existingSets list of all sets that have already been created
+         * @return new Int id unique to all other existing sets
+         */
+        fun generateNewSetId(existingSets: List<ExerciseSet>): Int {
+            // Map the IDs to a sorted set
+            val sortedIds = sortedSetOf<Int>().apply { addAll(existingSets.map { it.id }) }
+
+            // Get the last (largest) ID in the sorted set, or start from 0 if the set is empty
+            val largestId = sortedIds.lastOrNull() ?: 0
+
+            // Return the next ID after the largest existing id
+            return largestId + 1
+        }
+
+        /**
          * Generate IDs for existing metrics.
          *
          * @param existingMetrics list of all metrics that have already been created

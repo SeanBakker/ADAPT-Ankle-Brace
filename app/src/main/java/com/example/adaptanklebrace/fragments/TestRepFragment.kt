@@ -62,21 +62,21 @@ class TestRepFragment(
         val progressBar: ProgressBar = view.findViewById(R.id.testRepProgressBar)
 
         // Select flag to send to the device
-        val testRepName = when (exercise.name) {
+        val testRepFlag = when (exercise.name) {
             ExerciseType.PLANTAR_FLEXION.exerciseName -> "test_plantar"
             ExerciseType.DORSIFLEXION.exerciseName -> "test_dorsiflexion"
             ExerciseType.INVERSION.exerciseName -> "test_inversion"
             ExerciseType.EVERSION.exerciseName -> "test_eversion"
             else -> "no_test_rep"
         }
-        bluetoothService.writeDeviceData(testRepName)
+        bluetoothService.writeDeviceData(testRepFlag)
 
         // Periodically read angle from ADAPT device
         handler.post(updateAngleTask)
         bluetoothService.deviceLiveData.observe(this) { pair ->
             pair?.let {
                 updateProgress(progressBar, progressLiveDataText, it.first.toDouble())
-                Log.i("ANGLE", "Angle data received: ${it.first}")
+                Log.i("TEST_REP", "Angle data received: ${it.first}")
             }
         }
     }
@@ -88,7 +88,7 @@ class TestRepFragment(
         bluetoothService.deviceLiveData.removeObservers(this)
 
         // Send finish flag to device to end test rep
-        bluetoothService.writeDeviceData("finish")
+        bluetoothService.writeDeviceData("test_complete")
         Thread.sleep(2000) // Wait for device to load
 
         // Start target activity to perform sets
@@ -98,20 +98,16 @@ class TestRepFragment(
 
         // Send the min/max range values found from test rep
         bluetoothService.readDeviceData()
-        Thread.sleep(1000) // Wait for device to load
-
-        // Send start flag to device to prepare exercise data collection (of sets)
-        bluetoothService.writeDeviceData("start")
 
         // Start activity
         ContextCompat.startActivity(context, startSetIntent, null)
         dismiss() // Close the dialog
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("DefaultLocale")
     private fun updateProgress(progressBar: ProgressBar, progressLiveDataText: TextView, anglesDegrees: Double) {
         progressBar.progress = anglesDegrees.toInt()
-        progressLiveDataText.text = "$anglesDegrees°"
+        progressLiveDataText.text = String.format("%.1f°", anglesDegrees)
     }
 
     private val updateAngleTask = object : Runnable {

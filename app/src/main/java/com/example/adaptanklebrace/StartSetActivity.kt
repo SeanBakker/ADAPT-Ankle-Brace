@@ -28,6 +28,7 @@ import com.example.adaptanklebrace.services.BluetoothService
 import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
 import com.example.adaptanklebrace.utils.GeneralUtil
+import kotlin.math.floor
 
 class StartSetActivity : AppCompatActivity() {
 
@@ -49,6 +50,8 @@ class StartSetActivity : AppCompatActivity() {
 
     private var exercise: Exercise? = null
     private var isFirstRun = true
+    private var isSetCompleted = false
+    private var isLiveData = false
     private var minAngle: Int = 0
     private var maxAngle: Int = 360
 
@@ -140,19 +143,23 @@ class StartSetActivity : AppCompatActivity() {
         setProgressMinText = findViewById(R.id.setProgressMinText)
         setProgressMaxText = findViewById(R.id.setProgressMaxText)
 
-        // todo: implement end set buttons
-
-        // Periodically read angle from ADAPT device
-        handler.post(updateAngleTask)
+        // Observe data from the device
+        bluetoothService.readDeviceData() // Read initial min/max values from test rep
         bluetoothService.deviceLiveData.observe(this) { pair ->
             pair?.let {
                 if (isFirstRun) {
+                    isFirstRun = false // Mark that the first run is complete
                     Log.i("SET", "Min angle received: ${it.first}")
                     Log.i("SET", "Max angle received: ${it.second}")
                     updateMinMaxAngles(it.first.toInt(), it.second.toInt())
-                    isFirstRun = false // Mark that the first run is complete
-                } else {
-                    // This runs after the first time
+                    updateProgress(0.0)
+                } else if (isSetCompleted) {
+                    isSetCompleted = false
+                    // Updates rep count when set is completed
+                    Log.i("SET", "Rep count received: ${it.first}")
+                    updateRepCount(it.first.toInt())
+                } else if (isLiveData) {
+                    // Updates live data
                     updateProgress(it.first.toDouble())
                     Log.i("SET", "Angle data received: ${it.first}")
                 }
@@ -161,13 +168,37 @@ class StartSetActivity : AppCompatActivity() {
 
         // Configure start set button
         startSetButton.setOnClickListener {
+            isLiveData = true
+
             // Send start flag to device to prepare exercise data collection (of sets)
-            bluetoothService.writeDeviceData("start")
+            val startExerciseFlag = when (exercise?.name) {
+                ExerciseType.PLANTAR_FLEXION.exerciseName -> "start_plantar"
+                ExerciseType.DORSIFLEXION.exerciseName -> "start_dorsiflexion"
+                ExerciseType.INVERSION.exerciseName -> "start_inversion"
+                ExerciseType.EVERSION.exerciseName -> "start_eversion"
+                else -> "error"
+            }
+            bluetoothService.writeDeviceData(startExerciseFlag)
+
+            // Periodically read angle from device
+            handler.post(updateAngleTask)
         }
 
         // Configure end set button
         endSetButton.setOnClickListener {
-            // todo: implement this button to fill in table row with data from device
+            isLiveData = false
+
+            // Stop reading periodically from device
+            handler.removeCallbacks(updateAngleTask)
+            Thread.sleep(1000) // Wait for device to load
+
+            // Send end flag to device to end exercise live data collection
+            bluetoothService.writeDeviceData("end_set")
+            Thread.sleep(1000) // Wait for device to load
+
+            // Read the count of reps determined for that set
+            isSetCompleted = true
+            bluetoothService.readDeviceData()
         }
 
         // Configure finish button
@@ -233,28 +264,53 @@ class StartSetActivity : AppCompatActivity() {
 
             // Redirect the user back to the Recovery Data page
             startActivity(Intent(this, RecoveryDataActivity::class.java))
+            finish() // Finish activity (prevent running in background)
         } else {
             // Warn user of no data to save
             GeneralUtil.showToast(this, layoutInflater, "No sets and/or reps submitted. Please complete 1 rep before saving data.")
         }
     }
 
-    @SuppressLint("SetTextI18n", "DefaultLocale")
+    @SuppressLint("DefaultLocale")
     private fun updateProgress(anglesDegrees: Double) {
         // Calculate progress as a percentage of the angle range
         val progressPercentage = ((anglesDegrees - minAngle) / (maxAngle - minAngle)) * 100
 
         // Update progress bar
-        setProgressBar.progress = progressPercentage.toInt()
-        setProgressLiveDataText.text = "$anglesDegrees°"
+        setProgressBar.progress = floor(progressPercentage).toInt()
+        setProgressLiveDataText.text = String.format("%.1f°", anglesDegrees)
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("DefaultLocale")
     private fun updateMinMaxAngles(minAngleValue: Int, maxAngleValue: Int) {
         minAngle = minAngleValue
         maxAngle = maxAngleValue
-        setProgressMinText.text = "$minAngleValue°"
-        setProgressMaxText.text = "$maxAngleValue°"
+        setProgressMinText.text = String.format("%d°", minAngleValue)
+        setProgressMaxText.text = String.format("%d°", maxAngleValue)
+    }
+
+    /**
+     * Updates the rep count of the corresponding set row in the table.
+     * If all rows are non-zero, a new row is added to the table.
+     *
+     * @param newRepCount reps counted from the device to store
+     */
+    private fun updateRepCount(newRepCount: Int) {
+        val exerciseSet = setsAdapter.getNextSetWithZeroReps()
+
+        if (exerciseSet != null) {
+            // Row exists, update the reps count
+            exerciseSet.reps = newRepCount
+            setsAdapter.notifyItemChanged(exerciseSet.id)
+        } else {
+            // All rows are non-zero, create new row
+            setsAdapter.addSetRow(
+                ExerciseSet(
+                    id = ExerciseUtil.generateNewSetId(sets),
+                    reps = newRepCount
+                )
+            )
+        }
     }
 
     private val updateAngleTask = object : Runnable {

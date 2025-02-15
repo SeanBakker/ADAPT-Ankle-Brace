@@ -24,8 +24,11 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
+        android:id="@+id/scrollLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:layout_marginBottom="20dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -62,7 +65,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:orientation="vertical"
-                android:padding="10dp">
+                android:paddingBottom="10dp">
 
                 <LinearLayout
                     android:id="@+id/progressBarLiveDataLayout"
@@ -175,12 +178,10 @@
                 app:layout_constraintTop_toBottomOf="@id/setBtnLayout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHeight_max="220dp"
                 android:padding="10dp"
                 android:paddingBottom="50dp"
                 android:clipToPadding="false"
-                android:layout_gravity="center_horizontal"
-                android:scrollbars="vertical" />
+                android:layout_gravity="center_horizontal" />
 
             <!-- Finish Exercise -->
             <Button

@@ -11,6 +11,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.data.ExerciseSet
+import com.example.adaptanklebrace.utils.GeneralUtil
 
 class ExerciseSetsTableRowAdapter(
     private val sets: MutableList<ExerciseSet>,
@@ -56,7 +57,14 @@ class ExerciseSetsTableRowAdapter(
                     }
 
                     val newWatcher = addTextChangedListener {
-                        set?.reps = it.toString().toIntOrNull() ?: 0
+                        val currentReps = it.toString().toIntOrNull()
+
+                        // Restrict reps count to be >0
+                        if (currentReps == null || currentReps < 0) {
+                            GeneralUtil.showToast(context, LayoutInflater.from(context), "Please enter a reps count greater than or equal to 0.")
+                        } else {
+                            set?.reps = currentReps
+                        }
                     }
                     tag = newWatcher
                 }
@@ -129,6 +137,15 @@ class ExerciseSetsTableRowAdapter(
     }
 
     /**
+     * Retrieves the first set row with zero reps.
+     *
+     * @return ExerciseSet row
+     */
+    fun getNextSetWithZeroReps(): ExerciseSet? {
+        return sets.firstOrNull { it.reps == 0 }
+    }
+
+    /**
      * Creates a new list of sets.
      *
      * @param newSets list of ExerciseSets
@@ -142,6 +159,16 @@ class ExerciseSetsTableRowAdapter(
         // Add new metrics
         sets.addAll(newSets)
         notifyItemRangeInserted(1, getItemCount())
+    }
+
+    /**
+     * Adds a new set row to the existing list of sets.
+     *
+     * @param set new set row to add
+     */
+    fun addSetRow(set: ExerciseSet) {
+        sets.add(set)
+        notifyItemInserted(sets.size) // Notify adapter
     }
 
     /**
