@@ -266,6 +266,10 @@ class StartSetActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        // Close bluetooth connection
+        bluetoothService.disconnect()
+
+        // Remove callbacks
         handler.removeCallbacks(updateAngleTask)
         super.onDestroy()
     }
