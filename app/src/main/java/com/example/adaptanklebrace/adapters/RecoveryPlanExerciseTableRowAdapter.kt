@@ -192,6 +192,9 @@ class RecoveryPlanExerciseTableRowAdapter(
                     }
                 }
                 (frequency as? EditText)?.apply {
+                    // Remove spell check red line on freq text
+                    inputType = android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+
                     // Remove previous listener to avoid duplicate events
                     onFocusChangeListener = null
 
