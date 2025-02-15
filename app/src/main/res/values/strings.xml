@@ -15,6 +15,8 @@
     <string name="gait_test_metric">Gait Test Metric</string>
 
     <!-- Table Text -->
+    <string name="exerciseTableHeader">Recovery Exercises:</string>
+    <string name="metricTableHeader">Metrics:</string>
     <string name="exerciseName">Exercise Name</string>
     <string name="metricName">Metric Name</string>
     <string name="sets">Sets</string>
@@ -36,7 +38,12 @@
     <string name="NA">N/A</string>
 
     <!-- Page Text -->
-    <string name="totalROM">Total ROM:</string>
+    <string name="weeklyGoalProgressText">Weekly Goal Progress:</string>
+    <string name="overviewRecoveryPlanGoalsText">Overview of Recovery Plan Goals:</string>
+    <string name="congratulationsGoalsCompletedText">Congratulations! All goals have been completed for this week!\n New goals can be added from the Recovery Plan page.</string>
+    <string name="noGoalsSetText">There are no goals set for this week, click below to set new goals!</string>
+    <string name="totalROMText">Total ROM:</string>
+    <string name="difficultyText">Difficulty:</string>
 
     <!-- Data -->
     <string name="minText">Min</string>
@@ -66,6 +73,11 @@
     <string name="viewMetricsBtn">View Metrics</string>
     <string name="viewBtn">View</string>
     <string name="saveDataBtn">Save Data</string>
+    <string name="importBtn">Import</string>
+    <string name="exportBtn">Export</string>
+    <string name="deleteRowBtn">Delete Row</string>
+    <string name="addRowBtn">Add Row</string>
+    <string name="recalculatePercentagesBtn">Recalculate %</string>
 
     <!-- Fragments -->
     <string name="requiredFieldsFormText">Fields marked with * are required.</string>
