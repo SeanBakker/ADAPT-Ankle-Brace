@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:buttonTint="?attr/colorPrimaryVariant" />
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/weeklyDateInput"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

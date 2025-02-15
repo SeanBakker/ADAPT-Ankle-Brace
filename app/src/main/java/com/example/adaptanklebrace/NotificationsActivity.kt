@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +24,7 @@ import java.util.Calendar
 
 class NotificationsActivity : AppCompatActivity() {
 
-    private lateinit var weeklyDateInput: EditText
+    private lateinit var weeklyDateInput: AutoCompleteTextView
     private lateinit var weeklyTimeInput: EditText
     private lateinit var dailyTimeInput: EditText
     private lateinit var weeklyNotificationCheckbox: CheckBox
@@ -98,13 +100,24 @@ class NotificationsActivity : AppCompatActivity() {
         recoveryPlanActivity.loadExerciseWeekData(this, exerciseAdapter, currentWeek)
         recoveryPlanActivity.loadMetricWeekData(this, metricAdapter, currentWeek)
 
+        // Initialize weeklyDateInput dropdown
+        val weekDays = CalendarDay.getAllDayNames()
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, weekDays)
+        weeklyDateInput.setAdapter(adapter)
+
         // Set click listeners for the inputs
         weeklyDateInput.setOnClickListener {
-            GeneralUtil.showDayPickerDialog(this, weeklyDateInput) { selectedDay ->
-                SharedPreferencesUtil.savePreference(sharedPreferences, WEEKLY_DATE_KEY, selectedDay)
-                if (weeklyNotificationCheckbox.isChecked && !completedWeeklyProgress()) {
-                    scheduleWeeklyNotification()
-                }
+            // Show all suggestions when the field gains focus
+            weeklyDateInput.showDropDown()
+        }
+        weeklyDateInput.setOnItemClickListener { _, _, position, _ ->
+            // Handle selection from the dropdown
+            val selectedDay = weeklyDateInput.adapter.getItem(position) as String
+            SharedPreferencesUtil.savePreference(sharedPreferences, WEEKLY_DATE_KEY, selectedDay)
+
+            // Schedule the notification based on logic
+            if (weeklyNotificationCheckbox.isChecked && !completedWeeklyProgress()) {
+                scheduleWeeklyNotification()
             }
         }
         weeklyTimeInput.setOnClickListener {
