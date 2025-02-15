@@ -121,7 +121,7 @@
                                 android:id="@+id/flexionROMTotalText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/totalROM"
+                                android:text="@string/totalROMText"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
                                 android:textColor="?attr/colorOnSecondary" />
@@ -191,7 +191,7 @@
                                 android:id="@+id/inversionROMTotalText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/totalROM"
+                                android:text="@string/totalROMText"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
                                 android:textColor="?attr/colorOnSecondary" />

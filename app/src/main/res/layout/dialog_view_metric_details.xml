@@ -10,9 +10,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        android:text="Recorded Metrics:"
         android:textSize="16sp"
-        android:text="Recorded Metrics:" />
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnBackground" />
 
     <!-- ROM Plantar/Dorsiflexion -->
     <LinearLayout
@@ -22,13 +23,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Plantar/Dorsiflexion Total Range:" />
+            android:text="Plantar/Dorsiflexion Total Range:"
+            android:textColor="?attr/colorOnSecondary" />
 
         <TextView
             android:id="@+id/romPlantarDorsiflexionRange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/zeroDegrees"
+            android:textColor="?attr/colorOnSecondary"
             android:layout_marginStart="4dp" />
     </LinearLayout>
 
@@ -40,13 +43,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Inversion/Eversion Total Range:" />
+            android:text="Inversion/Eversion Total Range:"
+            android:textColor="?attr/colorOnSecondary" />
 
         <TextView
             android:id="@+id/romInversionEversionRange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/zeroDegrees"
+            android:textColor="?attr/colorOnSecondary"
             android:layout_marginStart="4dp" />
     </LinearLayout>
 </LinearLayout>

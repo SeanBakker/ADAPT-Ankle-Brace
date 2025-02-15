@@ -262,7 +262,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAd
     }
 
     override fun onClickViewAllMetricDetails(metric: Metric) {
-        // todo: show pop-up of all saved metric details for that week
+        // todo: show pop-up of an average of saved metric details for that week
     }
 
     override fun onDeleteRow() {
