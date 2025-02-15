@@ -31,6 +31,7 @@ import com.example.adaptanklebrace.data.Metric
 import com.example.adaptanklebrace.fragments.AddGoalFreqFragment
 import com.example.adaptanklebrace.fragments.AddExerciseGoalRowFragment
 import com.example.adaptanklebrace.fragments.AddMetricGoalRowFragment
+import com.example.adaptanklebrace.fragments.ChooseActivityTypeFragment
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
 import com.example.adaptanklebrace.fragments.StartExerciseWarningFragment
 import com.example.adaptanklebrace.utils.ExerciseDataStore
@@ -42,7 +43,8 @@ import java.util.*
 
 class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAdapter.RecoveryPlanCallback,
     RecoveryPlanMetricTableRowAdapter.RecoveryPlanCallback, DeleteRowFragment.OnDeleteListener,
-    StartExerciseWarningFragment.OnStartExerciseOrMetricListener {
+    StartExerciseWarningFragment.OnStartExerciseOrMetricListener,
+    ChooseActivityTypeFragment.ChooseActivityTypeListener {
 
     private lateinit var dateTextView: TextView
     private lateinit var datePickerButton: Button
@@ -53,20 +55,19 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAd
     private lateinit var importButton: Button
     private lateinit var updatePercentagesButton: Button
     private lateinit var deleteRowButton: Button
+    private lateinit var addRowButton: Button
 
     // Exercise table variables
     private lateinit var exerciseTableLayout: ConstraintLayout
     private lateinit var exerciseRecyclerView: RecyclerView
     private lateinit var exerciseAdapter: RecoveryPlanExerciseTableRowAdapter
     private var exercises: MutableList<Exercise> = mutableListOf()
-    private lateinit var addExerciseButton: Button
 
     // Metric table variables
     private lateinit var metricTableLayout: ConstraintLayout
     private lateinit var metricRecyclerView: RecyclerView
     private lateinit var metricAdapter: RecoveryPlanMetricTableRowAdapter
     private var metrics: MutableList<Metric> = mutableListOf()
-    private lateinit var addMetricButton: Button
 
     companion object {
         const val RECOVERY_PLAN_PREFERENCE = "RecoveryPlan"
@@ -106,8 +107,7 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAd
         exportButton = findViewById(R.id.exportButton)
         importButton = findViewById(R.id.importButton)
         updatePercentagesButton = findViewById(R.id.updatePercentagesButton)
-        addExerciseButton = findViewById(R.id.addExerciseButton)
-        addMetricButton = findViewById(R.id.addMetricButton)
+        addRowButton = findViewById(R.id.addRowButton)
         deleteRowButton = findViewById(R.id.deleteRowButton)
 
         // Initialize the adapters and pass the activity as a callback
@@ -174,11 +174,8 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAd
             calculateMetricCompletionForAllRows(this, metricAdapter, getMetricGoals(metricAdapter), currentWeek)
         }
 
-        // Handle add exercise button click
-        addExerciseButton.setOnClickListener { showAddExerciseDialog() }
-
-        // Handle add metric button click
-        addMetricButton.setOnClickListener { showAddMetricDialog() }
+        // Handle add row button click
+        addRowButton.setOnClickListener { showChooseActivityTypeDialog() }
 
         // Handle delete row button click
         deleteRowButton.setOnClickListener { showDeleteRowDialog() }
@@ -263,6 +260,14 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAd
 
     override fun onClickViewAllMetricDetails(metric: Metric) {
         // todo: show pop-up of an average of saved metric details for that week
+    }
+
+    override fun onChooseActivityExercise() {
+        showAddExerciseDialog()
+    }
+
+    override fun onChooseActivityMetric() {
+        showAddMetricDialog()
     }
 
     override fun onDeleteRow() {
@@ -421,6 +426,12 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAd
         val difficulty = difficultyProgressBar.progress
         val comments = commentsEditText.text.toString()
         ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveDifficultyAndCommentsPairForDate(week, difficulty, comments)
+    }
+
+    // Show pop-up dialog for choosing activity type (exercise or metric)
+    private fun showChooseActivityTypeDialog() {
+        val chooseActivityTypeFragment = ChooseActivityTypeFragment()
+        chooseActivityTypeFragment.show(supportFragmentManager, "choose_activity_type")
     }
 
     // Show pop-up dialog for adding an exercise goal row to the table

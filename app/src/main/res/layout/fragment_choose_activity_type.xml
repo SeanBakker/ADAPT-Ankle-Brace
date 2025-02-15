@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:text="Activity Type Selection"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:paddingBottom="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select the activity type below."
+            android:textSize="14sp"
+            android:paddingBottom="20dp"
+            android:layout_gravity="center" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp"
+            android:layout_gravity="center">
+
+            <!-- Exercise Button -->
+            <Button
+                android:id="@+id/chooseExerciseBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Exercise"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="20dp" />
+
+            <!-- Metric Button -->
+            <Button
+                android:id="@+id/chooseMetricBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Metric"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="20dp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

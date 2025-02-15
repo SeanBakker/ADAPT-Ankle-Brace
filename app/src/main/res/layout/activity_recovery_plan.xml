@@ -243,18 +243,11 @@
                 android:text="@string/deleteRowBtn" />
 
             <Button
-                android:id="@+id/addMetricButton"
+                android:id="@+id/addRowButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:text="Add Metric Row" />
-
-            <Button
-                android:id="@+id/addExerciseButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="Add Exercise Row" />
+                android:text="@string/addRowBtn" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>
