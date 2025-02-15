@@ -4,10 +4,13 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.PopupWindow
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -199,8 +202,31 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataExerciseTableRowAd
         ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).saveMetricsForDate(date, metrics)
     }
 
-    override fun onClickViewMetricDetails(metric: Metric) {
-        // todo: show pop-up of the specific saved metric details (only for this metric data row)
+    @SuppressLint("DefaultLocale", "InflateParams")
+    override fun onClickViewMetricDetails(metric: Metric, view: View) {
+        // Inflate the popup layout
+        val inflater = LayoutInflater.from(this)
+        val popupView = inflater.inflate(R.layout.dialog_view_metric_details, null)
+
+        // Set metric data in the popup
+        popupView.findViewById<TextView>(R.id.romPlantarDorsiflexionRange).text =
+            String.format("%.1f°", metric.romPlantarDorsiflexionRange)
+        popupView.findViewById<TextView>(R.id.romInversionEversionRange).text =
+            String.format("%.1f°", metric.romInversionEversionRange)
+
+        // Create a PopupWindow
+        val popupWindow = PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        )
+        // Set background drawable
+        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_metric_background))
+        popupWindow.isClippingEnabled = false
+
+        // Show the popup directly under the clicked button
+        popupWindow.showAsDropDown(view, -90, -10) // Position popup below the button
     }
 
     override fun onDeleteRow() {

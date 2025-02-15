@@ -24,7 +24,7 @@ class RecoveryDataMetricTableRowAdapter(
     // Define the callback interface
     interface RecoveryDataCallback {
         fun saveCurrentDateMetricData()
-        fun onClickViewMetricDetails(metric: Metric)
+        fun onClickViewMetricDetails(metric: Metric, view: View)
     }
 
     init {
@@ -90,7 +90,7 @@ class RecoveryDataMetricTableRowAdapter(
                 }
                 (viewMetricsButton as? Button)?.setOnClickListener {
                     metric?.let {
-                        recoveryDataCallback.onClickViewMetricDetails(it)
+                        recoveryDataCallback.onClickViewMetricDetails(it, viewMetricsButton)
                     }
                 }
                 (difficulty as? EditText)?.apply {

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetTop="12dp"> <!-- Adds space for triangle -->
+    <layer-list>
+        <!-- Triangle Arrow at the Top -->
+        <item android:drawable="@drawable/dialog_triangle"
+            android:top="-6dp"
+            android:gravity="top|center_horizontal"/>
+
+        <!-- Main Box -->
+        <item>
+            <shape android:shape="rectangle">
+                <solid android:color="?attr/colorSecondaryVariant"/>
+                <corners android:radius="12dp"/>
+                <stroke android:width="2dp" android:color="?attr/colorOnBackground"/>
+            </shape>
+        </item>
+    </layer-list>
+</inset>
