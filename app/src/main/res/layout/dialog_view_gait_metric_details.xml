@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Metric Name -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recordedMetricsText"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnBackground" />
+
+    <!-- Gait Number of Steps -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/gaitNumStepsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/numStepsText"
+            android:textColor="?attr/colorOnSecondary" />
+
+        <TextView
+            android:id="@+id/gaitNumSteps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/defaultZero"
+            android:textColor="?attr/colorOnSecondary"
+            android:layout_marginStart="4dp" />
+    </LinearLayout>
+
+    <!-- Gait Cadence -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/gaitCadenceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cadenceText"
+            android:textColor="?attr/colorOnSecondary" />
+
+        <TextView
+            android:id="@+id/gaitCadence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/defaultZero"
+            android:textColor="?attr/colorOnSecondary"
+            android:layout_marginStart="4dp" />
+    </LinearLayout>
+
+    <!-- Gait Impact Force -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/gaitImpactForceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/impactForceText"
+            android:textColor="?attr/colorOnSecondary" />
+
+        <TextView
+            android:id="@+id/gaitImpactForce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/defaultZero"
+            android:textColor="?attr/colorOnSecondary"
+            android:layout_marginStart="4dp" />
+    </LinearLayout>
+
+    <!-- Gait Swing Stance Ratio -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/gaitSwingStanceRatioText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/swingStanceRatioText"
+            android:textColor="?attr/colorOnSecondary" />
+
+        <TextView
+            android:id="@+id/gaitSwingStanceRatio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/defaultZero"
+            android:textColor="?attr/colorOnSecondary"
+            android:layout_marginStart="4dp" />
+    </LinearLayout>
+</LinearLayout>

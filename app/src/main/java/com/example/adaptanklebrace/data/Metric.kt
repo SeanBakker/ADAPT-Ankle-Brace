@@ -17,7 +17,11 @@ data class Metric(
     var percentageCompleted: Double = 0.0,
     var isVisible: Boolean = true,
     var romPlantarDorsiflexionRange: Double = 0.0,
-    var romInversionEversionRange: Double = 0.0
+    var romInversionEversionRange: Double = 0.0,
+    var gaitNumSteps: Int = 0,
+    var gaitCadence: Double = 0.0,
+    var gaitImpactForce: Double = 0.0,
+    var gaitSwingStanceRatio: Double = 0.0
 ) : Parcelable, Serializable {
 
     constructor(parcel: Parcel) : this(
@@ -30,6 +34,10 @@ data class Metric(
         parcel.readBoolean(),
         parcel.readDouble(),
         parcel.readBoolean(),
+        parcel.readDouble(),
+        parcel.readDouble(),
+        parcel.readInt(),
+        parcel.readDouble(),
         parcel.readDouble(),
         parcel.readDouble()
     )
@@ -46,6 +54,10 @@ data class Metric(
         parcel.writeBoolean(isVisible)
         parcel.writeDouble(romPlantarDorsiflexionRange)
         parcel.writeDouble(romInversionEversionRange)
+        parcel.writeInt(gaitNumSteps)
+        parcel.writeDouble(gaitCadence)
+        parcel.writeDouble(gaitImpactForce)
+        parcel.writeDouble(gaitSwingStanceRatio)
     }
 
     override fun describeContents(): Int {

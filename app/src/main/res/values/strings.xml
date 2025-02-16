@@ -44,6 +44,7 @@
     <string name="noGoalsSetText">There are no goals set for this week, click below to set new goals!</string>
     <string name="totalROMText">Total ROM:</string>
     <string name="difficultyText">Difficulty:</string>
+    <string name="gaitTestResultsText">Gait Test Results:</string>
 
     <!-- Data -->
     <string name="minText">Min</string>
@@ -81,6 +82,19 @@
 
     <!-- Fragments -->
     <string name="requiredFieldsFormText">Fields marked with * are required.</string>
+    <string name="recordedMetricsText">Recorded Metrics:</string>
+    <string name="plantarDorsiflexionTotalRangeText">Plantar/Dorsiflexion Total Range:</string>
+    <string name="plantarDorsiflexionAverageTotalRangeText">Plantar/Dorsiflexion Average Total Range:</string>
+    <string name="inverEverTotalRangeText">Inversion/Eversion Total Range:</string>
+    <string name="inverEverAverageTotalRangeText">Inversion/Eversion Average Total Range:</string>
+    <string name="numStepsText">Number of Steps:</string>
+    <string name="numStepsAverageText">Average Number of Steps:</string>
+    <string name="cadenceText">Cadence (steps/min):</string>
+    <string name="cadenceAverageText">Average Cadence (steps/min):</string>
+    <string name="impactForceText">Impact Force (N):</string>
+    <string name="impactForceAverageText">Average Impact Force (N):</string>
+    <string name="swingStanceRatioText">Swing to Stance Ratio (%):</string>
+    <string name="swingStanceRatioAverageText">Average Swing to Stance Ratio (%):</string>
 
     <!-- Symbols -->
     <string name="asteriskSymbol">*</string>

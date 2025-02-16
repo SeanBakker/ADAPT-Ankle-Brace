@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.SettingsActivity
 import com.example.adaptanklebrace.data.Metric
+import com.example.adaptanklebrace.enums.ExerciseType
 
 class RecoveryPlanMetricTableRowAdapter(
     private val metrics: MutableList<Metric>,
@@ -24,7 +25,8 @@ class RecoveryPlanMetricTableRowAdapter(
     // Define the callback interface
     interface RecoveryPlanCallback {
         fun saveCurrentDateMetricData()
-        fun onClickViewAllMetricDetails(metric: Metric)
+        fun onClickViewAllROMMetricDetails(metric: Metric, view: View)
+        fun onClickViewAllGaitMetricDetails(metric: Metric, view: View)
         fun onFocusFrequencyText(metric: Metric, position: Int)
         fun onClickStartMetricWithWarning(metric: Metric)
         fun onClickStartMetricWithoutWarning(metric: Metric)
@@ -112,7 +114,11 @@ class RecoveryPlanMetricTableRowAdapter(
                 }
                 (viewMetricsButton as? Button)?.setOnClickListener {
                     metric?.let {
-                        recoveryPlanCallback.onClickViewAllMetricDetails(it)
+                        if (it.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
+                            recoveryPlanCallback.onClickViewAllROMMetricDetails(it, viewMetricsButton)
+                        } else if (it.name == ExerciseType.GAIT_TEST.exerciseName) {
+                            recoveryPlanCallback.onClickViewAllGaitMetricDetails(it, viewMetricsButton)
+                        }
                     }
                 }
                 (startMetricButton as? Button)?.setOnClickListener {

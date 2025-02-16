@@ -200,10 +200,10 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataExerciseTableRowAd
     }
 
     @SuppressLint("DefaultLocale", "InflateParams")
-    override fun onClickViewMetricDetails(metric: Metric, view: View) {
+    override fun onClickViewROMMetricDetails(metric: Metric, view: View) {
         // Inflate the popup layout
         val inflater = LayoutInflater.from(this)
-        val popupView = inflater.inflate(R.layout.dialog_view_metric_details, null)
+        val popupView = inflater.inflate(R.layout.dialog_view_rom_metric_details, null)
 
         // Set metric data in the popup
         popupView.findViewById<TextView>(R.id.romPlantarDorsiflexionRange).text =
@@ -223,7 +223,38 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataExerciseTableRowAd
         popupWindow.isClippingEnabled = false
 
         // Show the popup directly under the clicked button
-        popupWindow.showAsDropDown(view, -90, -10) // Position popup below the button
+        popupWindow.showAsDropDown(view, -85, -10) // Position popup below the button
+    }
+
+    @SuppressLint("DefaultLocale", "InflateParams")
+    override fun onClickViewGaitMetricDetails(metric: Metric, view: View) {
+        // Inflate the popup layout
+        val inflater = LayoutInflater.from(this)
+        val popupView = inflater.inflate(R.layout.dialog_view_gait_metric_details, null)
+
+        // Set metric data in the popup
+        popupView.findViewById<TextView>(R.id.gaitNumSteps).text =
+            String.format("%d", metric.gaitNumSteps)
+        popupView.findViewById<TextView>(R.id.gaitCadence).text =
+            String.format("%.1f", metric.gaitCadence)
+        popupView.findViewById<TextView>(R.id.gaitImpactForce).text =
+            String.format("%.1f", metric.gaitImpactForce)
+        popupView.findViewById<TextView>(R.id.gaitSwingStanceRatio).text =
+            String.format("%.1f", metric.gaitSwingStanceRatio)
+
+        // Create a PopupWindow
+        val popupWindow = PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        )
+        // Set background drawable
+        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_metric_background))
+        popupWindow.isClippingEnabled = false
+
+        // Show the popup directly under the clicked button
+        popupWindow.showAsDropDown(view, -60, -10) // Position popup below the button
     }
 
     override fun onChooseActivityExercise() {

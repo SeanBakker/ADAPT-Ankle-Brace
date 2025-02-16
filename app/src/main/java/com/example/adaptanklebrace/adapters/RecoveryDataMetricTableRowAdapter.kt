@@ -13,6 +13,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.data.Metric
+import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.utils.GeneralUtil
 import java.time.LocalTime
 
@@ -24,7 +25,8 @@ class RecoveryDataMetricTableRowAdapter(
     // Define the callback interface
     interface RecoveryDataCallback {
         fun saveCurrentDateMetricData()
-        fun onClickViewMetricDetails(metric: Metric, view: View)
+        fun onClickViewROMMetricDetails(metric: Metric, view: View)
+        fun onClickViewGaitMetricDetails(metric: Metric, view: View)
     }
 
     init {
@@ -90,7 +92,11 @@ class RecoveryDataMetricTableRowAdapter(
                 }
                 (viewMetricsButton as? Button)?.setOnClickListener {
                     metric?.let {
-                        recoveryDataCallback.onClickViewMetricDetails(it, viewMetricsButton)
+                        if (it.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
+                            recoveryDataCallback.onClickViewROMMetricDetails(it, viewMetricsButton)
+                        } else if (it.name == ExerciseType.GAIT_TEST.exerciseName) {
+                            recoveryDataCallback.onClickViewGaitMetricDetails(it, viewMetricsButton)
+                        }
                     }
                 }
                 (difficulty as? EditText)?.apply {

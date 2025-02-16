@@ -7,10 +7,13 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.PopupWindow
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -258,8 +261,112 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAd
         ContextCompat.startActivity(context, startMetricIntent, null)
     }
 
-    override fun onClickViewAllMetricDetails(metric: Metric) {
-        // todo: show pop-up of an average of saved metric details for that week
+    @SuppressLint("DefaultLocale", "InflateParams")
+    override fun onClickViewAllROMMetricDetails(metric: Metric, view: View) {
+        // Inflate the popup layout
+        val inflater = LayoutInflater.from(this)
+        val popupView = inflater.inflate(R.layout.dialog_view_rom_metric_details, null)
+
+        // Set text fields to be averages
+        popupView.findViewById<TextView>(R.id.romPlantarDorsiflexionRangeText).text =
+            ContextCompat.getString(this, R.string.plantarDorsiflexionAverageTotalRangeText)
+        popupView.findViewById<TextView>(R.id.romInversionEversionRangeText).text =
+            ContextCompat.getString(this, R.string.inverEverAverageTotalRangeText)
+
+        // Get the metric data saved for the chosen week
+        val week = dateTextView.text.toString()
+        val savedMetrics = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getMetricsForDate(week)
+
+        // Calculate the average total ranges
+        var totalPlantarDorsiflexionRange = 0.0
+        var totalInversionEversionRange = 0.0
+        for (metricData in savedMetrics) {
+            totalPlantarDorsiflexionRange += metricData.romPlantarDorsiflexionRange
+            totalInversionEversionRange += metricData.romInversionEversionRange
+        }
+        metric.romPlantarDorsiflexionRange = totalPlantarDorsiflexionRange / savedMetrics.size
+        metric.romInversionEversionRange = totalInversionEversionRange / savedMetrics.size
+
+        // Set metric data in the popup
+        popupView.findViewById<TextView>(R.id.romPlantarDorsiflexionRange).text =
+            String.format("%.1f°", metric.romPlantarDorsiflexionRange)
+        popupView.findViewById<TextView>(R.id.romInversionEversionRange).text =
+            String.format("%.1f°", metric.romInversionEversionRange)
+
+        // Create a PopupWindow
+        val popupWindow = PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        )
+        // Set background drawable
+        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_metric_background))
+        popupWindow.isClippingEnabled = false
+
+        // Show the popup directly under the clicked button
+        popupWindow.showAsDropDown(view, -115, -10) // Position popup below the button
+    }
+
+    @SuppressLint("DefaultLocale", "InflateParams")
+    override fun onClickViewAllGaitMetricDetails(metric: Metric, view: View) {
+        // Inflate the popup layout
+        val inflater = LayoutInflater.from(this)
+        val popupView = inflater.inflate(R.layout.dialog_view_gait_metric_details, null)
+
+        // Set text fields to be averages
+        popupView.findViewById<TextView>(R.id.gaitNumStepsText).text =
+            ContextCompat.getString(this, R.string.numStepsAverageText)
+        popupView.findViewById<TextView>(R.id.gaitCadenceText).text =
+            ContextCompat.getString(this, R.string.cadenceAverageText)
+        popupView.findViewById<TextView>(R.id.gaitImpactForceText).text =
+            ContextCompat.getString(this, R.string.impactForceAverageText)
+        popupView.findViewById<TextView>(R.id.gaitSwingStanceRatioText).text =
+            ContextCompat.getString(this, R.string.swingStanceRatioAverageText)
+
+        // Get the metric data saved for the chosen week
+        val week = dateTextView.text.toString()
+        val savedMetrics = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getMetricsForDate(week)
+
+        // Calculate the average total ranges
+        var totalNumSteps = 0
+        var totalCadence = 0.0
+        var totalImpactForce = 0.0
+        var totalSwingStanceRatio = 0.0
+        for (metricData in savedMetrics) {
+            totalNumSteps += metricData.gaitNumSteps
+            totalCadence += metricData.gaitCadence
+            totalImpactForce += metricData.gaitImpactForce
+            totalSwingStanceRatio += metricData.gaitSwingStanceRatio
+        }
+        metric.gaitNumSteps = totalNumSteps.floorDiv(savedMetrics.size)
+        metric.gaitCadence = totalCadence / savedMetrics.size
+        metric.gaitImpactForce = totalImpactForce / savedMetrics.size
+        metric.gaitSwingStanceRatio = totalSwingStanceRatio / savedMetrics.size
+
+        // Set metric data in the popup
+        popupView.findViewById<TextView>(R.id.gaitNumSteps).text =
+            String.format("%d", metric.gaitNumSteps)
+        popupView.findViewById<TextView>(R.id.gaitCadence).text =
+            String.format("%.1f", metric.gaitCadence)
+        popupView.findViewById<TextView>(R.id.gaitImpactForce).text =
+            String.format("%.1f", metric.gaitImpactForce)
+        popupView.findViewById<TextView>(R.id.gaitSwingStanceRatio).text =
+            String.format("%.1f", metric.gaitSwingStanceRatio)
+
+        // Create a PopupWindow
+        val popupWindow = PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        )
+        // Set background drawable
+        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_metric_background))
+        popupWindow.isClippingEnabled = false
+
+        // Show the popup directly under the clicked button
+        popupWindow.showAsDropDown(view, -90, -10) // Position popup below the button
     }
 
     override fun onChooseActivityExercise() {
