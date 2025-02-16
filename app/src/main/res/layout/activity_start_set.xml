@@ -82,6 +82,7 @@
                         android:gravity="bottom|start"
                         android:text="@string/minText"
                         android:textSize="20sp"
+                        android:textColor="?attr/colorOnBackground"
                         android:textStyle="bold" />
 
                     <TextView
@@ -92,6 +93,7 @@
                         android:gravity="bottom|center"
                         android:text="@string/zeroDegrees"
                         android:textSize="30sp"
+                        android:textColor="?attr/colorPrimaryVariant"
                         android:textStyle="bold" />
 
                     <TextView
@@ -103,6 +105,7 @@
                         android:paddingEnd="20dp"
                         android:text="@string/maxText"
                         android:textSize="20sp"
+                        android:textColor="?attr/colorOnBackground"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -120,6 +123,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/zeroDegrees"
                         android:textSize="30sp"
+                        android:textColor="?attr/colorOnBackground"
                         android:textStyle="bold" />
 
                     <ProgressBar
@@ -139,6 +143,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/fullDegrees"
                         android:textSize="30sp"
+                        android:textColor="?attr/colorOnBackground"
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
