@@ -18,6 +18,7 @@ BLECharacteristic readCharacteristic("f8c2f5f0-4e8c-4a95-b9c1-3c8c33b457c4", BLE
 
 /***** EXERCISE VARIABLES *****/
 float repsCount = 0;
+bool repsCounted = false; // Variable to keep track of counting the current rep
 
 
 /***** ROM VARIABLES *****/
@@ -26,7 +27,6 @@ Adafruit_ISM330DHCX externalIMU;  // External IMU object
 
 #define SERIAL_BAUD 115200
 const float alpha = 0.5;             // Smoothing factor for low-pass filter
-const float jumpThreshold = 95.0;    // Maximum allowed jump between samples, in degrees
 const float GIMBAL_LOCK_THRESHOLD = 2.0;  // Threshold in degrees around ±90 for gimbal lock
 
 // Variables to hold filtered roll and pitch
@@ -39,7 +39,6 @@ float filteredPitchExternal = 0;
 bool testInProgress = false;
 bool timedTestComplete = false;
 float triggerTimedTestComplete = -1;
-bool continuousPrint = false;       // If true, sensor values are printed continuously during the test
 unsigned long testStartTime = 0;    // Start time of the test
 const unsigned long testDuration = 5000;  // 5 seconds
 float maxPlantarDorsiAngle = -1e6;  // Start with very low number
@@ -48,6 +47,7 @@ float maxInversionEversionAngle = -1e6; // For tracking inversion/eversion
 float minInversionEversionAngle = 1e6;  // For tracking inversion/eversion
 
 
+/***** HELPER FUNCTIONS *****/
 // Helper function to read data from the characteristic
 String readCharacteristicData() {
     uint8_t value[20] = {0}; // Create a buffer to store up to 20 bytes of received data
@@ -125,16 +125,13 @@ void setup() {
 }
 
 
+/***** EXERCISE ROUTINES *****/
 // Function to send live angle data for exercise routines
 void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false) {
-    // Variable to keep track of counting the current rep
-    bool repsCounted;
-
     // Initial setup before test starts
     if (!testInProgress) {
         repsCounted = false;
         testInProgress = true;
-        continuousPrint = true; // todo: may be false
 
         // Reset angles for new test
         maxPlantarDorsiAngle = -1e6;
@@ -252,6 +249,8 @@ void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false)
     delay(50);  // Sampling delay
 }
 
+
+/***** METRIC ROUTINES *****/
 // Function to run ROM metric routine
 void performROMMetricRoutine() {
     if (!timedTestComplete) {
@@ -259,7 +258,6 @@ void performROMMetricRoutine() {
         if (!testInProgress) {
             // Start the 5-second test with continuous printing
             testInProgress = true;
-            continuousPrint = true; // todo: may be false
             testStartTime = millis();
 
             // Reset angles for new test
@@ -267,6 +265,7 @@ void performROMMetricRoutine() {
             minPlantarDorsiAngle = 1e6;
             maxInversionEversionAngle = -1e6;
             minInversionEversionAngle = 1e6;
+
             Serial.println(
                     "Starting 5-second range of motion test with continuous sensor values printing...");
             Serial.println(
@@ -406,8 +405,7 @@ void loop() {
                 if (receivedData == "ready") {
                     Serial.println("Device is ready!");
 
-                    /***** SEND TENSION LEVEL *****/
-                    // Send the configured tension level from the device
+                    /***** SEND TENSION LEVEL OF DEVICE *****/
                     float tensionLevel = 4; // todo: replace with actual tension on device
                     writeCharacteristicData(tensionLevel);
                     Serial.print("Sending tension level: ");
