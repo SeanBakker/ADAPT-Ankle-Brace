@@ -1,7 +1,8 @@
 #include <ArduinoBLE.h>
 #include <Arduino_BMI270_BMM150.h>  // Library for the built-in IMU
-#include <Wire.h>
+//#include <Arduino_LSM6DS3.h>
 #include <Adafruit_ISM330DHCX.h>    // External IMU library
+#include <Wire.h>
 #include <math.h>
 
 /***** BLE VARIABLES *****/
@@ -23,11 +24,11 @@ bool repsCounted = false; // Variable to keep track of counting the current rep
 
 /***** ROM VARIABLES *****/
 // Create sensor object for the external IMU
-Adafruit_ISM330DHCX externalIMU;  // External IMU object
+Adafruit_ISM330DHCX externalIMU; // External IMU object
 
 #define SERIAL_BAUD 115200
-const float alpha = 0.5;             // Smoothing factor for low-pass filter
-const float GIMBAL_LOCK_THRESHOLD = 2.0;  // Threshold in degrees around ±90 for gimbal lock
+const float ALPHA_ROM = 0.5; // Smoothing factor for low-pass filter
+const float GIMBAL_LOCK_THRESHOLD = 2.0; // Threshold in degrees around ±90 for gimbal lock
 
 // Variables to hold filtered roll and pitch
 float filteredRollBuiltIn = 0;
@@ -39,15 +40,57 @@ float filteredPitchExternal = 0;
 bool testInProgress = false;
 bool timedTestComplete = false;
 float triggerTimedTestComplete = -1;
-unsigned long testStartTime = 0;    // Start time of the test
-const unsigned long testDuration = 5000;  // 5 seconds
-float maxPlantarDorsiAngle = -1e6;  // Start with very low number
-float minPlantarDorsiAngle = 1e6;   // Start with very high number
+unsigned long testStartTime = 0; // Start time of the test
+const unsigned long ROM_TEST_DURATION = 5000; // 5 seconds
+float maxPlantarDorsiAngle = -1e6; // Start with very low number
+float minPlantarDorsiAngle = 1e6; // Start with very high number
 float maxInversionEversionAngle = -1e6; // For tracking inversion/eversion
-float minInversionEversionAngle = 1e6;  // For tracking inversion/eversion
+float minInversionEversionAngle = 1e6; // For tracking inversion/eversion
 
 
-/***** HELPER FUNCTIONS *****/
+/***** GAIT VARIABLES *****/
+const unsigned long GAIT_TEST_DURATION = 10000; // Test length: 10 seconds
+const unsigned long SAMPLING_INTERVAL = 10; // Sampling interval ~100 Hz
+const unsigned long MIN_STEP_INTERVAL_MS = 250; // Minimum time between valid steps (to avoid double-counting)
+const unsigned long MINIMUM_STANCE_MS = 400; // Minimum stance duration (avoid stance phases that end too quickly)
+const float GYRO_STABILITY_THRESHOLD = 30.0f; // Gyro threshold for detecting foot rotation or “unstable” foot
+const float ALPHA_GAIT = 0.7; // Low-pass filter factor for accelerometer
+const int MAX_STEPS = 50; // Data array sizes
+
+unsigned long lastSampleTime = 0;
+unsigned long lastHeelStrikeTime = 0; // Last time we detected a heel strike
+float azFiltered = 0.0f;
+float tempPeakForce = 0.0f;
+int stepIndex = 0;
+int totalSteps = 0;
+unsigned long firstStepTime = 0;
+unsigned long finalStepTime = 0;
+
+// Arrays to store intervals & forces
+float stepIntervals[MAX_STEPS];
+float peakForces[MAX_STEPS];
+float prev_az = 0;
+
+// Arrays to store stance / swing boundaries
+unsigned long stepStartTime[MAX_STEPS]; // Stance start
+unsigned long stepEndTime[MAX_STEPS]; // Stance end
+
+// Thresholds for heel strike and toe-off
+const float HEEL_STRIKE_THRESHOLD = -0.6f;
+const float TOE_OFF_THRESHOLD = 0.0f;
+const float CHANGE_THRESHOLD = 0.2f;
+
+// For the state machine
+enum GaitState {
+    GAIT_IDLE,
+    WAIT_HEEL_STRIKE,
+    STANCE,
+    SWING
+};
+GaitState currentState = GAIT_IDLE;
+
+
+/***** GENERAL HELPER FUNCTIONS *****/
 // Helper function to read data from the characteristic
 String readCharacteristicData() {
     uint8_t value[20] = {0}; // Create a buffer to store up to 20 bytes of received data
@@ -63,15 +106,115 @@ String readCharacteristicData() {
 
 // Helper function to write data to the characteristic
 void writeCharacteristicData(float data1, float data2 = NAN) {
-    uint8_t floatBytes[8];  // Maximum needed for two floats (4 bytes each)
-    memcpy(floatBytes, &data1, sizeof(float));  // Copy first float into byte array
+    uint8_t floatBytes[8]; // Maximum needed for two floats (4 bytes each)
+    memcpy(floatBytes, &data1, sizeof(float)); // Copy first float into byte array
 
     if (!isnan(data2)) {  // Check if second float is provided
-        memcpy(floatBytes + 4, &data2, sizeof(float));  // Copy second float
-        writeCharacteristic.writeValue(floatBytes, 8);  // Send 8 bytes
+        memcpy(floatBytes + 4, &data2, sizeof(float)); // Copy second float
+        writeCharacteristic.writeValue(floatBytes, 8); // Send 8 bytes
     } else {
-        writeCharacteristic.writeValue(floatBytes, 4);  // Send only 4 bytes
+        writeCharacteristic.writeValue(floatBytes, 4); // Send only 4 bytes
     }
+}
+
+/***** GAIT TEST HELPER FUNCTIONS *****/
+// Helper function to compute stance & swing from stepStartTime[i], stepEndTime[i] for Gait test
+float computeSwingStanceRatio() {
+    float ratio = 0.0f;
+
+    if (stepIndex == 0) {
+        Serial.println("Not enough data to compute stance/swing times.");
+    }
+
+    float sumStance = 0.0f;
+    float sumSwing  = 0.0f;
+    int stanceCount = 0;
+    int swingCount  = 0;
+
+    for (int i = 0; i < stepIndex; i++) {
+        unsigned long sStart = stepStartTime[i];
+        unsigned long sEnd   = stepEndTime[i];
+        if (sEnd > sStart) {
+            float stanceMs = (float)(sEnd - sStart);
+            sumStance += stanceMs;
+            stanceCount++;
+        }
+
+        if (i < stepIndex - 1) {
+            // swing = next stance start - current stance end
+            unsigned long nextStart = stepStartTime[i+1];
+            if (nextStart > sEnd) {
+                float swingMs = (float)(nextStart - sEnd);
+                sumSwing += swingMs;
+                swingCount++;
+            }
+        }
+    }
+
+    float avgStanceMs = (stanceCount > 0) ? (sumStance / stanceCount) : 0.0f;
+    float avgSwingMs  = (swingCount  > 0) ? (sumSwing  / swingCount ) : 0.0f;
+
+    float avgStanceSec = avgStanceMs / 1000.0f;
+    float avgSwingSec  = avgSwingMs  / 1000.0f;
+
+    Serial.print("Average Stance Time: ");
+    Serial.print(avgStanceSec, 3);
+    Serial.println(" s");
+
+    if (swingCount == 0) {
+        Serial.println("Not enough data to compute average swing time.");
+    }
+    Serial.print("Average Swing Time: ");
+    Serial.print(avgSwingSec, 3);
+    Serial.println(" s");
+
+    if (avgStanceSec > 0.0f) {
+        ratio = (avgSwingSec / avgStanceSec) * 100; // Units of %
+    } else {
+        Serial.println("Invalid stance time for ratio calculation.");
+    }
+
+    return ratio;
+}
+
+// Helper function to compute the user's cadence for Gait test
+float computeCadence() {
+    float stepsPerMin = 0.0f;
+
+    // Cadence
+    if (firstStepTime == 0) {
+        Serial.println("No valid steps for cadence calculation.");
+    } else {
+        unsigned long endTime = (finalStepTime == 0)
+                                ? (testStartTime + GAIT_TEST_DURATION)
+                                : finalStepTime;
+        float elapsedSec = (float)(endTime - firstStepTime) / 1000.0f;
+        if (elapsedSec > 0.0f) {
+            stepsPerMin = (float)totalSteps / elapsedSec * 60.0f;
+        } else {
+            Serial.println("Cadence: insufficient time for calculation.");
+        }
+    }
+
+    return stepsPerMin;
+}
+
+// Helper function to compute the user's average impact force for Gait test
+float computeImpactForce() {
+    float avgPeak = 0.0f;
+
+    // Average Peak Force
+    if (stepIndex == 0) {
+        Serial.println("No peak force data (less than 1 step detected).");
+    } else {
+        float sumPeak = 0.0f;
+        for (int i = 0; i < stepIndex; i++) {
+            sumPeak += peakForces[i];
+        }
+        avgPeak = sumPeak / (float)stepIndex;
+    }
+
+    return avgPeak;
 }
 
 
@@ -105,7 +248,7 @@ void setup() {
     Serial.println("BLE device is now advertising...");
 
 
-    /***** ROM SETUP *****/
+    /***** ROM & GAIT SETUP *****/
     // Initialize the built-in IMU
     Serial.print("Initializing built-in IMU... ");
     if (!IMU.begin()) {
@@ -128,7 +271,7 @@ void setup() {
 /***** EXERCISE ROUTINES *****/
 // Function to send live angle data for exercise routines
 void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false) {
-    // Initial setup before test starts
+    // 1. Initial setup before test starts
     if (!testInProgress) {
         repsCounted = false;
         testInProgress = true;
@@ -140,6 +283,7 @@ void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false)
         minInversionEversionAngle = 1e6;
     }
 
+    // 2. Collect data
     // Variables for the built-in IMU
     float accX, accY, accZ;
 
@@ -168,8 +312,8 @@ void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false)
         }
 
         // Apply a low-pass filter to smooth values
-        filteredRollBuiltIn = alpha * filteredRollBuiltIn + (1 - alpha) * roll;
-        filteredPitchBuiltIn = alpha * filteredPitchBuiltIn + (1 - alpha) * pitch;
+        filteredRollBuiltIn = ALPHA_ROM * filteredRollBuiltIn + (1 - ALPHA_ROM) * roll;
+        filteredPitchBuiltIn = ALPHA_ROM * filteredPitchBuiltIn + (1 - ALPHA_ROM) * pitch;
     }
 
     // Read data from the external IMU (foot-mounted)
@@ -184,13 +328,14 @@ void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false)
     float extPitch = atan2(-extAccX, sqrt(extAccY * extAccY + extAccZ * extAccZ)) * 180.0 / PI;
 
     // Apply a low-pass filter to the external IMU data
-    filteredRollExternal = alpha * filteredRollExternal + (1 - alpha) * extRoll;
-    filteredPitchExternal = alpha * filteredPitchExternal + (1 - alpha) * extPitch;
+    filteredRollExternal = ALPHA_ROM * filteredRollExternal + (1 - ALPHA_ROM) * extRoll;
+    filteredPitchExternal = ALPHA_ROM * filteredPitchExternal + (1 - ALPHA_ROM) * extPitch;
 
     // Calculate angles
     float plantarDorsiAngle = fabs(filteredPitchBuiltIn - filteredPitchExternal);
     float inversionEversionAngle = fabs(filteredRollExternal);
 
+    // 3. Send live data & perform calculations
     if (testInProgress) {
         if (isPlantarDorsiExercise) {
             if (isTestRep) {
@@ -254,9 +399,8 @@ void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false)
 // Function to run ROM metric routine
 void performROMMetricRoutine() {
     if (!timedTestComplete) {
-        // Initial setup before test starts
+        // 1. Initial setup before test starts
         if (!testInProgress) {
-            // Start the 5-second test with continuous printing
             testInProgress = true;
             testStartTime = millis();
 
@@ -266,8 +410,7 @@ void performROMMetricRoutine() {
             maxInversionEversionAngle = -1e6;
             minInversionEversionAngle = 1e6;
 
-            Serial.println(
-                    "Starting 5-second range of motion test with continuous sensor values printing...");
+            Serial.println("Starting ROM Test!");
             Serial.println(
                     "----------------------------------------------------------------------------------------------------");
             Serial.println(
@@ -278,6 +421,7 @@ void performROMMetricRoutine() {
                     "----------------------------------------------------------------------------------------------------");
         }
 
+        // 2. Collect data
         // Variables for the built-in IMU
         float accX, accY, accZ;
 
@@ -306,8 +450,8 @@ void performROMMetricRoutine() {
             }
 
             // Apply a low-pass filter to smooth values
-            filteredRollBuiltIn = alpha * filteredRollBuiltIn + (1 - alpha) * roll;
-            filteredPitchBuiltIn = alpha * filteredPitchBuiltIn + (1 - alpha) * pitch;
+            filteredRollBuiltIn = ALPHA_ROM * filteredRollBuiltIn + (1 - ALPHA_ROM) * roll;
+            filteredPitchBuiltIn = ALPHA_ROM * filteredPitchBuiltIn + (1 - ALPHA_ROM) * pitch;
         }
 
         // Read data from the external IMU (foot-mounted)
@@ -322,8 +466,8 @@ void performROMMetricRoutine() {
         float extPitch = atan2(-extAccX, sqrt(extAccY * extAccY + extAccZ * extAccZ)) * 180.0 / PI;
 
         // Apply a low-pass filter to the external IMU data
-        filteredRollExternal = alpha * filteredRollExternal + (1 - alpha) * extRoll;
-        filteredPitchExternal = alpha * filteredPitchExternal + (1 - alpha) * extPitch;
+        filteredRollExternal = ALPHA_ROM * filteredRollExternal + (1 - ALPHA_ROM) * extRoll;
+        filteredPitchExternal = ALPHA_ROM * filteredPitchExternal + (1 - ALPHA_ROM) * extPitch;
 
         // Calculate angles
         float plantarDorsiAngle = fabs(filteredPitchBuiltIn - filteredPitchExternal);
@@ -342,8 +486,8 @@ void performROMMetricRoutine() {
                            String(inversionEversionAngle) + ")");
         }
 
-        // If the test is in progress, check if 5 seconds have elapsed
-        if (testInProgress && millis() - testStartTime >= testDuration) {
+        // 3. Check for test completion
+        if (testInProgress && millis() - testStartTime >= ROM_TEST_DURATION) {
             testInProgress = false;
             timedTestComplete = true;
 
@@ -374,7 +518,176 @@ void performROMMetricRoutine() {
 
 // Function to run Gait metric routine
 void performGaitMetricRoutine() {
+    if (!timedTestComplete) {
+        // 1. Initial setup before test starts
+        if (!testInProgress && currentState == GAIT_IDLE) {
+            testInProgress = true;
+            testStartTime = millis();
+            currentState = WAIT_HEEL_STRIKE; // Move to waiting for first heel strike
+            Serial.println("Starting Gait Test!");
+        }
 
+        // 2. Collect data
+        unsigned long currentTime = millis();
+        if (currentTime - lastSampleTime >= SAMPLING_INTERVAL) {
+            lastSampleTime = currentTime;
+            float ax, ay, az;
+            float gx, gy, gz;
+
+            // Read both acceleration & gyroscope if available
+            if (IMU.accelerationAvailable() && IMU.gyroscopeAvailable()) {
+                IMU.readAcceleration(ax, ay, az);
+                IMU.readGyroscope(gx, gy, gz);
+
+                // Invert z-axis if sensor is upside down
+                float az_inverted = az; //removed negative sign
+
+                // Optional low-pass filter
+                azFiltered = ALPHA_GAIT * azFiltered + (1.0f - ALPHA_GAIT) * az_inverted;
+                float azToUse = azFiltered;
+
+                // Measure total gyro for foot "stability"
+                float gyroMagnitude = sqrt(gx * gx + gy * gy + gz * gz);
+
+                // 2.1. State Machine Data Collection
+                switch (currentState) {
+
+                    case WAIT_HEEL_STRIKE: {
+                        // Looking for a new heel strike
+                        bool heelStrikeDetected =
+                                (azToUse < HEEL_STRIKE_THRESHOLD) &&
+                                (prev_az - azToUse > CHANGE_THRESHOLD) &&
+                                (currentTime - lastHeelStrikeTime > MIN_STEP_INTERVAL_MS);
+                        if (heelStrikeDetected) {
+                            // We have a heel strike
+                            totalSteps++;
+                            if (firstStepTime == 0) {
+                                firstStepTime = currentTime;
+                            }
+
+                            // Step interval from previous heel strike
+                            if (lastHeelStrikeTime != 0 && stepIndex < MAX_STEPS) {
+                                float intervalMs = (float) (currentTime - lastHeelStrikeTime);
+                                stepIntervals[stepIndex] = intervalMs;
+                            }
+
+                            lastHeelStrikeTime = currentTime;
+                            tempPeakForce = azToUse;
+
+                            // Record stance start
+                            if (stepIndex < MAX_STEPS) {
+                                stepStartTime[stepIndex] = currentTime;
+                            }
+
+                            // Move to STANCE
+                            currentState = STANCE;
+                        }
+                        break;
+                    }
+
+                    case STANCE: {
+                        // We remain in stance until we detect toe-off
+                        // Keep tracking peak force
+                        if (azToUse > tempPeakForce) {
+                            tempPeakForce = azToUse;
+                        }
+
+                        unsigned long stanceElapsed = currentTime - lastHeelStrikeTime;
+                        bool belowToeOff = (azToUse < TOE_OFF_THRESHOLD);
+                        bool enoughStance = (stanceElapsed >= MINIMUM_STANCE_MS);
+                        bool footUnstable = (gyroMagnitude > GYRO_STABILITY_THRESHOLD);
+
+                        // If we see a valid toe-off condition, go to SWING
+                        if (enoughStance && belowToeOff && footUnstable) {
+                            finalStepTime = currentTime;
+                            // Serial.println("Lift");
+                            // Serial.println(azToUse);
+                            // Store peak force
+                            if (stepIndex < MAX_STEPS) {
+                                peakForces[stepIndex] = tempPeakForce;
+                            }
+                            // Mark stance end
+                            if (stepIndex < MAX_STEPS) {
+                                stepEndTime[stepIndex] = currentTime;
+                            }
+
+                            float stepTimeSec = finalStepTime / 1000.0f;
+                            Serial.print("STEP #");
+                            Serial.print(totalSteps);
+                            Serial.print(" ended stance at t=");
+                            Serial.print(stepTimeSec, 3);
+                            Serial.print(" s; Peak Force=");
+                            Serial.print(tempPeakForce, 3);
+                            Serial.println(" G");
+
+                            // Increment stepIndex
+                            stepIndex++;
+
+                            // Next state: SWING
+                            currentState = SWING;
+                        }
+                        break;
+                    }
+
+                    case SWING: {
+                        // We remain in SWING until we detect the next heel strike
+                        bool nextHeelStrike =
+                                (azToUse < HEEL_STRIKE_THRESHOLD) &&
+                                (prev_az - azToUse > CHANGE_THRESHOLD) &&
+                                (currentTime - lastHeelStrikeTime > MIN_STEP_INTERVAL_MS);
+
+                        if (nextHeelStrike) {
+                            // New stance begins
+                            // Serial.println("Strike");
+                            // Serial.println(azToUse);
+                            totalSteps++;
+                            if (firstStepTime == 0) {
+                                firstStepTime = currentTime;
+                            }
+
+                            // Step interval
+                            if (lastHeelStrikeTime != 0 && stepIndex < MAX_STEPS) {
+                                float intervalMs = (float) (currentTime - lastHeelStrikeTime);
+                                stepIntervals[stepIndex] = intervalMs; // store next interval
+                            }
+
+                            lastHeelStrikeTime = currentTime;
+                            tempPeakForce = azToUse;
+
+                            // Mark stance start
+                            if (stepIndex < MAX_STEPS) {
+                                stepStartTime[stepIndex] = currentTime;
+                            }
+
+                            // Next state: STANCE
+                            currentState = STANCE;
+                        }
+                        break;
+                    }
+
+                    default:
+                        // GAIT_IDLE or any fallback
+                        break;
+                }
+                prev_az = azToUse;
+            } else {
+                Serial.println("IMU Accelerometer and/or Gyroscope not available!");
+            }
+        }
+
+        // 3. Check for test completion
+        if (testInProgress && millis() - testStartTime >= GAIT_TEST_DURATION) {
+            testInProgress = false;
+            timedTestComplete = true;
+
+            // Send flag to app that test is completed
+            writeCharacteristicData(triggerTimedTestComplete);
+            Serial.println("Gait Test Complete!");
+            delay(1000);
+        }
+
+        delay(SAMPLING_INTERVAL); // Sampling delay
+    }
 }
 
 
@@ -717,6 +1030,7 @@ void loop() {
                             } else if (receivedData == "start_Gait") {
                                 // Setup variables for Gait test
                                 timedTestComplete = false;
+                                currentState == GAIT_IDLE;
 
                                 Serial.println("Device is starting Gait Test metric!");
                                 delay(50);
@@ -727,6 +1041,45 @@ void loop() {
 
                                     /***** SEND LIVE DATA *****/
                                     performGaitMetricRoutine();
+
+                                    /***** FINISH GAIT TEST *****/
+                                    if (timedTestComplete) {
+                                        if (readCharacteristic.written()) {
+                                            String receivedData = readCharacteristicData();
+                                            Serial.print("Data received from Bluetooth: ");
+                                            Serial.println(receivedData);
+
+                                            // Clear the value after reading
+                                            readCharacteristic.writeValue((uint8_t) 0);
+
+                                            if (receivedData == "gait_steps") {
+                                                /***** GAIT - SEND STEPS DETECTED *****/
+                                                Serial.println("\n***** GAIT TEST SUMMARY *****");
+                                                Serial.print("Total Steps Detected: ");
+                                                Serial.println(totalSteps);
+                                                writeCharacteristicData((float) totalSteps);
+                                            } else if (receivedData == "gait_cadence") {
+                                                /***** GAIT - SEND CALCULATED CADENCE *****/
+                                                float cadence = computeCadence();
+                                                Serial.print("Calculated Cadence (steps/min): ");
+                                                Serial.println(cadence);
+                                                writeCharacteristicData(cadence);
+                                            } else if (receivedData == "gait_force") {
+                                                /***** GAIT - SEND CALCULATED IMPACT FORCE *****/
+                                                float force = computeImpactForce();
+                                                Serial.print("Calculated Impact Force (G): ");
+                                                Serial.println(force);
+                                                writeCharacteristicData(force);
+                                            } else if (receivedData == "gait_ratio") {
+                                                /***** GAIT - SEND CALCULATED SWING STANCE RATIO *****/
+                                                float ratio = computeSwingStanceRatio();
+                                                Serial.print("Calculated Swing Stance Ratio (Ideal ~ 67%): ");
+                                                Serial.println(ratio);
+                                                writeCharacteristicData(ratio);
+                                                break;
+                                            }
+                                        }
+                                    }
                                 } // end while
                             }
                         }
