@@ -79,7 +79,7 @@ class StartMetricActivity : AppCompatActivity() {
                     if (metricInfo.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
                         chosenActivity = ROMMetricActivity::class.java
                     } else if (metricInfo.name == ExerciseType.GAIT_TEST.exerciseName) {
-                        chosenActivity = GaitTestMetricActivity::class.java
+                        chosenActivity = GaitMetricActivity::class.java
                     }
                 }
 

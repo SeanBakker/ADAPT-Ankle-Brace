@@ -15,7 +15,7 @@ import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.services.BluetoothService
 import com.example.adaptanklebrace.utils.GeneralUtil
 
-class GaitTestMetricActivity : AppCompatActivity() {
+class GaitMetricActivity : AppCompatActivity() {
 
     private lateinit var viewPagerInfo: ViewPager2
     private lateinit var metricInfoAdapter: ExerciseInfoAdapter
@@ -29,7 +29,7 @@ class GaitTestMetricActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_gait_test_metric)
+        setContentView(R.layout.activity_gait_metric)
 
         // Set up the toolbar
         val toolbar: Toolbar = findViewById(R.id.gaitTestMetricToolbar)

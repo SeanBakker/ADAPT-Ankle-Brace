@@ -53,7 +53,7 @@
 
         <!-- Metric Activities -->
         <activity android:name=".ROMMetricActivity" />
-        <activity android:name=".GaitTestMetricActivity" />
+        <activity android:name=".GaitMetricActivity" />
 
         <!-- Other Activities -->
         <activity android:name=".SettingsActivity" />

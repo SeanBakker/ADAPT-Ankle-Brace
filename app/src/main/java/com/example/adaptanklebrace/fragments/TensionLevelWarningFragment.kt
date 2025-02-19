@@ -11,9 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import com.example.adaptanklebrace.GaitTestMetricActivity
 import com.example.adaptanklebrace.R
-import com.example.adaptanklebrace.ROMMetricActivity
 import com.example.adaptanklebrace.StartSetActivity
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
