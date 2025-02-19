@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="20dp">
 
@@ -11,6 +10,8 @@
         android:layout_height="wrap_content"
         android:text="Checking for Device Connection"
         android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
         android:layout_gravity="center" />
 
     <ImageView

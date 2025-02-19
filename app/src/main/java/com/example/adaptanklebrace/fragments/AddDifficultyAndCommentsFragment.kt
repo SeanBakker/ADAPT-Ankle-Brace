@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.DialogFragment
+import com.example.adaptanklebrace.GaitMetricActivity
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.ROMMetricActivity
 import com.example.adaptanklebrace.StartSetActivity
@@ -62,7 +63,12 @@ class AddDifficultyAndCommentsFragment(
                         comments = comments
                     )
                 } else if (isGaitTest) {
-                    // todo: save gait data
+                    // Save the metric data
+                    val gaitMetricActivity = activity as? GaitMetricActivity
+                    gaitMetricActivity?.saveGaitMetricData(
+                        difficulty = difficultyLevel ?: 0,
+                        comments = comments
+                    )
                 } else {
                     // Save the exercise data
                     val startSetActivity = activity as? StartSetActivity
@@ -90,7 +96,9 @@ class AddDifficultyAndCommentsFragment(
                 val romMetricActivity = activity as? ROMMetricActivity
                 romMetricActivity?.saveROMMetricData()
             } else if (isGaitTest) {
-                // todo: save gait data
+                // Save Gait metric data
+                val gaitMetricActivity = activity as? GaitMetricActivity
+                gaitMetricActivity?.saveGaitMetricData()
             } else {
                 // Save exercise set data
                 val startSetActivity = activity as? StartSetActivity

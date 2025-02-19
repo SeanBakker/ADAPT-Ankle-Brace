@@ -38,6 +38,7 @@ class ROMMetricActivity : AppCompatActivity() {
     private lateinit var inversionTotalROM: TextView
     private lateinit var startButton: Button
     private lateinit var finishButton: Button
+
     private lateinit var bluetoothService: BluetoothService
     private val handler = Handler(Looper.getMainLooper())
 
@@ -100,7 +101,7 @@ class ROMMetricActivity : AppCompatActivity() {
         viewPagerInfo.isUserInputEnabled = false // Disable user input (swiping)
 
         // Initialize progress bar, buttons & text views
-        startButton = findViewById(R.id.startROMBtn)
+        startButton = findViewById(R.id.startMetricBtn)
         finishButton = findViewById(R.id.finishMetricBtn)
         flexionProgressBar = findViewById(R.id.flexionProgress)
         inversionProgressBar = findViewById(R.id.inversionProgress)
