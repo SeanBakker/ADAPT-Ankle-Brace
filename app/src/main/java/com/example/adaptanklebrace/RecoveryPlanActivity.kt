@@ -31,6 +31,7 @@ import com.example.adaptanklebrace.adapters.RecoveryPlanMetricTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
 import com.example.adaptanklebrace.data.Metric
+import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.fragments.AddGoalFreqFragment
 import com.example.adaptanklebrace.fragments.AddExerciseGoalRowFragment
 import com.example.adaptanklebrace.fragments.AddMetricGoalRowFragment
@@ -41,6 +42,7 @@ import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
 import com.example.adaptanklebrace.utils.GeneralUtil
 import java.io.File
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -275,14 +277,23 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAd
 
         // Get the metric data saved for the chosen week
         val week = dateTextView.text.toString()
-        val savedMetrics = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getMetricsForDate(week)
+        val daysInWeek = getDaysInWeek(week)
+        val savedMetrics = mutableListOf<Metric>()
+
+        for (day in daysInWeek) {
+            val dailyMetrics = ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE)
+                .getMetricsForDate(day).filter { it.name == ExerciseType.RANGE_OF_MOTION.exerciseName }
+            savedMetrics.addAll(dailyMetrics) // Add metrics saved for each day
+        }
 
         // Calculate the average total ranges
         var totalPlantarDorsiflexionRange = 0.0
         var totalInversionEversionRange = 0.0
         for (metricData in savedMetrics) {
-            totalPlantarDorsiflexionRange += metricData.romPlantarDorsiflexionRange
-            totalInversionEversionRange += metricData.romInversionEversionRange
+            if (metricData.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
+                totalPlantarDorsiflexionRange += metricData.romPlantarDorsiflexionRange
+                totalInversionEversionRange += metricData.romInversionEversionRange
+            }
         }
         metric.romPlantarDorsiflexionRange = totalPlantarDorsiflexionRange / savedMetrics.size
         metric.romInversionEversionRange = totalInversionEversionRange / savedMetrics.size
@@ -326,7 +337,14 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAd
 
         // Get the metric data saved for the chosen week
         val week = dateTextView.text.toString()
-        val savedMetrics = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getMetricsForDate(week)
+        val daysInWeek = getDaysInWeek(week)
+        val savedMetrics = mutableListOf<Metric>()
+
+        for (day in daysInWeek) {
+            val dailyMetrics = ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE)
+                .getMetricsForDate(day).filter { it.name == ExerciseType.GAIT_TEST.exerciseName }
+            savedMetrics.addAll(dailyMetrics) // Add metrics saved for each day
+        }
 
         // Calculate the average total ranges
         var totalNumSteps = 0
@@ -438,6 +456,35 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAd
     fun loadMetricWeekData(context: Context, adapter: RecoveryMetricAdapter, week: String) {
         val metrics = ExerciseDataStore(context, RECOVERY_PLAN_PREFERENCE).getMetricsForDate(week)
         adapter.setMetrics(metrics)
+    }
+
+    // Return the list of days in the given week
+    private fun getDaysInWeek(weekRange: String): List<String> {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+        // Split the week range into start and end dates
+        val dates = weekRange.split(" - ")
+        if (dates.size != 2) return emptyList() // Return empty list if format is incorrect
+
+        return try {
+            val startDate = dateFormat.parse(dates[0]) ?: return emptyList()
+            val endDate = dateFormat.parse(dates[1]) ?: return emptyList()
+
+            val calendar = Calendar.getInstance()
+            calendar.time = startDate
+
+            val daysList = mutableListOf<String>()
+
+            // Loop from start date to end date
+            while (!calendar.time.after(endDate)) {
+                daysList.add(dateFormat.format(calendar.time))
+                calendar.add(Calendar.DATE, 1) // Move to the next day
+            }
+
+            daysList
+        } catch (e: ParseException) {
+            emptyList() // Return empty list if parsing fails
+        }
     }
 
     private fun deleteRow() {

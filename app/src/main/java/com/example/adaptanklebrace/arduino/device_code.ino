@@ -1,6 +1,7 @@
 #include <ArduinoBLE.h>
-#include <Arduino_BMI270_BMM150.h>  // Library for the built-in IMU
+//#include <Arduino_BMI270_BMM150.h>  // Library for the built-in IMU
 //#include <Arduino_LSM6DS3.h>
+#include <Arduino_LSM9DS1.h>
 #include <Adafruit_ISM330DHCX.h>    // External IMU library
 #include <Wire.h>
 #include <math.h>
@@ -523,6 +524,7 @@ void performGaitMetricRoutine() {
         if (!testInProgress && currentState == GAIT_IDLE) {
             testInProgress = true;
             testStartTime = millis();
+            lastSampleTime = 0;
             currentState = WAIT_HEEL_STRIKE; // Move to waiting for first heel strike
             Serial.println("Starting Gait Test!");
         }
@@ -1016,6 +1018,7 @@ void loop() {
                             } else if (receivedData == "start_ROM") {
                                 // Setup variables for ROM test
                                 timedTestComplete = false;
+                                testInProgress = false;
 
                                 Serial.println("Device is starting ROM Test metric!");
                                 delay(50);
@@ -1030,6 +1033,7 @@ void loop() {
                             } else if (receivedData == "start_Gait") {
                                 // Setup variables for Gait test
                                 timedTestComplete = false;
+                                testInProgress = false;
                                 currentState == GAIT_IDLE;
 
                                 Serial.println("Device is starting Gait Test metric!");
@@ -1081,6 +1085,9 @@ void loop() {
                                         }
                                     }
                                 } // end while
+                            } else if (receivedData == "ready") {
+                                // break out of while loop
+                                break;
                             }
                         }
                     } // end while

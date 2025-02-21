@@ -73,11 +73,11 @@ class ConnectDeviceFragment(
             }
 
             // Check and request bluetooth permissions to ADAPT device
-            if (bluetoothService.checkAndRequestBluetoothPermissions(requireActivity())) {
-                if (bluetoothService.connectToBluetoothDevice(it)) {
-                    Thread.sleep(1000) // Wait for device to load
+            if (/*true || */bluetoothService.checkAndRequestBluetoothPermissions(requireActivity())) {
+                if (/*true || */bluetoothService.connectToBluetoothDevice(it)) {
+                    Thread.sleep(2000) // Wait for device to load
                     bluetoothService.writeDeviceData("ready")
-                    Thread.sleep(1000) // Wait for device to load
+                    Thread.sleep(2000) // Wait for device to load
 
                     // Check the device for the configured tension level
                     Handler(Looper.getMainLooper()).postDelayed({

@@ -186,8 +186,8 @@ class ROMMetricActivity : AppCompatActivity() {
         val completedMetric = Metric(
             id = ExerciseUtil.generateNewMetricId(existingMetrics),
             name = metric!!.name,
-            romPlantarDorsiflexionRange = flexionTotalROM.text.toString().toDoubleOrNull() ?: 0.0,
-            romInversionEversionRange = inversionTotalROM.text.toString().toDoubleOrNull() ?: 0.0,
+            romPlantarDorsiflexionRange = flexionTotalROM.text.toString().split(getString(R.string.degreesSymbol))[0].toDoubleOrNull() ?: 0.0,
+            romInversionEversionRange = inversionTotalROM.text.toString().split(getString(R.string.degreesSymbol))[0].toDoubleOrNull() ?: 0.0,
             difficulty = difficulty,
             comments = comments
         )
