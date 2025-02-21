@@ -18,6 +18,7 @@ import com.example.adaptanklebrace.data.ExerciseInfo
 import com.example.adaptanklebrace.data.Metric
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.fragments.AddDifficultyAndCommentsFragment
+import com.example.adaptanklebrace.fragments.CountdownDialogFragment
 import com.example.adaptanklebrace.services.BluetoothService
 import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
@@ -165,16 +166,20 @@ class GaitMetricActivity : AppCompatActivity() {
 
                         // Update visibility of buttons
                         finishButton.visibility = View.VISIBLE
-                        startButton.visibility = View.GONE
                     }
                 }
             }
         }
 
-        // Configure start set button
+        // Configure start button
         startButton.setOnClickListener {
-            // Send start_Gait flag to device to prepare metric data collection (of Gait Test)
-            bluetoothService.writeDeviceData("start_Gait")
+            startButton.visibility = View.GONE
+            val countdownDialog = CountdownDialogFragment(isGaitMetric = true) {
+                // Send start_Gait flag to device to prepare metric data collection (of Gait Test)
+                // This happens after the countdown finishes
+                bluetoothService.writeDeviceData("start_Gait")
+            }
+            countdownDialog.show(supportFragmentManager, "countdown_dialog")
         }
 
         // Configure finish button
