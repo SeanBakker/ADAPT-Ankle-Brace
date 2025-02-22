@@ -12,10 +12,11 @@
         <!-- Tertiary brand color -->
         <item name="colorTertiary">@color/lightSecondaryVariant</item>
         <item name="colorOnTertiary">@color/lightPrimaryVariant</item>
-        <!-- Background colo -->
+        <!-- Background color -->
         <item name="backgroundColor">@color/nightBackground</item>
         <item name="android:colorBackground">?attr/backgroundColor</item>
         <item name="colorOnBackground">@color/nightOnBackground</item>
+        <item name="colorSurface">@color/grey_1</item>
         <!-- Additional colors -->
         <item name="colorControlNormal">@color/nightPrimaryVariant</item>
         <item name="colorControlActivated">@color/nightPrimaryVariant</item>
@@ -37,5 +38,10 @@
 
     <style name="DateTimePickerButtonStyle" parent="Widget.Material3.Button.TextButton">
         <item name="android:textColor">@color/nightOnPrimary</item>
+    </style>
+
+    <style name="BottomNavTextStyle" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">16sp</item>  <!-- Adjust size as needed -->
+        <item name="android:textColor">?attr/colorOnSecondary</item>
     </style>
 </resources>

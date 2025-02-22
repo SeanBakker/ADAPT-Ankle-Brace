@@ -10,8 +10,6 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.CheckBox
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewExerciseTableRowAdapter
 import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewMetricTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
@@ -22,7 +20,7 @@ import com.example.adaptanklebrace.utils.GeneralUtil
 import com.example.adaptanklebrace.utils.SharedPreferencesUtil
 import java.util.Calendar
 
-class NotificationsActivity : AppCompatActivity() {
+class NotificationsActivity : BaseActivity() {
 
     private lateinit var weeklyDateInput: AutoCompleteTextView
     private lateinit var weeklyTimeInput: EditText
@@ -61,21 +59,6 @@ class NotificationsActivity : AppCompatActivity() {
 
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences(NOTIFICATIONS_PREFERENCE, MODE_PRIVATE)
-
-        // Set up the toolbar
-        val toolbar: Toolbar = findViewById(R.id.notificationsToolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(R.string.notifications)
-
-        // Enable the back button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        // Handle the back button click
-        toolbar.setNavigationOnClickListener {
-            @Suppress("DEPRECATION")
-            onBackPressed() // Go back to the previous activity
-        }
 
         // Initialize views
         weeklyDateInput = findViewById(R.id.weeklyDateInput)

@@ -64,5 +64,6 @@
         <activity android:name=".StartExerciseActivity" />
         <activity android:name=".StartMetricActivity" />
         <activity android:name=".StartSetActivity" />
+        <activity android:name=".InstructionsActivity" />
     </application>
 </manifest>

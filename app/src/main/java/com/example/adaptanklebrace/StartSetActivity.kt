@@ -67,7 +67,7 @@ class StartSetActivity : AppCompatActivity() {
         // Set up the toolbar
         val toolbar: Toolbar = findViewById(R.id.startSetToolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(R.string.start_set)
+        supportActionBar?.title = ""
 
         // Enable the back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

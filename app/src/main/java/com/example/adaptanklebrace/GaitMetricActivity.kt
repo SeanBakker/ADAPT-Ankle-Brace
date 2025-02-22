@@ -48,7 +48,7 @@ class GaitMetricActivity : AppCompatActivity() {
         // Set up the toolbar
         val toolbar: Toolbar = findViewById(R.id.gaitTestMetricToolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(R.string.gait_test_metric)
+        supportActionBar?.title = ""
 
         // Enable the back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

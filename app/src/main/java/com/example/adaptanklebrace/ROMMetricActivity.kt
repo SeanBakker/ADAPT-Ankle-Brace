@@ -54,7 +54,7 @@ class ROMMetricActivity : AppCompatActivity() {
         // Set up the toolbar
         val toolbar: Toolbar = findViewById(R.id.romMetricToolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(R.string.rom_metric)
+        supportActionBar?.title = ""
 
         // Enable the back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

@@ -3,8 +3,6 @@ package com.example.adaptanklebrace
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.viewpager2.widget.ViewPager2
 import com.example.adaptanklebrace.adapters.ExerciseInfoAdapter
 import com.example.adaptanklebrace.data.Exercise
@@ -13,7 +11,7 @@ import com.example.adaptanklebrace.data.Metric
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.fragments.ConnectDeviceFragment
 
-class StartMetricActivity : AppCompatActivity() {
+class StartMetricActivity : BaseActivity() {
 
     private lateinit var viewPagerInfo: ViewPager2
     private lateinit var metricInfoAdapter: ExerciseInfoAdapter
@@ -24,21 +22,6 @@ class StartMetricActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start_metric)
-
-        // Set up the toolbar
-        val toolbar: Toolbar = findViewById(R.id.startMetricToolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(R.string.start_metric)
-
-        // Enable the back button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        // Handle the back button click
-        toolbar.setNavigationOnClickListener {
-            @Suppress("DEPRECATION")
-            onBackPressed()
-        }
 
         // Retrieve the passed Metric object with the intent
         @Suppress("DEPRECATION")

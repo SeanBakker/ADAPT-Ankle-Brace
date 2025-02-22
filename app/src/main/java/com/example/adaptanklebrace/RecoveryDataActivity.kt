@@ -13,8 +13,6 @@ import android.widget.EditText
 import android.widget.PopupWindow
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
@@ -36,7 +34,7 @@ import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.util.*
 
-class RecoveryDataActivity : AppCompatActivity(), RecoveryDataExerciseTableRowAdapter.RecoveryDataCallback,
+class RecoveryDataActivity : BaseActivity(), RecoveryDataExerciseTableRowAdapter.RecoveryDataCallback,
     RecoveryDataMetricTableRowAdapter.RecoveryDataCallback, DeleteRowFragment.OnDeleteListener,
     ChooseActivityTypeFragment.ChooseActivityTypeListener {
 
@@ -70,27 +68,6 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataExerciseTableRowAd
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recovery_data)
-
-        // Set up the toolbar
-        val toolbar: Toolbar = findViewById(R.id.recoveryDataToolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(R.string.recovery_data)
-
-        // Enable the back button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        // Handle the back button click
-        toolbar.setNavigationOnClickListener {
-            // Save current state of the data
-            saveCurrentDateExerciseData()
-            saveCurrentDateMetricData()
-
-            GeneralUtil.returnToMainActivity(this)
-            // Apply a smooth transition
-            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-            finish() // Close activity
-        }
 
         // Initialize views
         dateTextView = findViewById(R.id.dateText)
@@ -267,6 +244,14 @@ class RecoveryDataActivity : AppCompatActivity(), RecoveryDataExerciseTableRowAd
 
     override fun onDeleteRow() {
         deleteRow()
+    }
+
+    override fun onDestroy() {
+        // Save current state of the data
+        saveCurrentDateExerciseData()
+        saveCurrentDateMetricData()
+
+        super.onDestroy()
     }
 
     fun onAddRow(exercise: Exercise) {

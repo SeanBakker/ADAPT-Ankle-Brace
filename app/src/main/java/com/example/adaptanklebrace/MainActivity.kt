@@ -9,18 +9,12 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.IBinder
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewExerciseTableRowAdapter
@@ -31,14 +25,12 @@ import com.example.adaptanklebrace.services.BluetoothService
 import com.example.adaptanklebrace.utils.ExerciseUtil
 import com.example.adaptanklebrace.utils.GeneralUtil
 import com.example.adaptanklebrace.utils.SharedPreferencesUtil
-import com.google.android.material.navigation.NavigationView
 import java.util.Calendar
 import java.util.concurrent.atomic.AtomicInteger
 
-class MainActivity : AppCompatActivity(), RecoveryPlanOverviewExerciseTableRowAdapter.MainActivityCallback,
+class MainActivity : BaseActivity(), RecoveryPlanOverviewExerciseTableRowAdapter.MainActivityCallback,
     RecoveryPlanOverviewMetricTableRowAdapter.MainActivityCallback {
 
-    private lateinit var drawerLayout: DrawerLayout
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var weeklyProgressBar: ProgressBar
     private lateinit var weeklyProgressText: TextView
@@ -87,28 +79,6 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewExerciseTableRowAd
         val isNightMode = SharedPreferencesUtil.getPreference(sharedPreferences, SettingsActivity.NIGHT_MODE_KEY, false)
         settingsActivity.changeAppTheme(isNightMode)
         setContentView(R.layout.activity_main)
-
-        // Set up Toolbar
-        val toolbar: Toolbar = findViewById(R.id.homeToolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.baseline_menu_24) // Icon for sidebar
-
-        // Initialize DrawerLayout
-        drawerLayout = findViewById(R.id.drawer_layout)
-
-        // Initialize NavigationView
-        val navigationView: NavigationView = findViewById(R.id.nav_view)
-        navigationView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.nav_common_exercises -> startActivity(Intent(this, CommonExercisesActivity::class.java))
-                R.id.nav_recovery_plan -> startActivity(Intent(this, RecoveryPlanActivity::class.java))
-                R.id.nav_recovery_data -> startActivity(Intent(this, RecoveryDataActivity::class.java))
-                R.id.nav_notifications -> startActivity(Intent(this, NotificationsActivity::class.java))
-            }
-            drawerLayout.closeDrawers() // Close the sidebar
-            true
-        }
 
         // Start the Bluetooth service
         val serviceIntent = Intent(this, BluetoothService::class.java)
@@ -175,31 +145,6 @@ class MainActivity : AppCompatActivity(), RecoveryPlanOverviewExerciseTableRowAd
             ExerciseUtil.updateRecyclerViewOverviewVisibility(metricAdapter, metricTableLayout)
             checkIfBothRecyclerViewsCompleted()
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                // Toggle sidebar state
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START) // Close if it's open
-                } else {
-                    drawerLayout.openDrawer(GravityCompat.START)  // Open if it's closed
-                }
-                true
-            }
-            R.id.action_settings -> {
-                // Open settings activity
-                startActivity(Intent(this, SettingsActivity::class.java))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.home_toolbar_menu, menu)
-        return true
     }
 
     override fun onDestroy() {

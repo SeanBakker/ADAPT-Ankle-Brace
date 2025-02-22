@@ -5,15 +5,13 @@ import android.content.pm.PackageManager
 import android.Manifest
 import android.os.Bundle
 import android.widget.CheckBox
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.adaptanklebrace.utils.GeneralUtil
 import com.example.adaptanklebrace.utils.SharedPreferencesUtil
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BaseActivity() {
 
     // Checkboxes in settings page
     private lateinit var bluetoothPermissionCheckbox: CheckBox
@@ -41,21 +39,6 @@ class SettingsActivity : AppCompatActivity() {
 
         // Initialize SharedPreferencesUtil
         sharedPreferences = getSharedPreferences(SETTINGS_PREFERENCE, MODE_PRIVATE)
-
-        // Set up the toolbar
-        val toolbar: Toolbar = findViewById(R.id.settingsToolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(R.string.settings)
-
-        // Enable the back button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        // Handle the back button click
-        toolbar.setNavigationOnClickListener {
-            @Suppress("DEPRECATION")
-            onBackPressed() // Go back to the previous activity
-        }
 
         // Find views by ID
         bluetoothPermissionCheckbox = findViewById(R.id.bluetoothPermissionCheckbox)

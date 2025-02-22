@@ -3,13 +3,11 @@ package com.example.adaptanklebrace
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.viewpager2.widget.ViewPager2
 import com.example.adaptanklebrace.adapters.ExerciseInfoAdapter
 import com.example.adaptanklebrace.enums.ExerciseType
 
-class CommonExercisesActivity : AppCompatActivity() {
+class CommonExercisesActivity : BaseActivity() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var quickLinksLayout: LinearLayout
@@ -18,21 +16,6 @@ class CommonExercisesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_common_exercises)
-
-        // Set up the toolbar
-        val toolbar: Toolbar = findViewById(R.id.commonExerciseToolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(R.string.common_exercises)
-
-        // Enable the back button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        // Handle the back button click
-        toolbar.setNavigationOnClickListener {
-            @Suppress("DEPRECATION")
-            onBackPressed()
-        }
 
         // Initialize viewPager and quickLinksLayout
         viewPager = findViewById(R.id.viewPager)

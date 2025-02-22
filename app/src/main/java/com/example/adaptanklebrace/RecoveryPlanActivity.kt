@@ -16,8 +16,6 @@ import android.widget.EditText
 import android.widget.PopupWindow
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
@@ -46,7 +44,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAdapter.RecoveryPlanCallback,
+class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter.RecoveryPlanCallback,
     RecoveryPlanMetricTableRowAdapter.RecoveryPlanCallback, DeleteRowFragment.OnDeleteListener,
     StartExerciseWarningFragment.OnStartExerciseOrMetricListener,
     ChooseActivityTypeFragment.ChooseActivityTypeListener {
@@ -82,25 +80,6 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAd
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recovery_plan)
-
-        // Set up the toolbar
-        val toolbar: Toolbar = findViewById(R.id.recoveryPlanToolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(R.string.recovery_plan)
-
-        // Enable the back button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        // Handle the back button click
-        toolbar.setNavigationOnClickListener {
-            // Save current state of the data
-            saveCurrentDateExerciseData()
-            saveCurrentDateMetricData()
-
-            @Suppress("DEPRECATION")
-            onBackPressed()
-        }
 
         // Initialize views
         dateTextView = findViewById(R.id.dateText)
@@ -397,6 +376,14 @@ class RecoveryPlanActivity : AppCompatActivity(), RecoveryPlanExerciseTableRowAd
 
     override fun onDeleteRow() {
         deleteRow()
+    }
+
+    override fun onDestroy() {
+        // Save current state of the data
+        saveCurrentDateExerciseData()
+        saveCurrentDateMetricData()
+
+        super.onDestroy()
     }
 
     fun onAddExerciseRow(exercise: Exercise) {

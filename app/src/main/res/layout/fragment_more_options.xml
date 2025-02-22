@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_settings"
+        android:text="@string/settings"
+        android:textStyle="bold"
+        android:drawableLeft="@drawable/baseline_settings_24" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_common_exercises"
+        android:text="@string/common_exercises"
+        android:textStyle="bold"
+        android:drawableLeft="@drawable/baseline_monitor_heart_24" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_notifications"
+        android:text="@string/notifications"
+        android:textStyle="bold"
+        android:drawableLeft="@drawable/baseline_notifications_active_24" />
+</LinearLayout>

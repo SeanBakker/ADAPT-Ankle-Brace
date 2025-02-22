@@ -1,106 +1,202 @@
-<androidx.drawerlayout.widget.DrawerLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Main Content -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- AppBarLayout with top Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <!-- AppBarLayout with Toolbar for top navigation bar -->
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/homeToolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/homeToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                android:title="@string/app_name"
-                app:titleTextColor="?attr/colorOnPrimary" />
-        </com.google.android.material.appbar.AppBarLayout>
+            <!-- Centered Title -->
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/app_name"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <TextView
+        android:id="@+id/weeklyGoalText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:paddingTop="20dp"
+        android:text="@string/weeklyGoalProgressText"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnBackground"
+        android:gravity="center" />
+
+    <!-- Weekly Goal Progress Bar with Text -->
+    <FrameLayout
+        android:id="@+id/weeklyGoalFrame"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintTop_toBottomOf="@id/weeklyGoalText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp">
+
+        <ProgressBar
+            android:id="@+id/weeklyGoalProgress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminate="false"
+            android:max="100"
+            android:rotationX="0"
+            android:progressDrawable="@drawable/circular_progress_bar" />
 
         <TextView
-            android:id="@+id/weeklyGoalText"
+            android:id="@+id/weeklyPercentageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/zeroDegrees"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnBackground" />
+    </FrameLayout>
+
+    <!-- Main App Controls Below Toolbar -->
+    <TextView
+        android:id="@+id/recoveryPlanOverviewText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/weeklyGoalFrame"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        android:paddingBottom="10dp"
+        android:text="@string/overviewRecoveryPlanGoalsText"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnBackground"
+        android:gravity="center" />
+
+    <ScrollView
+        android:id="@+id/scrollLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/recoveryPlanOverviewText"
+        app:layout_constraintHeight_max="650dp"
+        android:fillViewport="true"
+        android:layout_marginBottom="20dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="?attr/actionBarSize"
-            android:paddingTop="20dp"
-            android:text="@string/weeklyGoalProgressText"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnBackground"
-            android:gravity="center" />
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Weekly Goal Progress Bar with Text -->
-        <FrameLayout
-            android:id="@+id/weeklyGoalFrame"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            app:layout_constraintTop_toBottomOf="@id/weeklyGoalText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="10dp">
-
-            <ProgressBar
-                android:id="@+id/weeklyGoalProgress"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/exerciseTableLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:indeterminate="false"
-                android:max="100"
-                android:rotationX="0"
-                android:progressDrawable="@drawable/circular_progress_bar" />
-
-            <TextView
-                android:id="@+id/weeklyPercentageText"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/zeroDegrees"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                android:textColor="?attr/colorOnBackground" />
-        </FrameLayout>
+                app:layout_constraintTop_toTopOf="parent"
+                android:paddingHorizontal="32dp"
+                android:orientation="vertical">
 
-        <!-- Main App Controls Below Toolbar -->
-        <TextView
-            android:id="@+id/recoveryPlanOverviewText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/weeklyGoalFrame"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="20dp"
-            android:paddingBottom="10dp"
-            android:text="@string/overviewRecoveryPlanGoalsText"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnBackground"
-            android:gravity="center" />
+                <TextView
+                    android:id="@+id/exerciseTableHeaderText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@id/exerciseTableLayout"
+                    android:paddingBottom="10dp"
+                    android:text="@string/exerciseTableHeader"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorOnSecondary"
+                    android:gravity="start" />
 
-        <ScrollView
-            android:id="@+id/scrollLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/recoveryPlanOverviewText"
-            app:layout_constraintHeight_max="700dp"
-            android:fillViewport="true"
-            android:layout_marginBottom="20dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    app:layout_constraintTop_toBottomOf="@id/exerciseTableHeaderText"
+                    tools:layout_editor_absoluteX="32dp">
+
+                    <!-- Exercise Plan Table Overview -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/exerciseRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="6dp"
+                        android:clipToPadding="false"
+                        android:padding="10dp"
+                        android:paddingBottom="20dp" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/metricTableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/exerciseTableLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:paddingHorizontal="32dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/metricTableHeaderText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@id/metricTableLayout"
+                    android:paddingBottom="10dp"
+                    android:text="@string/metricTableHeader"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorOnSecondary"
+                    android:gravity="start" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/metricTableHeaderText"
+                    android:paddingBottom="10dp"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <!-- Metric Plan Table Overview -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/metricRecyclerView"
+                        android:layout_width="600dp"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:layout_marginBottom="6dp"
+                        android:clipToPadding="false"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -109,166 +205,53 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/exerciseTableLayout"
+                <TextView
+                    android:id="@+id/goalsCompletedText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:paddingHorizontal="32dp"
-                    android:orientation="vertical">
+                    android:layout_marginTop="20dp"
+                    android:text="@string/congratulationsGoalsCompletedText"
+                    android:textSize="20sp"
+                    android:textColor="?attr/colorOnSecondary"
+                    android:lineSpacingExtra="5dp"
+                    android:gravity="center" />
 
-                    <TextView
-                        android:id="@+id/exerciseTableHeaderText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="@id/exerciseTableLayout"
-                        android:paddingBottom="10dp"
-                        android:text="@string/exerciseTableHeader"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/colorOnSecondary"
-                        android:gravity="start" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingBottom="10dp"
-                        app:layout_constraintTop_toBottomOf="@id/exerciseTableHeaderText"
-                        tools:layout_editor_absoluteX="32dp">
-
-                        <!-- Exercise Plan Table Overview -->
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/exerciseRecyclerView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginBottom="6dp"
-                            android:clipToPadding="false"
-                            android:padding="10dp"
-                            android:paddingBottom="20dp" />
-                    </LinearLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/metricTableLayout"
+                <TextView
+                    android:id="@+id/noGoalsSetText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/exerciseTableLayout"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/noGoalsSetText"
+                    android:textSize="20sp"
+                    android:textColor="?attr/colorOnSecondary"
+                    android:gravity="center" />
+
+                <!-- Edit Exercise Goals -->
+                <Button
+                    android:id="@+id/setGoalsBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/noGoalsSetText"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:paddingHorizontal="32dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/metricTableHeaderText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="@id/metricTableLayout"
-                        android:paddingBottom="10dp"
-                        android:text="@string/metricTableHeader"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/colorOnSecondary"
-                        android:gravity="start" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/metricTableHeaderText"
-                        android:paddingBottom="10dp"
-                        android:orientation="horizontal"
-                        android:gravity="center">
-
-                        <!-- Metric Plan Table Overview -->
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/metricRecyclerView"
-                            android:layout_width="600dp"
-                            android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:layout_marginBottom="6dp"
-                            android:clipToPadding="false"
-                            android:layout_gravity="center" />
-                    </LinearLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent">
-
-                    <TextView
-                        android:id="@+id/goalsCompletedText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginTop="20dp"
-                        android:text="@string/congratulationsGoalsCompletedText"
-                        android:textSize="20sp"
-                        android:textColor="?attr/colorOnSecondary"
-                        android:lineSpacingExtra="5dp"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:id="@+id/noGoalsSetText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginTop="20dp"
-                        android:text="@string/noGoalsSetText"
-                        android:textSize="20sp"
-                        android:textColor="?attr/colorOnSecondary"
-                        android:gravity="center" />
-
-                    <!-- Edit Exercise Goals -->
-                    <Button
-                        android:id="@+id/setGoalsBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/noGoalsSetText"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/setGoalsBtn"
-                        android:layout_gravity="center" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_marginTop="10dp"
+                    android:text="@string/setGoalsBtn"
+                    android:layout_gravity="center" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
-        <!-- Edit Exercise Goals -->
-        <Button
-            android:id="@+id/editGoalsBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/scrollLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginVertical="10dp"
-            android:layout_marginEnd="40dp"
-            android:text="@string/editGoalsBtn"
-            android:layout_gravity="end" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Sidebar Navigation -->
-    <LinearLayout
+    <!-- Edit Exercise Goals -->
+    <Button
+        android:id="@+id/editGoalsBtn"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_gravity="start">
-
-        <!-- Empty Space as Toolbar's Height -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
-
-        <!-- NavigationView Menu -->
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            app:menu="@menu/drawer_menu"
-            android:background="?attr/backgroundColor" />
-    </LinearLayout>
-</androidx.drawerlayout.widget.DrawerLayout>
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/scrollLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginVertical="10dp"
+        android:layout_marginEnd="40dp"
+        android:text="@string/editGoalsBtn"
+        android:layout_gravity="end" />
+</androidx.constraintlayout.widget.ConstraintLayout>
