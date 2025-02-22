@@ -163,7 +163,7 @@ class RecoveryPlanExerciseTableRowAdapter(
 
                         // Restrict tension level between 1-10
                         if (currentTension == null || currentTension !in 1..10) {
-                            GeneralUtil.showToast(context, LayoutInflater.from(context), "Please enter a tension level between 1 and 10.")
+                            GeneralUtil.showToast(context, LayoutInflater.from(context), context.getString(R.string.enterValidTensionToast))
                         } else {
                             exercise?.tension = currentTension
                         }

@@ -168,7 +168,7 @@ class MainActivity : BaseActivity(), RecoveryPlanOverviewExerciseTableRowAdapter
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 bluetoothService.initBluetooth()
             } else {
-                GeneralUtil.showToast(this, layoutInflater, "Bluetooth permissions are required")
+                GeneralUtil.showToast(this, layoutInflater, getString(R.string.bluetoothPermissionsRequiredToast))
             }
         }
     }

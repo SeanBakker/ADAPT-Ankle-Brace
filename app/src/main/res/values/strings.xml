@@ -101,6 +101,37 @@
     <string name="startExerciseWarning">Start Exercise Warning!</string>
     <string name="startMetricWarning">Start Metric Warning!</string>
 
+    <!-- Toasts -->
+    <string name="bluetoothPermissionsDisabledToast">Bluetooth permissions disabled.</string>
+    <string name="bluetoothPermissionsDeniedToast">Bluetooth permission denied.</string>
+    <string name="bluetoothPermissionsGrantedToast">Bluetooth permission granted.</string>
+    <string name="bluetoothPermissionsRequiredToast">Bluetooth permissions are required.</string>
+    <string name="bluetoothServiceNotAvailableToast">Bluetooth service not available.</string>
+    <string name="bluetoothNotSupportedToast">Bluetooth not supported.</string>
+    <string name="noRepsSetsToast">No sets and/or reps submitted. Please complete 1 rep before saving data.</string>
+    <string name="enterExerciseNameToast">Please enter an exercise name.</string>
+    <string name="enterMetricNameToast">Please enter a metric name.</string>
+    <string name="enterDifficultyLevelToast">Please enter a difficulty level between 1 and 10, or leave it blank.</string>
+    <string name="enterValidFrequencyNumberToast">Please enter a valid frequency number.</string>
+    <string name="selectFrequencyCategoryToast">Please select a frequency category.</string>
+    <string name="enterValidSetsToast">Please enter a valid number of sets.</string>
+    <string name="enterValidRepsToast">Please enter a valid number of reps.</string>
+    <string name="enterValidHoldToast">Please enter a valid hold duration.</string>
+    <string name="enterValidTensionToast">Please enter a tension level between 1 and 10.</string>
+    <string name="enterTensionOnDeviceToast">Please enter the tension level between 1 and 10 that is set on the device.</string>
+    <string name="exerciseAlreadyExistsToast">This exercise already exists in the table, please edit the goal instead.</string>
+    <string name="metricAlreadyExistsToast">This metric already exists in the table, please edit the goal instead.</string>
+    <string name="enableNotificationsToast">Please enable notification permissions in the settings.</string>
+    <string name="selectNotificationTimeToast">Please select a time before activating the notification.</string>
+    <string name="selectNotificationDayToast">Please select a day before activating the notification.</string>
+    <string name="notificationsEnabledToast">Notification permission enabled.</string>
+    <string name="notificationsDisabledToast">Notification permission denied.</string>
+    <string name="importFailedToast">Import failed.</string>
+    <string name="importNoFileToast">No file found to import.</string>
+    <string name="importSuccessToast">Data imported successfully.</string>
+    <string name="exportFailedToast">Export failed.</string>
+    <string name="noRowsToDeleteToast">Please select a row before deleting data.</string>
+
     <!-- Symbols -->
     <string name="asteriskSymbol">*</string>
     <string name="degreesSymbol">°</string>

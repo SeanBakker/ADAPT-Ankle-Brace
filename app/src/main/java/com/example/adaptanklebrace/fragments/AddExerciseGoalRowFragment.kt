@@ -72,23 +72,23 @@ class AddExerciseGoalRowFragment(
             //todo: add option to add goal for current week or all future weeks or choose weeks
 
             if (exerciseName.isEmpty()) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter an exercise name.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterExerciseNameToast))
             } else if (exerciseGoals.any { exercise: Exercise ->
                     exercise.name.equals(exerciseName, ignoreCase = true)
                 }) {
-                GeneralUtil.showToast(context, layoutInflater, "This exercise already exists in the table, please edit the goal instead.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.exerciseAlreadyExistsToast))
             } else if (numSets == null || numSets <= 0) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid number of sets.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidSetsToast))
             } else if (numReps == null || numReps <= 0) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid number of reps.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidRepsToast))
             } else if (holdDuration == null || holdDuration < 0) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid hold duration.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidHoldToast))
             } else if (tensionLevel == null || tensionLevel !in 1..10) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a tension level between 1 and 10.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidTensionToast))
             } else if (freqNumber == null || freqNumber <= 0) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid frequency number.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidFrequencyNumberToast))
             } else if (freqCategory.isNullOrEmpty()) {
-                GeneralUtil.showToast(context, layoutInflater, "Please select a frequency category.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.selectFrequencyCategoryToast))
             } else {
                 // Create the exercise object
                 val exercise = Exercise(

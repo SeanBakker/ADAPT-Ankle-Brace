@@ -141,7 +141,7 @@ class NotificationsActivity : BaseActivity() {
                             GeneralUtil.showToast(
                                 this,
                                 layoutInflater,
-                                "Please enable notification permissions in the settings."
+                                getString(R.string.enableNotificationsToast)
                             )
                             weeklyNotificationCheckbox.isChecked = false
                         }
@@ -149,7 +149,7 @@ class NotificationsActivity : BaseActivity() {
                         GeneralUtil.showToast(
                             this,
                             layoutInflater,
-                            "Please select a time before activating the notification."
+                            getString(R.string.selectNotificationTimeToast)
                         )
                         weeklyNotificationCheckbox.isChecked = false
                     }
@@ -157,7 +157,7 @@ class NotificationsActivity : BaseActivity() {
                     GeneralUtil.showToast(
                         this,
                         layoutInflater,
-                        "Please select a day before activating the notification."
+                        getString(R.string.selectNotificationDayToast)
                     )
                     weeklyNotificationCheckbox.isChecked = false
                 }
@@ -186,7 +186,7 @@ class NotificationsActivity : BaseActivity() {
                         GeneralUtil.showToast(
                             this,
                             layoutInflater,
-                            "Please enable notification permissions in the settings."
+                            getString(R.string.enableNotificationsToast)
                         )
                         dailyNotificationCheckbox.isChecked = false
                     }
@@ -194,7 +194,7 @@ class NotificationsActivity : BaseActivity() {
                     GeneralUtil.showToast(
                         this,
                         layoutInflater,
-                        "Please select a time before activating the notification."
+                        getString(R.string.selectNotificationTimeToast)
                     )
                     dailyNotificationCheckbox.isChecked = false
                 }

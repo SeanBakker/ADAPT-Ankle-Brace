@@ -115,7 +115,7 @@ class RecoveryDataMetricTableRowAdapter(
 
                         // Restrict difficulty level between 0-10
                         if (currentDifficulty == null || currentDifficulty !in 0..10) {
-                            GeneralUtil.showToast(context, LayoutInflater.from(context), "Please enter a difficulty level between 0 and 10.")
+                            GeneralUtil.showToast(context, LayoutInflater.from(context), context.getString(R.string.enterDifficultyLevelToast))
                         } else {
                             metric?.difficulty = currentDifficulty
                         }
@@ -129,10 +129,10 @@ class RecoveryDataMetricTableRowAdapter(
                             // Store the original difficulty value when the field gains focus
                             initialDifficulty = metric?.difficulty
                         } else {
-                            val currentdifficulty = text.toString().toIntOrNull()
+                            val currentDifficulty = text.toString().toIntOrNull()
 
                             // If the input is invalid, reset to the original difficulty value
-                            if (currentdifficulty !in 0..10) {
+                            if (currentDifficulty !in 0..10) {
                                 // Use the initial value when focus was first gained
                                 initialDifficulty?.let {
                                     metric?.difficulty = it

@@ -86,7 +86,7 @@ class StartSetActivity : AppCompatActivity() {
         val serviceIntent = Intent(this, BluetoothService::class.java)
         ContextCompat.startForegroundService(this, serviceIntent)
         if (BluetoothService.instance == null) {
-            GeneralUtil.showToast(this, layoutInflater, "Bluetooth service not available")
+            GeneralUtil.showToast(this, layoutInflater, getString(R.string.bluetoothServiceNotAvailableToast))
             finish() // Exit activity
             return
         }
@@ -214,7 +214,7 @@ class StartSetActivity : AppCompatActivity() {
                     )
                 } else {
                     // Warn user of no data to save
-                    GeneralUtil.showToast(this, layoutInflater, "No sets and/or reps submitted. Please complete 1 rep before saving data.")
+                    GeneralUtil.showToast(this, layoutInflater, getString(R.string.noRepsSetsToast))
                 }
             } else {
                 // Redirect the user back to the Recovery Data page
@@ -267,7 +267,7 @@ class StartSetActivity : AppCompatActivity() {
             finish() // Finish activity (prevent running in background)
         } else {
             // Warn user of no data to save
-            GeneralUtil.showToast(this, layoutInflater, "No sets and/or reps submitted. Please complete 1 rep before saving data.")
+            GeneralUtil.showToast(this, layoutInflater, getString(R.string.noRepsSetsToast))
         }
     }
 

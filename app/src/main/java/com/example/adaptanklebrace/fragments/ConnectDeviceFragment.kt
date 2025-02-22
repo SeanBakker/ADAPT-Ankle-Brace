@@ -68,7 +68,7 @@ class ConnectDeviceFragment(
     private fun connectToDevice(currentActivity: Activity?, bluetoothService: BluetoothService?) {
         currentActivity?.let {
             if (bluetoothService == null) {
-                GeneralUtil.showToast(context, layoutInflater, "Bluetooth service not available")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.bluetoothServiceNotAvailableToast))
                 return
             }
 
@@ -134,7 +134,7 @@ class ConnectDeviceFragment(
                     dismiss() // Close the dialog
                 }
             } else {
-                GeneralUtil.showToast(context, layoutInflater, "Bluetooth permissions disabled")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.bluetoothPermissionsDisabledToast))
             }
         }
     }

@@ -73,7 +73,7 @@ class ROMMetricActivity : AppCompatActivity() {
         val serviceIntent = Intent(this, BluetoothService::class.java)
         ContextCompat.startForegroundService(this, serviceIntent)
         if (BluetoothService.instance == null) {
-            GeneralUtil.showToast(this, layoutInflater, "Bluetooth service not available")
+            GeneralUtil.showToast(this, layoutInflater, getString(R.string.bluetoothServiceNotAvailableToast))
             finish() // Exit activity
             return
         }

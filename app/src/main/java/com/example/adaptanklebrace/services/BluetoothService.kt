@@ -66,7 +66,7 @@ class BluetoothService : Service() {
         bluetoothAdapter = bluetoothManager?.adapter
 
         if (bluetoothAdapter == null) {
-            GeneralUtil.showToast(applicationContext, LayoutInflater.from(applicationContext), "Bluetooth not supported")
+            GeneralUtil.showToast(applicationContext, LayoutInflater.from(applicationContext), getString(R.string.bluetoothNotSupportedToast))
             stopSelf()  // Stop the service if Bluetooth is not supported
         }
     }

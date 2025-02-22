@@ -134,7 +134,7 @@ class RecoveryDataExerciseTableRowAdapter(
 
                         // Restrict tension level between 1-10
                         if (currentTension == null || currentTension !in 1..10) {
-                            GeneralUtil.showToast(context, LayoutInflater.from(context), "Please enter a tension level between 1 and 10.")
+                            GeneralUtil.showToast(context, LayoutInflater.from(context), context.getString(R.string.enterValidTensionToast))
                         } else {
                             exercise?.tension = currentTension
                         }
@@ -194,7 +194,7 @@ class RecoveryDataExerciseTableRowAdapter(
 
                         // Restrict difficulty level between 0-10
                         if (currentDifficulty == null || currentDifficulty !in 0..10) {
-                            GeneralUtil.showToast(context, LayoutInflater.from(context), "Please enter a difficulty level between 0 and 10.")
+                            GeneralUtil.showToast(context, LayoutInflater.from(context), context.getString(R.string.enterDifficultyLevelToast))
                         } else {
                             exercise?.difficulty = currentDifficulty
                         }

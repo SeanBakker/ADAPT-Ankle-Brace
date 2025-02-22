@@ -413,7 +413,7 @@ class RecoveryDataActivity : BaseActivity(), RecoveryDataExerciseTableRowAdapter
             GeneralUtil.showToast(this, layoutInflater, "Data exported to $fileName")
         } catch (e: Exception) {
             e.printStackTrace()
-            GeneralUtil.showToast(this, layoutInflater, "Export failed")
+            GeneralUtil.showToast(this, layoutInflater, getString(R.string.exportFailedToast))
         }
     }
 
@@ -423,7 +423,7 @@ class RecoveryDataActivity : BaseActivity(), RecoveryDataExerciseTableRowAdapter
         try {
             val file = File(getExternalFilesDir(null), "RecoveryData_$date.csv")
             if (!file.exists()) {
-                GeneralUtil.showToast(this, layoutInflater, "No file found to import.")
+                GeneralUtil.showToast(this, layoutInflater, getString(R.string.importNoFileToast))
                 return
             }
 
@@ -449,10 +449,10 @@ class RecoveryDataActivity : BaseActivity(), RecoveryDataExerciseTableRowAdapter
             }
 
             exerciseAdapter.setExercises(exercises)
-            GeneralUtil.showToast(this, layoutInflater, "Data imported successfully.")
+            GeneralUtil.showToast(this, layoutInflater, getString(R.string.importSuccessToast))
         } catch (e: Exception) {
             e.printStackTrace()
-            GeneralUtil.showToast(this, layoutInflater, "Import failed")
+            GeneralUtil.showToast(this, layoutInflater, getString(R.string.importFailedToast))
         }
     }
 }

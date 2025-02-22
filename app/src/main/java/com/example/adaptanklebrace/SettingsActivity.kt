@@ -124,13 +124,13 @@ class SettingsActivity : BaseActivity() {
                     // Notification permission granted
                     SharedPreferencesUtil.savePreference(sharedPreferences, NOTIFICATIONS_PERMISSION_KEY, true)
                     notificationsEnabled = true
-                    GeneralUtil.showToast(this, layoutInflater, "Notification permission enabled")
+                    GeneralUtil.showToast(this, layoutInflater, getString(R.string.notificationsEnabledToast))
                 } else {
                     // Notification permission denied
                     SharedPreferencesUtil.savePreference(sharedPreferences, NOTIFICATIONS_PERMISSION_KEY, false)
                     notificationsCheckbox.isChecked = false
                     notificationsEnabled = false
-                    GeneralUtil.showToast(this, layoutInflater, "Notification permission denied")
+                    GeneralUtil.showToast(this, layoutInflater, getString(R.string.notificationsDisabledToast))
                 }
             }
 
@@ -139,13 +139,13 @@ class SettingsActivity : BaseActivity() {
                     // Bluetooth permission granted
                     SharedPreferencesUtil.savePreference(sharedPreferences, BLUETOOTH_PERMISSION_KEY, true)
                     bluetoothEnabled = true
-                    GeneralUtil.showToast(this, layoutInflater, "Bluetooth permission granted")
+                    GeneralUtil.showToast(this, layoutInflater, getString(R.string.bluetoothPermissionsGrantedToast))
                 } else {
                     // Bluetooth permission denied
                     SharedPreferencesUtil.savePreference(sharedPreferences, BLUETOOTH_PERMISSION_KEY, false)
                     bluetoothPermissionCheckbox.isChecked = false
                     bluetoothEnabled = false
-                    GeneralUtil.showToast(this, layoutInflater, "Bluetooth permission denied")
+                    GeneralUtil.showToast(this, layoutInflater, getString(R.string.bluetoothPermissionsDeniedToast))
                 }
             }
         }

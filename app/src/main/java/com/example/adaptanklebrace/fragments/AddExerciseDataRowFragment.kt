@@ -75,17 +75,17 @@ class AddExerciseDataRowFragment(
             //todo: add option to pick dates for which the exercise was completed for
 
             if (exerciseName.isEmpty()) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter an exercise name.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterExerciseNameToast))
             } else if (numSets == null || numSets <= 0) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid number of sets.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidSetsToast))
             } else if (numReps == null || numReps <= 0) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid number of reps.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidRepsToast))
             } else if (holdDuration == null || holdDuration < 0) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid hold duration.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidHoldToast))
             } else if (tensionLevel == null || tensionLevel !in 1..10) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a tension level between 1 and 10.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidTensionToast))
             } else if (difficultyLevel != null && difficultyLevel !in 1..10) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a difficulty level between 1 and 10, or leave it blank.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterDifficultyLevelToast))
             } else {
                 val exercises = exerciseAdapter.getExercises()
 

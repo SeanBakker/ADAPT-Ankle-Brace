@@ -51,9 +51,9 @@ class AddDifficultyAndCommentsFragment(
             val comments = commentsInput.text.toString()
 
             if (tensionLevel != null && tensionLevel !in 1..10) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter the tension level between 1 and 10 that is set on the device.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterTensionOnDeviceToast))
             } else if (difficultyLevel != null && difficultyLevel !in 0..10) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a difficulty level between 1 and 10, or leave it blank.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterDifficultyLevelToast))
             } else {
                 if (isROMTest) {
                     // Save the metric data

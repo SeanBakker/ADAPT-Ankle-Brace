@@ -40,9 +40,9 @@ class AddGoalFreqFragment(
             val freqCategory = freqCategorySpinner.selectedItem?.toString()
 
             if (freqNumber == null || freqNumber <= 0) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid frequency number.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidFrequencyNumberToast))
             } else if (freqCategory.isNullOrEmpty()) {
-                GeneralUtil.showToast(context, layoutInflater, "Please select a frequency category.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.selectFrequencyCategoryToast))
             } else {
                 if (exercise != null && exerciseAdapter != null) {
                     // Update the frequency field of the exercise & notify the adapter

@@ -62,15 +62,15 @@ class AddMetricGoalRowFragment(
             //todo: add option to add goal for current week or all future weeks or choose weeks
 
             if (metricName.isEmpty()) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a metric name.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterMetricNameToast))
             } else if (metricGoals.any { metric: Metric ->
                     metric.name.equals(metricName, ignoreCase = true)
                 }) {
-                GeneralUtil.showToast(context, layoutInflater, "This metric already exists in the table, please edit the goal instead.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.metricAlreadyExistsToast))
             } else if (freqNumber == null || freqNumber <= 0) {
-                GeneralUtil.showToast(context, layoutInflater, "Please enter a valid frequency number.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidFrequencyNumberToast))
             } else if (freqCategory.isNullOrEmpty()) {
-                GeneralUtil.showToast(context, layoutInflater, "Please select a frequency category.")
+                GeneralUtil.showToast(context, layoutInflater, getString(R.string.selectFrequencyCategoryToast))
             } else {
                 // Create the metric object
                 val metric = Metric(
