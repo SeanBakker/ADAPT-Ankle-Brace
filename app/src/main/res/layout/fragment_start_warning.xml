@@ -2,15 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="20dp">
 
     <TextView
+        android:id="@+id/titleWarning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Exercise Warning!"
+        android:text="@string/startExerciseWarning"
         android:textSize="16sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:layout_gravity="center" />
 
     <ImageView
@@ -26,7 +28,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textStyle="bold"
-        android:text="The chosen exercise is already 100% complete for this week."
+        android:text="The chosen activity is already 100% complete for this week."
         android:textSize="16sp"
         android:layout_gravity="center" />
 
@@ -47,10 +49,10 @@
         android:layout_gravity="center" />
 
     <Button
-        android:id="@+id/startExerciseBtn"
+        android:id="@+id/startBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:text="@string/startExerciseBtn" />
+        android:text="@string/startBtn" />
 </LinearLayout>

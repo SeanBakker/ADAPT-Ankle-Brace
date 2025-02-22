@@ -6,12 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.Metric
 
-class StartExerciseWarningFragment(
+class StartWarningFragment(
     private val context: Context,
     private val exercise: Exercise? = null,
     private val metric: Metric? = null
@@ -29,10 +30,21 @@ class StartExerciseWarningFragment(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_start_exercise_warning, container, false)
+        val view = inflater.inflate(R.layout.fragment_start_warning, container, false)
 
-        val startExerciseButton: Button = view.findViewById(R.id.startExerciseBtn)
-        startExerciseButton.setOnClickListener {
+        val startButton: Button = view.findViewById(R.id.startBtn)
+        val titleWarning: TextView = view.findViewById(R.id.titleWarning)
+
+        // Setup text views
+        if (exercise != null) {
+            titleWarning.text = getString(R.string.startExerciseWarning)
+            startButton.text = getString(R.string.startExerciseBtn)
+        } else if (metric != null) {
+            titleWarning.text = getString(R.string.startMetricWarning)
+            startButton.text = getString(R.string.startMetricBtn)
+        }
+
+        startButton.setOnClickListener {
             if (exercise != null) {
                 startExercise()
             } else if (metric != null) {

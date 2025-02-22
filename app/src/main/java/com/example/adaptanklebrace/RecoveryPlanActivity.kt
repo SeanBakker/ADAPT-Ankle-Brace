@@ -35,7 +35,7 @@ import com.example.adaptanklebrace.fragments.AddExerciseGoalRowFragment
 import com.example.adaptanklebrace.fragments.AddMetricGoalRowFragment
 import com.example.adaptanklebrace.fragments.ChooseActivityTypeFragment
 import com.example.adaptanklebrace.fragments.DeleteRowFragment
-import com.example.adaptanklebrace.fragments.StartExerciseWarningFragment
+import com.example.adaptanklebrace.fragments.StartWarningFragment
 import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
 import com.example.adaptanklebrace.utils.GeneralUtil
@@ -46,7 +46,7 @@ import java.util.*
 
 class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter.RecoveryPlanCallback,
     RecoveryPlanMetricTableRowAdapter.RecoveryPlanCallback, DeleteRowFragment.OnDeleteListener,
-    StartExerciseWarningFragment.OnStartExerciseOrMetricListener,
+    StartWarningFragment.OnStartExerciseOrMetricListener,
     ChooseActivityTypeFragment.ChooseActivityTypeListener {
 
     private lateinit var dateTextView: TextView
@@ -607,14 +607,14 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
 
     // Show pop-up dialog for warning of starting an exercise that has above 100% completion
     private fun showStartExerciseWarningDialog(exercise: Exercise) {
-        val startExerciseWarningFragment = StartExerciseWarningFragment(this, exercise = exercise)
-        startExerciseWarningFragment.show(supportFragmentManager, "start_exercise_warning")
+        val startWarningFragment = StartWarningFragment(this, exercise = exercise)
+        startWarningFragment.show(supportFragmentManager, "start_exercise_warning")
     }
 
     // Show pop-up dialog for warning of starting an metric that has above 100% completion
     private fun showStartMetricWarningDialog(metric: Metric) {
-        val startExerciseWarningFragment = StartExerciseWarningFragment(this, metric = metric)
-        startExerciseWarningFragment.show(supportFragmentManager, "start_metric_warning")
+        val startWarningFragment = StartWarningFragment(this, metric = metric)
+        startWarningFragment.show(supportFragmentManager, "start_metric_warning")
     }
 
     // Calculate the % completed value for all exercise goal rows

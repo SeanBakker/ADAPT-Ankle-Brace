@@ -98,6 +98,8 @@
     <string name="impactForceAverageText">Average Impact Force (G):</string>
     <string name="swingStanceRatioText">Swing to Stance Ratio (%):</string>
     <string name="swingStanceRatioAverageText">Average Swing to Stance Ratio (%):</string>
+    <string name="startExerciseWarning">Start Exercise Warning!</string>
+    <string name="startMetricWarning">Start Metric Warning!</string>
 
     <!-- Symbols -->
     <string name="asteriskSymbol">*</string>
