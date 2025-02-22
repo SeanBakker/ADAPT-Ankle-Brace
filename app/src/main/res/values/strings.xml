@@ -131,6 +131,7 @@
     <string name="importSuccessToast">Data imported successfully.</string>
     <string name="exportFailedToast">Export failed.</string>
     <string name="noRowsToDeleteToast">Please select a row before deleting data.</string>
+    <string name="noMetricsAvailableToast">No metrics are available to view.</string>
 
     <!-- Symbols -->
     <string name="asteriskSymbol">*</string>

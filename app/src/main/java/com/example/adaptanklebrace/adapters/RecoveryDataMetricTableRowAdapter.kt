@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat.getString
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
+import com.example.adaptanklebrace.SettingsActivity
 import com.example.adaptanklebrace.data.Metric
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.utils.GeneralUtil
@@ -73,6 +74,23 @@ class RecoveryDataMetricTableRowAdapter(
                 (comments as? EditText)?.setText(metric?.comments)
                 (selectRowCheckBox as? CheckBox)?.isChecked = metric?.isSelected ?: false
 
+                // Update color of viewMetricsButton
+                if (metric != null) {
+                    if (metric.isManuallyRecorded) {
+                        (viewMetricsButton as? Button)?.apply {
+                            setBackgroundColor(context.getColor(R.color.grey_1))
+                        }
+                    } else {
+                        (viewMetricsButton as? Button)?.apply {
+                            if (SettingsActivity.nightMode) {
+                                setBackgroundColor(context.getColor(R.color.nightPrimary))
+                            } else {
+                                setBackgroundColor(context.getColor(R.color.lightPrimary))
+                            }
+                        }
+                    }
+                }
+
                 // Set up listeners for editable fields
                 (time as? EditText)?.apply {
                     // Remove previous listener to avoid duplicate events
@@ -92,10 +110,20 @@ class RecoveryDataMetricTableRowAdapter(
                 }
                 (viewMetricsButton as? Button)?.setOnClickListener {
                     metric?.let {
-                        if (it.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
-                            recoveryDataCallback.onClickViewROMMetricDetails(it, viewMetricsButton)
-                        } else if (it.name == ExerciseType.GAIT_TEST.exerciseName) {
-                            recoveryDataCallback.onClickViewGaitMetricDetails(it, viewMetricsButton)
+                        if (!it.isManuallyRecorded) {
+                            if (it.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
+                                recoveryDataCallback.onClickViewROMMetricDetails(
+                                    it,
+                                    viewMetricsButton
+                                )
+                            } else if (it.name == ExerciseType.GAIT_TEST.exerciseName) {
+                                recoveryDataCallback.onClickViewGaitMetricDetails(
+                                    it,
+                                    viewMetricsButton
+                                )
+                            }
+                        } else {
+                            GeneralUtil.showToast(context, LayoutInflater.from(context), context.getString(R.string.noMetricsAvailableToast))
                         }
                     }
                 }

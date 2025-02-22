@@ -77,7 +77,8 @@ class AddMetricDataRowFragment(
                     name = metricName,
                     timeCompleted = LocalTime.parse(timeOfCompletion, GeneralUtil.timeFormatter),
                     difficulty = difficultyLevel ?: 0,
-                    comments = comments
+                    comments = comments,
+                    isManuallyRecorded = true
                 )
 
                 // Add the metric to RecoveryDataActivity

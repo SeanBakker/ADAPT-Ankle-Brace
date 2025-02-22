@@ -21,7 +21,8 @@ data class Metric(
     var gaitNumSteps: Int = 0,
     var gaitCadence: Double = 0.0,
     var gaitImpactForce: Double = 0.0,
-    var gaitSwingStanceRatio: Double = 0.0
+    var gaitSwingStanceRatio: Double = 0.0,
+    var isManuallyRecorded: Boolean = false
 ) : Parcelable, Serializable {
 
     constructor(parcel: Parcel) : this(
@@ -39,7 +40,8 @@ data class Metric(
         parcel.readInt(),
         parcel.readDouble(),
         parcel.readDouble(),
-        parcel.readDouble()
+        parcel.readDouble(),
+        parcel.readBoolean()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -58,6 +60,7 @@ data class Metric(
         parcel.writeDouble(gaitCadence)
         parcel.writeDouble(gaitImpactForce)
         parcel.writeDouble(gaitSwingStanceRatio)
+        parcel.writeBoolean(isManuallyRecorded)
     }
 
     override fun describeContents(): Int {

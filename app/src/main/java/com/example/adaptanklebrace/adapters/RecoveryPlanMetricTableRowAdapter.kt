@@ -16,6 +16,7 @@ import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.SettingsActivity
 import com.example.adaptanklebrace.data.Metric
 import com.example.adaptanklebrace.enums.ExerciseType
+import com.example.adaptanklebrace.utils.GeneralUtil
 
 class RecoveryPlanMetricTableRowAdapter(
     private val metrics: MutableList<Metric>,
@@ -82,14 +83,30 @@ class RecoveryPlanMetricTableRowAdapter(
                 (comments as? EditText)?.setText(metric?.comments)
                 (selectRowCheckBox as? CheckBox)?.isChecked = metric?.isSelected ?: false
 
-                // Update color of startMetricButton
+                // Update color of buttons
                 if (metric != null) {
+                    // Color of startMetricButton
                     if (metric.percentageCompleted >= 100) {
                         (startMetricButton as? Button)?.apply {
                             setBackgroundColor(context.getColor(R.color.grey_1))
                         }
                     } else {
                         (startMetricButton as? Button)?.apply {
+                            if (SettingsActivity.nightMode) {
+                                setBackgroundColor(context.getColor(R.color.nightPrimary))
+                            } else {
+                                setBackgroundColor(context.getColor(R.color.lightPrimary))
+                            }
+                        }
+                    }
+
+                    // Color of viewMetricsButton
+                    if (metric.isManuallyRecorded) {
+                        (viewMetricsButton as? Button)?.apply {
+                            setBackgroundColor(context.getColor(R.color.grey_1))
+                        }
+                    } else {
+                        (viewMetricsButton as? Button)?.apply {
                             if (SettingsActivity.nightMode) {
                                 setBackgroundColor(context.getColor(R.color.nightPrimary))
                             } else {
@@ -114,10 +131,20 @@ class RecoveryPlanMetricTableRowAdapter(
                 }
                 (viewMetricsButton as? Button)?.setOnClickListener {
                     metric?.let {
-                        if (it.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
-                            recoveryPlanCallback.onClickViewAllROMMetricDetails(it, viewMetricsButton)
-                        } else if (it.name == ExerciseType.GAIT_TEST.exerciseName) {
-                            recoveryPlanCallback.onClickViewAllGaitMetricDetails(it, viewMetricsButton)
+                        if (!it.isManuallyRecorded) {
+                            if (it.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
+                                recoveryPlanCallback.onClickViewAllROMMetricDetails(
+                                    it,
+                                    viewMetricsButton
+                                )
+                            } else if (it.name == ExerciseType.GAIT_TEST.exerciseName) {
+                                recoveryPlanCallback.onClickViewAllGaitMetricDetails(
+                                    it,
+                                    viewMetricsButton
+                                )
+                            }
+                        } else {
+                            GeneralUtil.showToast(context, LayoutInflater.from(context), context.getString(R.string.noMetricsAvailableToast))
                         }
                     }
                 }

@@ -256,23 +256,14 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
 
         // Get the metric data saved for the chosen week
         val week = dateTextView.text.toString()
-        val daysInWeek = getDaysInWeek(week)
-        val savedMetrics = mutableListOf<Metric>()
-
-        for (day in daysInWeek) {
-            val dailyMetrics = ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE)
-                .getMetricsForDate(day).filter { it.name == ExerciseType.RANGE_OF_MOTION.exerciseName }
-            savedMetrics.addAll(dailyMetrics) // Add metrics saved for each day
-        }
+        val savedMetrics = getWeeklyMetricDataByName(week, ExerciseType.RANGE_OF_MOTION.exerciseName)
 
         // Calculate the average total ranges
         var totalPlantarDorsiflexionRange = 0.0
         var totalInversionEversionRange = 0.0
         for (metricData in savedMetrics) {
-            if (metricData.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
-                totalPlantarDorsiflexionRange += metricData.romPlantarDorsiflexionRange
-                totalInversionEversionRange += metricData.romInversionEversionRange
-            }
+            totalPlantarDorsiflexionRange += metricData.romPlantarDorsiflexionRange
+            totalInversionEversionRange += metricData.romInversionEversionRange
         }
         metric.romPlantarDorsiflexionRange = totalPlantarDorsiflexionRange / savedMetrics.size
         metric.romInversionEversionRange = totalInversionEversionRange / savedMetrics.size
@@ -316,14 +307,7 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
 
         // Get the metric data saved for the chosen week
         val week = dateTextView.text.toString()
-        val daysInWeek = getDaysInWeek(week)
-        val savedMetrics = mutableListOf<Metric>()
-
-        for (day in daysInWeek) {
-            val dailyMetrics = ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE)
-                .getMetricsForDate(day).filter { it.name == ExerciseType.GAIT_TEST.exerciseName }
-            savedMetrics.addAll(dailyMetrics) // Add metrics saved for each day
-        }
+        val savedMetrics = getWeeklyMetricDataByName(week, ExerciseType.GAIT_TEST.exerciseName)
 
         // Calculate the average total ranges
         var totalNumSteps = 0
@@ -445,6 +429,37 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
         adapter.setMetrics(metrics)
     }
 
+    // Return the list of metric data saved for the given week and metric type
+    private fun getWeeklyMetricDataByName(week: String, metricName: String): List<Metric> {
+        // Get the metric data saved for the chosen week
+        val daysInWeek = getDaysInWeek(week)
+        val savedMetrics = mutableListOf<Metric>()
+
+        for (day in daysInWeek) {
+            val dailyMetrics = ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE)
+                .getMetricsForDate(day).filter { it.name == metricName && !it.isManuallyRecorded }
+            savedMetrics.addAll(dailyMetrics) // Add metrics saved for each day
+        }
+        return savedMetrics
+    }
+
+    // Updates the isManuallyRecorded property of metric plans
+    private fun updateMetricsIsManuallyRecorded(metrics: List<Metric>, week: String): List<Metric> {
+        // Get metric data for the week and both metric types
+        val romMetricData = getWeeklyMetricDataByName(week, ExerciseType.RANGE_OF_MOTION.exerciseName)
+        val gaitMetricData = getWeeklyMetricDataByName(week, ExerciseType.GAIT_TEST.exerciseName)
+
+        // Check if metric data is empty (no metrics available to view)
+        for (metric in metrics) {
+            if (metric.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
+                metric.isManuallyRecorded = romMetricData.isEmpty()
+            } else if (metric.name == ExerciseType.GAIT_TEST.exerciseName) {
+                metric.isManuallyRecorded = gaitMetricData.isEmpty()
+            }
+        }
+        return metrics
+    }
+
     // Return the list of days in the given week
     private fun getDaysInWeek(weekRange: String): List<String> {
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -500,12 +515,17 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
     }
 
     private fun addMetricRow(metric: Metric) {
-        metricAdapter.addMetricRow(metric)
+        val week = dateTextView.text.toString()
+
+        // Update isManuallyRecorded property
+        val updatedMetric = updateMetricsIsManuallyRecorded(listOf(metric), week).first()
+
+        // Add metric row
+        metricAdapter.addMetricRow(updatedMetric)
         saveCurrentDateMetricData() // Save data after adding new row
 
         // Fill details of metric completion
-        val week = dateTextView.text.toString()
-        calculateMetricCompletionForRow(this, metricAdapter, metric, week)
+        calculateMetricCompletionForRow(this, metricAdapter, updatedMetric, week)
 
         // Update visibility of recycler view table
         updateMetricTableVisibility()
@@ -555,6 +575,10 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
 
         // Load the metrics for the week
         loadMetricWeekData(this, metricAdapter, week)
+
+        // Update manually recorded property of metrics
+        val updatedMetrics = updateMetricsIsManuallyRecorded(metricAdapter.getMetrics(), week)
+        metricAdapter.setMetrics(updatedMetrics)
 
         // Update visibility of recycler view tables
         updateExerciseTableVisibility()
