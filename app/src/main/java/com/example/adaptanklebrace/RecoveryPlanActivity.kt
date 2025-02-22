@@ -589,8 +589,16 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
 
     // Show pop-up dialog for deleting an exercise/metric row from the table
     private fun showDeleteRowDialog() {
-        val deleteRowFragment = DeleteRowFragment()
-        deleteRowFragment.show(supportFragmentManager, "delete_row")
+        // Check if any rows are selected (from exercise & metric tables)
+        val isAnyExerciseRowSelected = exercises.any { it.isSelected }
+        val isAnyMetricRowSelected = metrics.any { it.isSelected }
+
+        if (isAnyExerciseRowSelected || isAnyMetricRowSelected) {
+            val deleteRowFragment = DeleteRowFragment()
+            deleteRowFragment.show(supportFragmentManager, "delete_row")
+        } else {
+            GeneralUtil.showToast(this, layoutInflater, getString(R.string.noRowsToDeleteToast))
+        }
     }
 
     // Show pop-up dialog for setting exercise goal frequency for a row
