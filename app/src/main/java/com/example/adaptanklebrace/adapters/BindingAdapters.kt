@@ -19,14 +19,13 @@ object BindingAdapters {
         imageId?.let {
             //todo: add proper exercise images
             val drawableResId = when (it) {
-                1 -> R.drawable.plantarflexion_guide // exercise #1
-                2 -> R.drawable.dorsiflexion_guide // exercise #2
-                3 -> R.drawable.inversion_guide // exercise #3
-                4 -> R.drawable.eversion_guide // exercise #4
-                5 -> R.drawable.baseline_healing_24 // exercise #5
-                6 -> R.drawable.baseline_healing_24 // exercise #6
-                7 -> R.drawable.baseline_healing_24 // exercise #7
-                else -> R.drawable.baseline_error_24 // error
+                1 -> R.drawable.plantarflexion_guide // plantar flexion
+                2 -> R.drawable.dorsiflexion_guide // dorsiflexion
+                3 -> R.drawable.inversion_guide // inversion
+                4 -> R.drawable.eversion_guide // eversion
+                5 -> R.drawable.baseline_healing_24 // rom metric
+                6 -> R.drawable.baseline_healing_24 // gait metric
+                else -> R.drawable.adapt_app_white_logo // other
             }
             view.setImageResource(drawableResId)
         }
