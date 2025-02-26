@@ -8,7 +8,7 @@ data class ExerciseInfo(
     val name: String = "",
     var description: String = "",
     var steps: String = "",
-    var imageId: Int = 0,
+    var videoId: Int = 0,
 ) : Parcelable, Serializable {
 
     constructor(parcel: Parcel) : this(
@@ -22,7 +22,7 @@ data class ExerciseInfo(
         parcel.writeString(name)
         parcel.writeString(description)
         parcel.writeString(steps)
-        parcel.writeInt(imageId)
+        parcel.writeInt(videoId)
     }
 
     override fun describeContents(): Int {

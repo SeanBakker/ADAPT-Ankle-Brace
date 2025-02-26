@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="&lt;Plantar flexion&gt;"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
 
@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="&lt;Dorsiflexion&gt;"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
 
@@ -77,7 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="&lt;Inversion&gt;"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
 
@@ -87,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="&lt;Eversion&gt;"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
 
@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="&lt;ROM Test&gt;"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
 
@@ -107,7 +107,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="&lt;Gait Test&gt;"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 android:textColor="?attr/colorPrimaryVariant"
                 android:onClick="onQuickLinkClick" />
         </LinearLayout>
@@ -130,15 +130,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_min="100dp"
-            android:padding="16dp">
+            android:paddingHorizontal="16dp">
 
             <!-- Previous Button -->
             <Button
                 android:id="@+id/prevExerciseBtn"
                 android:layout_width="wrap_content"
-                android:layout_height="42dp"
+                android:layout_height="52dp"
                 android:layout_margin="24dp"
                 android:layout_alignParentStart="true"
+                android:paddingVertical="8dp"
                 android:drawableTop="@drawable/baseline_keyboard_arrow_left_24"
                 android:onClick="onChangePageClick" />
 
@@ -146,9 +147,10 @@
             <Button
                 android:id="@+id/nextExerciseBtn"
                 android:layout_width="wrap_content"
-                android:layout_height="42dp"
+                android:layout_height="52dp"
                 android:layout_margin="24dp"
                 android:layout_alignParentEnd="true"
+                android:paddingVertical="8dp"
                 android:drawableTop="@drawable/baseline_keyboard_arrow_right_24"
                 android:onClick="onChangePageClick" />
         </RelativeLayout>

@@ -48,13 +48,14 @@
             android:layout_below="@id/exerciseDescription"
             android:layout_marginTop="8dp" />
 
-        <!-- Exercise Image -->
-        <ImageView
-            android:id="@+id/exerciseImage"
-            android:layout_width="match_parent"
+        <!-- Exercise Video -->
+        <VideoView
+            android:id="@+id/exerciseVideo"
+            android:layout_width="400dp"
             android:layout_height="200dp"
-            app:imageFromResourceId="@{exerciseInfo.imageId}"
+            app:videoFromResourceId="@{exerciseInfo.videoId}"
             android:layout_below="@id/exerciseSteps"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="24dp"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 </layout>

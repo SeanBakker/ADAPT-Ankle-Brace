@@ -3,7 +3,7 @@ package com.example.adaptanklebrace.enums
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.ExerciseInfo
 
-enum class ExerciseType(val exerciseName: String, val description: String, val steps: String, val imageId: Int) {
+enum class ExerciseType(val exerciseName: String, val description: String, val steps: String, val videoId: Int) {
     PLANTAR_FLEXION(
         "Plantar Flexion",
         "A stretch that targets the calf and foot muscles to improve flexibility and range of motion.",
@@ -103,7 +103,7 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
                     name = it.exerciseName,
                     description = it.description,
                     steps = it.steps,
-                    imageId = it.imageId
+                    videoId = it.videoId
                 )
             }
 
@@ -114,7 +114,7 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
                     name = it.exerciseName,
                     description = it.description,
                     steps = it.steps,
-                    imageId = it.imageId
+                    videoId = it.videoId
                 )
             }
 
@@ -123,7 +123,7 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
                 name = exerciseName,
                 description = ERROR.description,
                 steps = ERROR.steps,
-                imageId = ERROR.imageId
+                videoId = ERROR.videoId
             )
         }
 
