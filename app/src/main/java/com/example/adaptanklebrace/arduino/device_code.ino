@@ -1,7 +1,7 @@
 #include <ArduinoBLE.h>
-//#include <Arduino_BMI270_BMM150.h>  // Library for the built-in IMU
+#include <Arduino_BMI270_BMM150.h>  // Library for the built-in IMU
 //#include <Arduino_LSM6DS3.h>
-#include <Arduino_LSM9DS1.h>
+//#include <Arduino_LSM9DS1.h>
 #include <Adafruit_ISM330DHCX.h>    // External IMU library
 #include <Wire.h>
 #include <math.h>
@@ -77,7 +77,8 @@ unsigned long stepStartTime[MAX_STEPS]; // Stance start
 unsigned long stepEndTime[MAX_STEPS]; // Stance end
 
 // Thresholds for heel strike and toe-off
-const float HEEL_STRIKE_THRESHOLD = -0.6f;
+// todo: update these thresholds during device testing
+const float HEEL_STRIKE_THRESHOLD = -0.3f; // -0.6f
 const float TOE_OFF_THRESHOLD = 0.0f;
 const float CHANGE_THRESHOLD = 0.2f;
 
@@ -526,6 +527,12 @@ void performGaitMetricRoutine() {
             testStartTime = millis();
             lastSampleTime = 0;
             currentState = WAIT_HEEL_STRIKE; // Move to waiting for first heel strike
+            stepIndex = 0;
+            totalSteps = 0;
+            firstStepTime = 0;
+            finalStepTime = 0;
+            memset(stepIntervals, 0, sizeof(stepIntervals));
+            memset(peakForces, 0, sizeof(peakForces));
             Serial.println("Starting Gait Test!");
         }
 
