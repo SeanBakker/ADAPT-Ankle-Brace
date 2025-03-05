@@ -227,7 +227,6 @@ float computeImpactForce() {
 void setup() {
     // Start serial communication for debugging
     Serial.begin(SERIAL_BAUD);
-    while (!Serial); // todo: remove for final prototype
 
     // Initialize the built-in LED pin
     pinMode(LED_BUILTIN, OUTPUT);

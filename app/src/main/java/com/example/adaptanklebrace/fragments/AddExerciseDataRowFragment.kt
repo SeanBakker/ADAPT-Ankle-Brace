@@ -72,8 +72,6 @@ class AddExerciseDataRowFragment(
             val difficultyLevel = difficultyLevelInput.text.toString().toIntOrNull()
             val comments = commentsInput.text.toString()
 
-            //todo: add option to pick dates for which the exercise was completed for
-
             if (exerciseName.isEmpty()) {
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterExerciseNameToast))
             } else if (numSets == null || numSets <= 0) {

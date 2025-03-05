@@ -62,8 +62,6 @@ class AddMetricDataRowFragment(
             val difficultyLevel = difficultyLevelInput.text.toString().toIntOrNull()
             val comments = commentsInput.text.toString()
 
-            //todo: add option to pick dates for which the metric was completed for
-
             if (metricName.isEmpty()) {
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterMetricNameToast))
             } else if (difficultyLevel != null && difficultyLevel !in 1..10) {
