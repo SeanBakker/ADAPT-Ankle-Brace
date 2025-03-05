@@ -188,12 +188,11 @@
                     android:text="Each tensioner controls the tension of different movements of the ankle. The tensioner attached to the front of the shin controls the movement of plantar flexion &amp; dorsiflexion, while the tensioner attached to the side of the shin controls the movement of inversion &amp; eversion.\n\nEach tensioner consists of a lid that pops outward into a release position, where the tension of the cables can be released. The lid can also be pushed inward into a tightening position, where the tension of the cables can be tightened with each turn of the lid in a clockwise direction. To use the tensioner:\n\n1. Make sure the tensioner starts in a released position with zero tension when the device is first worn.\n2. Make sure the ticks shown on the tensioner lid are aligned at the 12 o'clock position (see image below).\n3. Push the lid of the tensioner inward into a tightening position.\n4. Turn the lid in a clockwise direction to tighten the brace. Each quarter turn represents a full tension level."
                     android:textSize="16sp" />
 
-                <!-- todo: update image -->
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="300dp"
                     android:paddingVertical="12dp"
-                    android:src="@drawable/adapt_black_logo" />
+                    android:src="@drawable/tensioner_1" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -201,12 +200,11 @@
                     android:text="In it's 12 o'clock position, the tension level is represented as 1 in the app. After turning the tensioner lid by a quarter turn, the lid should be positioned as shown in the visual below. This represents a tension level of 2."
                     android:textSize="16sp" />
 
-                <!-- todo: update image -->
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="300dp"
                     android:paddingVertical="12dp"
-                    android:src="@drawable/adapt_black_logo" />
+                    android:src="@drawable/tensioner_2" />
 
                 <!-- Exercises Section -->
                 <TextView
