@@ -82,7 +82,7 @@ class AddExerciseDataRowFragment(
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidRepsToast))
             } else if (holdDuration == null || holdDuration < 0) {
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidHoldToast))
-            } else if (tensionLevel == null || tensionLevel !in 1..10) {
+            } else if (tensionLevel == null || tensionLevel !in 1..6) {
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidTensionToast))
             } else if (difficultyLevel != null && difficultyLevel !in 1..10) {
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterDifficultyLevelToast))

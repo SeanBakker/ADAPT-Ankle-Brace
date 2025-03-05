@@ -89,7 +89,7 @@ class ConnectDeviceFragment(
                     bluetoothService.deviceLiveData.observe(this) { pair ->
                         pair?.let { value ->
                             val deviceTension = value.first.toInt()
-                            if (deviceTension != exercise.tension && deviceTension in 1..10) {
+                            if (deviceTension != exercise.tension && deviceTension in 1..6) {
                                 val tensionLevelWarningFragment = TensionLevelWarningFragment(
                                     it,
                                     targetActivity,

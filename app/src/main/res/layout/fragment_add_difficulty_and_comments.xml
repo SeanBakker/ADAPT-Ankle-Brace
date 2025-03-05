@@ -45,7 +45,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tension Level (1-10):"
+                android:text="@string/tensionRange"
                 android:textSize="16sp" />
 
             <TextView
@@ -68,7 +68,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Difficulty Level (1-10):"
+            android:text="@string/difficultyRange"
             android:textSize="16sp" />
 
         <EditText
