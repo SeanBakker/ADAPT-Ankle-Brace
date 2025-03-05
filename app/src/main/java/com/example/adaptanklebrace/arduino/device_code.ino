@@ -21,6 +21,9 @@ BLECharacteristic readCharacteristic("f8c2f5f0-4e8c-4a95-b9c1-3c8c33b457c4", BLE
 /***** EXERCISE VARIABLES *****/
 float repsCount = 0;
 bool repsCounted = false; // Variable to keep track of counting the current rep
+float previousPlantarDorsiAngle = 0;
+float previousInversionEversionAngle = 0;
+const float REP_MIN_RANGE = 5.0; // degrees range at minimum to count as rep
 
 
 /***** ROM VARIABLES *****/
@@ -260,13 +263,12 @@ void setup() {
     Serial.println("Success.");
 
     // Initialize the external IMU
-    // todo: uncomment when external IMU is setup
-//    Serial.print("Initializing external IMU at address 0x6A... ");
-//    if (!externalIMU.begin_I2C(0x6A)) {  // Use I2C address 0x6A
-//        Serial.println("Failed to initialize external IMU!");
-//        while (1);
-//    }
-//    Serial.println("Success.");
+    Serial.print("Initializing external IMU at address 0x6A... ");
+    if (!externalIMU.begin_I2C(0x6A)) {  // Use I2C address 0x6A
+        Serial.println("Failed to initialize external IMU!");
+        while (1);
+    }
+    Serial.println("Success.");
 }
 
 
@@ -279,10 +281,12 @@ void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false)
         testInProgress = true;
 
         // Reset angles for new test
-        maxPlantarDorsiAngle = -1e6;
-        minPlantarDorsiAngle = 1e6;
-        maxInversionEversionAngle = -1e6;
-        minInversionEversionAngle = 1e6;
+        if (isTestRep) {
+            maxPlantarDorsiAngle = -1e6;
+            minPlantarDorsiAngle = 1e6;
+            maxInversionEversionAngle = -1e6;
+            minInversionEversionAngle = 1e6;
+        }
     }
 
     // 2. Collect data
@@ -347,17 +351,35 @@ void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false)
             } else {
                 // Calculate reps count
                 if (!repsCounted) {
-                    // Check if a rep is completed (within 10% of the max angle)
-                    if (plantarDorsiAngle >= (maxPlantarDorsiAngle - (maxPlantarDorsiAngle * 0.1))) {
+                    // Calculate rep max range
+                    float repMaxRange = REP_MIN_RANGE;
+                    if (maxPlantarDorsiAngle * 0.1 > REP_MIN_RANGE) {
+                        repMaxRange = (maxPlantarDorsiAngle * 0.1);
+                    }
+
+                    // Check if a rep is completed (user reached near max and was moving upward)
+                    if (plantarDorsiAngle >= (maxPlantarDorsiAngle - repMaxRange) &&
+                            plantarDorsiAngle > previousPlantarDorsiAngle) {  // Ensure movement is upward
                         repsCount++;
                         repsCounted = true;
+                        Serial.print("Reps counted: ");
+                        Serial.println(String(repsCount));
                     }
                 } else {
-                    // Check if the next rep is started (within 10% of the min angle)
-                    if (plantarDorsiAngle <= (minPlantarDorsiAngle + (minPlantarDorsiAngle * 0.1))) {
+                    // Calculate rep min range
+                    float repMinRange = REP_MIN_RANGE;
+                    if (minPlantarDorsiAngle * 0.1 > REP_MIN_RANGE) {
+                        repMinRange = (minPlantarDorsiAngle * 0.1);
+                    }
+
+                    // Check if the next rep is started (user moved downward past the min threshold)
+                    if (plantarDorsiAngle <= (minPlantarDorsiAngle + repMinRange) &&
+                            plantarDorsiAngle < previousPlantarDorsiAngle) {  // Ensure movement is downward
                         repsCounted = false;
+                        Serial.println("Starting next rep!");
                     }
                 }
+                previousPlantarDorsiAngle = plantarDorsiAngle;
             }
 
             // Send live data
@@ -371,19 +393,36 @@ void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false)
                 minInversionEversionAngle = min(minInversionEversionAngle, inversionEversionAngle);
             } else {
                 // Calculate reps count
-                // todo: test this with both IMUs
                 if (!repsCounted) {
-                    // Check if a rep is completed (within 10% of the max angle)
-                    if (inversionEversionAngle >= (maxInversionEversionAngle - (maxInversionEversionAngle * 0.1))) {
+                    // Calculate rep max range
+                    float repMaxRange = REP_MIN_RANGE;
+                    if (maxInversionEversionAngle * 0.1 > REP_MIN_RANGE) {
+                        repMaxRange = (maxInversionEversionAngle * 0.1);
+                    }
+
+                    // Check if a rep is completed (user reached near max and was moving upward)
+                    if (inversionEversionAngle >= (maxInversionEversionAngle - repMaxRange) &&
+                            inversionEversionAngle > previousInversionEversionAngle) {
                         repsCount++;
                         repsCounted = true;
+                        Serial.print("Reps counted: ");
+                        Serial.println(String(repsCount));
                     }
                 } else {
-                    // Check if the next rep is started (within 10% of the min angle)
-                    if (inversionEversionAngle <= (minInversionEversionAngle + (minInversionEversionAngle * 0.1))) {
+                    // Calculate rep min range
+                    float repMinRange = REP_MIN_RANGE;
+                    if (minInversionEversionAngle * 0.1 > REP_MIN_RANGE) {
+                        repMinRange = (minInversionEversionAngle * 0.1);
+                    }
+
+                    // Check if the next rep is started (user moved downward past the min threshold)
+                    if (inversionEversionAngle <= (minInversionEversionAngle + repMinRange) &&
+                            inversionEversionAngle < previousInversionEversionAngle) {
                         repsCounted = false;
+                        Serial.println("Starting next rep!");
                     }
                 }
+                previousInversionEversionAngle = inversionEversionAngle;
             }
 
             // Send live data
