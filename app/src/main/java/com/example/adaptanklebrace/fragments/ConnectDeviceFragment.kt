@@ -106,36 +106,38 @@ class ConnectDeviceFragment(
                                 isTensionCorrect = true
                             }
                         }
+                        proceedAfterTensionCheck(isTensionCorrect, it, targetActivity, bluetoothService, exercise)
                     }
-
-                    // Only show other dialogs if tension is correct
-                    if (isTensionCorrect) {
-                        // Send test rep flag to device to prepare exercise data collection (of test rep)
-                        if (targetActivity == StartSetActivity::class.java) {
-                            val testRepFragment = TestRepFragment(it, bluetoothService, exercise)
-                            testRepFragment.show(parentFragmentManager, "test_rep")
-                        } else {
-                            Thread.sleep(2000) // Wait for device to load
-
-                            // Send no_test_rep flag to device to skip test rep
-                            bluetoothService.writeDeviceData("no_test_rep")
-
-                            // Start target activity to perform sets
-                            // Use METRIC_KEY since only metrics will start the target activity through this execution path
-                            val startSetIntent = Intent(it, targetActivity)
-                            val parcelableExercise = exercise as Parcelable
-                            startSetIntent.putExtra(ExerciseInfo.METRIC_KEY, parcelableExercise)
-                            ContextCompat.startActivity(it, startSetIntent, null)
-                        }
-                    }
-
-                    // Manually close fragment
-                    isManuallyDismissed = true
-                    dismiss() // Close the dialog
                 }
             } else {
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.bluetoothPermissionsDisabledToast))
             }
         }
+    }
+
+    private fun proceedAfterTensionCheck(isTensionCorrect: Boolean, it: Context, targetActivity: Class<*>, bluetoothService: BluetoothService, exercise: Exercise) {
+        // Only show other dialogs if tension is correct
+        if (/* true || */isTensionCorrect) {
+            // Send test rep flag to device to prepare exercise data collection (of test rep)
+            if (targetActivity == StartSetActivity::class.java) {
+                val testRepFragment = TestRepFragment(it, bluetoothService, exercise)
+                testRepFragment.show(parentFragmentManager, "test_rep")
+            } else {
+                Thread.sleep(2000) // Wait for device to load
+
+                // Send no_test_rep flag to device to skip test rep
+                bluetoothService.writeDeviceData("no_test_rep")
+
+                // Start target activity to perform sets
+                // Use METRIC_KEY since only metrics will start the target activity through this execution path
+                val startSetIntent = Intent(it, targetActivity)
+                val parcelableExercise = exercise as Parcelable
+                startSetIntent.putExtra(ExerciseInfo.METRIC_KEY, parcelableExercise)
+                ContextCompat.startActivity(it, startSetIntent, null)
+            }
+        }
+        // Manually close fragment
+        isManuallyDismissed = true
+        dismiss() // Close the dialog
     }
 }

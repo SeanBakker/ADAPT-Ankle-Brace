@@ -766,7 +766,7 @@ void loop() {
                     Serial.println("Device is ready!");
 
                     /***** SEND TENSION LEVEL OF DEVICE *****/
-                    float tensionLevel = 4; // todo: replace with actual tension on device
+                    float tensionLevel = 1; // todo: replace with actual tension on device
                     writeCharacteristicData(tensionLevel);
                     Serial.print("Sending tension level: ");
                     Serial.println(tensionLevel);
@@ -1079,7 +1079,7 @@ void loop() {
                                 // Setup variables for Gait test
                                 timedTestComplete = false;
                                 testInProgress = false;
-                                currentState == GAIT_IDLE;
+                                currentState = GAIT_IDLE;
 
                                 Serial.println("Device is starting Gait Test metric!");
                                 delay(50);

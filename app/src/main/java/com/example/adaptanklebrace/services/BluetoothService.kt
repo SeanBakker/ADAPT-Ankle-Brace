@@ -17,7 +17,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Binder
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.core.app.ActivityCompat
@@ -44,6 +46,10 @@ class BluetoothService : Service() {
 
     val _deviceLiveData = MutableLiveData<Pair<Float, Float>?>()
     val deviceLiveData: LiveData<Pair<Float, Float>?> get() = _deviceLiveData
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val MAX_RETRIES = 3
+    private val RETRY_DELAY_MS = 200L // Delay before retrying
 
     companion object {
         var instance: BluetoothService? = null
@@ -244,24 +250,34 @@ class BluetoothService : Service() {
     }
 
     @Suppress("DEPRECATION")
-    fun writeDeviceData(data: String) {
+    fun writeDeviceData(data: String, attempt: Int = 1) {
         bluetoothGatt?.let { gatt ->
-            val writeCharacteristic: BluetoothGattCharacteristic? = gatt.getService(serviceUUID)?.getCharacteristic(writeCharacteristicUUID)
-            writeCharacteristic?.let {
-                it.value = data.toByteArray()
-                it.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+            val writeCharacteristic: BluetoothGattCharacteristic? =
+                gatt.getService(serviceUUID)?.getCharacteristic(writeCharacteristicUUID)
+
+            writeCharacteristic?.let { characteristic ->
+                characteristic.value = data.toByteArray()
+                characteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
-                    val status = gatt.writeCharacteristic(it)
+                    val status = gatt.writeCharacteristic(characteristic)
                     if (status) {
                         Log.i("Bluetooth", "Data sent: $data")
                     } else {
-                        Log.e("Bluetooth", "Failed to write data: $data")
+                        Log.e("Bluetooth", "Failed to write data: $data (Attempt $attempt)")
+                        if (attempt < MAX_RETRIES) {
+                            handler.postDelayed({
+                                writeDeviceData(data, attempt + 1)
+                            }, RETRY_DELAY_MS)
+                        } else {
+                            Log.e("Bluetooth", "Max retries reached. Data write failed: $data")
+                        }
                     }
                 } else {
                     Log.w("Bluetooth", "Bluetooth connect permission not granted.")
                 }
             }
-        }
+        } ?: Log.e("Bluetooth", "BluetoothGatt is null, cannot write data.")
     }
 
     fun resetLiveData() {
