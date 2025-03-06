@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="@string/startExerciseWarning"
         android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSecondary"
         android:textStyle="bold"
         android:layout_gravity="center" />
 
@@ -26,7 +26,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSecondary"
         android:textStyle="bold"
         android:text="The chosen activity is already 100% complete for this week."
         android:textSize="16sp"
@@ -35,7 +35,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSecondary"
         android:textStyle="bold"
         android:text="Continued progress will not count towards your weekly goal."
         android:textSize="16sp"

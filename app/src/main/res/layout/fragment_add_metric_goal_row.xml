@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="?attr/colorOnSecondary"
             android:textStyle="bold"
             android:text="Add Weekly Metric Goal Form"
             android:textSize="18sp"
@@ -45,7 +45,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Metric Name:"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textColor="?attr/colorOnSecondary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -75,7 +76,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Frequency:"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textColor="?attr/colorOnSecondary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -119,7 +121,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Comments:"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="?attr/colorOnSecondary" />
 
         <EditText
             android:id="@+id/commentsInput"

@@ -136,13 +136,15 @@
                     android:layout_height="wrap_content"
                     android:text="Introduction"
                     android:textSize="30sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorOnBackground" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Welcome to the ADAPT app!\n\nADAPT is an adjustable ankle brace for ankle ligament injuries that provides a timely and complete recovery. The brace can be adjusted throughout the entire recovery process to provide the required degree of support based on the severity of the user’s injury. Recovery exercises and metric tracking is integrated directly into the app providing a simple solution to improve recovery times and eliminate recurring injuries. The app connects to the device over Bluetooth, allowing tracking of recovery progress with real-time, quantitative feedback.\n\nOur team is proud to help you along your recovery journey!"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnSecondary" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -158,13 +160,15 @@
                     android:text="Device Setup"
                     android:textSize="30sp"
                     android:textStyle="bold"
+                    android:textColor="?attr/colorOnBackground"
                     android:paddingTop="24dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Wear the ADAPT ankle brace on the foot of your injured ankle. The visual below shows the orientation of the brace on a demonstration foot."
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnSecondary" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -180,13 +184,15 @@
                     android:text="Device Tension"
                     android:textSize="30sp"
                     android:textStyle="bold"
+                    android:textColor="?attr/colorOnBackground"
                     android:paddingTop="24dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Each tensioner controls the tension of different movements of the ankle. The tensioner attached to the front of the shin controls the movement of plantar flexion &amp; dorsiflexion, while the tensioner attached to the side of the shin controls the movement of inversion &amp; eversion.\n\nEach tensioner consists of a lid that pops outward into a release position, where the tension of the cables can be released. The lid can also be pushed inward into a tightening position, where the tension of the cables can be tightened with each turn of the lid in a clockwise direction. To use the tensioner:\n\n1. Make sure the tensioner starts in a released position with zero tension when the device is first worn.\n2. Make sure the ticks shown on the tensioner lid are aligned at the 12 o'clock position (see image below).\n3. Push the lid of the tensioner inward into a tightening position.\n4. Turn the lid in a clockwise direction to tighten the brace. Each quarter turn represents a full tension level."
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnSecondary" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -198,7 +204,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="In it's 12 o'clock position, the tension level is represented as 1 in the app. After turning the tensioner lid by a quarter turn, the lid should be positioned as shown in the visual below. This represents a tension level of 2."
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnSecondary" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -214,13 +221,15 @@
                     android:text="Exercises"
                     android:textSize="30sp"
                     android:textStyle="bold"
+                    android:textColor="?attr/colorOnBackground"
                     android:paddingTop="24dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="The ADAPT app supports the following exercises built-in with the device itself: Plantar flexion, Dorsiflexion, Inversion, and Eversion. Other exercises may be performed while using the device but these will have to be manually reported by the user. View the Common Exercises page from the More Options tab to learn more about how to perform these built-in exercises.\n\nThe ADAPT device is also capable of recording metrics related to a user's gait and range of motion. All exercise goals can be set on the Recovery Plan table, and corresponding exercise data completed by the user can be entered on the Recovery Data table."
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnSecondary" />
 
                 <!-- Gait Metrics Section -->
                 <TextView
@@ -230,13 +239,15 @@
                     android:text="Gait Metrics"
                     android:textSize="30sp"
                     android:textStyle="bold"
+                    android:textColor="?attr/colorOnBackground"
                     android:paddingTop="24dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="The Gait Test records the following metrics: Number of Steps, Cadence, Impact Force, and Swing to Stance Ratio. A description of each metric is provided below.\n\n1. Number of Steps: counts the total number of steps recorded by the user during the test.\n2. Cadence (steps/min): calculates the number of steps performed per minute.\n3. Impact Force (G): calculates the average force of the user's foot on impact with the ground.\n4. Swing to Stance Ratio (%): calculates the percentage ratio of the swing time to stance time in the user's walking cycle.\n\nSwing time represents the time when the user's foot is swinging between positions when walking.\nStance time represents the time when the user's foot is planted on the ground while the other foot moves during walking."
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnSecondary" />
 
                 <!-- ROM Metrics Section -->
                 <TextView
@@ -246,13 +257,15 @@
                     android:text="ROM Metrics"
                     android:textSize="30sp"
                     android:textStyle="bold"
+                    android:textColor="?attr/colorOnBackground"
                     android:paddingTop="24dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="The Range of Motion (ROM) Test records the following metrics: Plantar/Dorsiflexion Total Range, and Inversion/Eversion Total Range. A description of each metric is provided below.\n\n1. Plantar/Dorsiflexion Total Range (°): calculates the total range of motion of the ankle in the upward/downward direction from the shin.\n2. Inversion/Eversion Total Range (°): calculates the total range of motion of the ankle in the inward/outward direction from the shin."
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnSecondary" />
             </LinearLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

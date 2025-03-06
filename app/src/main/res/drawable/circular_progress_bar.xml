@@ -15,7 +15,7 @@
             <gradient
                 android:type="sweep"
                 android:startColor="@color/green_1"
-                android:endColor="@color/green_3"
+                android:endColor="@color/green_2"
                 android:angle="0" />
             <size android:width="300dp" android:height="300dp" />
         </shape>

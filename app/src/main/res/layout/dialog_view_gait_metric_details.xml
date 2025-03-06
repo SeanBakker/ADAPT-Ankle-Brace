@@ -13,7 +13,7 @@
         android:text="@string/recordedMetricsText"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="?attr/colorOnBackground" />
+        android:textColor="?attr/colorTertiary" />
 
     <!-- Gait Number of Steps -->
     <LinearLayout
@@ -25,14 +25,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/numStepsText"
-            android:textColor="?attr/colorOnSecondary" />
+            android:textColor="?attr/colorTertiary" />
 
         <TextView
             android:id="@+id/gaitNumSteps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/defaultZero"
-            android:textColor="?attr/colorOnSecondary"
+            android:textColor="?attr/colorTertiary"
             android:layout_marginStart="4dp" />
     </LinearLayout>
 
@@ -46,14 +46,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/cadenceText"
-            android:textColor="?attr/colorOnSecondary" />
+            android:textColor="?attr/colorTertiary" />
 
         <TextView
             android:id="@+id/gaitCadence"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/defaultZero"
-            android:textColor="?attr/colorOnSecondary"
+            android:textColor="?attr/colorTertiary"
             android:layout_marginStart="4dp" />
     </LinearLayout>
 
@@ -67,14 +67,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/impactForceText"
-            android:textColor="?attr/colorOnSecondary" />
+            android:textColor="?attr/colorTertiary" />
 
         <TextView
             android:id="@+id/gaitImpactForce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/defaultZero"
-            android:textColor="?attr/colorOnSecondary"
+            android:textColor="?attr/colorTertiary"
             android:layout_marginStart="4dp" />
     </LinearLayout>
 
@@ -88,14 +88,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/swingStanceRatioText"
-            android:textColor="?attr/colorOnSecondary" />
+            android:textColor="?attr/colorTertiary" />
 
         <TextView
             android:id="@+id/gaitSwingStanceRatio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/defaultZero"
-            android:textColor="?attr/colorOnSecondary"
+            android:textColor="?attr/colorTertiary"
             android:layout_marginStart="4dp" />
     </LinearLayout>
 </LinearLayout>

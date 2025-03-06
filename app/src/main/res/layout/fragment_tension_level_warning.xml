@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="Device Tension Level Warning!"
         android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSecondary"
         android:textStyle="bold"
         android:layout_gravity="center" />
 
@@ -41,7 +41,7 @@
             android:text="Expected Tension: "
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/black" />
+            android:textColor="?attr/colorOnSecondary" />
 
         <TextView
             android:id="@+id/expectedTension"
@@ -65,7 +65,7 @@
             android:text="Actual Tension: "
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/black" />
+            android:textColor="?attr/colorOnSecondary" />
 
         <TextView
             android:id="@+id/actualTension"

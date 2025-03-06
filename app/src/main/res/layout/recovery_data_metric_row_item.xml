@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2.5"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:text="@string/metricName"
             android:gravity="center" />
 
@@ -44,6 +44,8 @@
             android:layout_weight="1.5"
             android:hint="@string/time"
             android:inputType="text"
+            android:textColorHint="@color/grey_3"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- View Metrics Button -->
@@ -65,6 +67,8 @@
             android:layout_weight="1"
             android:hint="@string/difficulty"
             android:inputType="number"
+            android:textColorHint="@color/grey_3"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Comments -->
@@ -75,6 +79,8 @@
             android:layout_weight="2.5"
             android:hint="@string/comments"
             android:inputType="text"
+            android:textColorHint="@color/grey_3"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

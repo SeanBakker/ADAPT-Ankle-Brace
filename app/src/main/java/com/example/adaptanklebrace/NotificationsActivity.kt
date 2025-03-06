@@ -85,12 +85,13 @@ class NotificationsActivity : BaseActivity() {
 
         // Initialize weeklyDateInput dropdown
         val weekDays = CalendarDay.getAllDayNames()
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, weekDays)
+        val adapter = ArrayAdapter(this, R.layout.dropdown_items, weekDays)
         weeklyDateInput.setAdapter(adapter)
 
         // Set click listeners for the inputs
         weeklyDateInput.setOnClickListener {
             // Show all suggestions when the field gains focus
+            weeklyDateInput.setDropDownBackgroundResource(R.color.blue_2)
             weeklyDateInput.showDropDown()
         }
         weeklyDateInput.setOnItemClickListener { _, _, position, _ ->

@@ -11,7 +11,7 @@
     <!-- Border stroke -->
     <stroke
         android:width="3dp"
-        android:color="?attr/colorOnBackground" />
+        android:color="?attr/colorOnPrimary" />
 
     <!-- Prevent clipping issues -->
     <padding android:left="3dp" android:top="3dp" android:right="3dp" android:bottom="3dp"/>

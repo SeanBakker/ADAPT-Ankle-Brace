@@ -7,7 +7,7 @@
 
     <path
         android:fillColor="?attr/colorSecondaryVariant"
-        android:strokeColor="?attr/colorOnBackground"
+        android:strokeColor="?attr/colorOnPrimary"
         android:strokeWidth="2"
         android:pathData="M0,12 L12,0 L24,12 Z"/>
 </vector>

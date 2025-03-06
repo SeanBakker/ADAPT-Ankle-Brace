@@ -3,49 +3,42 @@
     <!-- Light Theme -->
     <color name="lightPrimary">@color/blue_3</color>
     <color name="lightPrimaryVariant">@color/blue_5</color>
-    <color name="lightOnPrimary">@color/blue_6</color>
+    <color name="lightOnPrimary">@color/blue_7</color>
 
-    <color name="lightSecondary">@color/purple_1</color>
+    <color name="lightSecondary">@color/blue_4</color>
     <color name="lightSecondaryVariant">@color/blue_2</color>
     <color name="lightOnSecondary">@color/black</color>
 
     <color name="lightBackground">@color/blue_1</color>
-    <color name="lightOnBackground">@color/blue_6</color>
+    <color name="lightOnBackground">@color/blue_7</color>
 
     <!-- Night Theme -->
-    <color name="nightPrimary">@color/purple_2</color>
-    <color name="nightPrimaryVariant">@color/purple_3</color>
-    <color name="nightOnPrimary">@color/purple_4</color>
+    <color name="nightPrimary">@color/blue_3</color>
+    <color name="nightPrimaryVariant">@color/blue_5</color>
+    <color name="nightOnPrimary">@color/blue_6</color>
 
-    <color name="nightSecondary">@color/blue_3</color>
-    <color name="nightSecondaryVariant">@color/purple_5</color>
-    <color name="nightOnSecondary">@color/black</color>
+    <color name="nightSecondary">@color/blue_4</color>
+    <color name="nightSecondaryVariant">@color/blue_2</color>
+    <color name="nightOnSecondary">@color/white</color>
 
-    <color name="nightBackground">@color/purple_6</color>
-    <color name="nightOnBackground">@color/purple_1</color>
+    <color name="nightBackground">@color/blue_8</color>
+    <color name="nightOnBackground">@color/blue_3</color>
 
     <!-- Extra Colors -->
-    <color name="purple_1">#D3BAF6</color>
-    <color name="purple_2">#B88BF4</color>
-    <color name="purple_3">#A47FEF</color>
-    <color name="purple_4">#9060F4</color>
-    <color name="purple_5">#D34103A0</color>
-    <color name="purple_6">#D31D0052</color>
     <color name="blue_1">#CFF3F8</color>
     <color name="blue_2">#ADF0F4</color>
-    <color name="blue_3">#76D3D6</color>
-    <color name="blue_4">#36B7DB</color>
+    <color name="blue_3">#6BD1F6</color>
+    <color name="blue_4">#8BC0EB</color>
     <color name="blue_5">#2690F1</color>
-    <color name="blue_6">#01215F</color>
-    <color name="blue_7">#8FDCDF</color>
+    <color name="blue_6">#043189</color>
+    <color name="blue_7">#01215F</color>
+    <color name="blue_8">#000A20</color>
     <color name="green_1">#94D65B</color>
-    <color name="green_2">#6DB929</color>
-    <color name="green_3">#2B500B</color>
+    <color name="green_2">#2B500B</color>
     <color name="red_1">#EB2516</color>
-    <color name="grey_1">#D9DDDD</color>
+    <color name="grey_1">#D3D3D3</color>
     <color name="grey_2">#75989A9B</color>
-    <color name="grey_3">#868686</color>
-    <color name="grey_4">#4E4E4E</color>
+    <color name="grey_3">#767676</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>

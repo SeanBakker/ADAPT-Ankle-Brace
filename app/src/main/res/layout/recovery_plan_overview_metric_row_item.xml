@@ -24,7 +24,7 @@
             android:layout_weight="3"
             android:text="@string/metricName"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Frequency -->
@@ -35,7 +35,7 @@
             android:layout_weight="1.5"
             android:text="@string/freq"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Percentage Completed -->
@@ -46,7 +46,7 @@
             android:layout_weight="1.6"
             android:text="@string/percentSymbol"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Start Metric Button -->

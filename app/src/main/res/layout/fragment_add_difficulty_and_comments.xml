@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="?attr/colorOnSecondary"
             android:textStyle="bold"
             android:text="Activity Feedback Form"
             android:textSize="18sp"
@@ -46,7 +46,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tensionRange"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textColor="?attr/colorOnSecondary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -69,7 +70,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/difficultyRange"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="?attr/colorOnSecondary" />
 
         <EditText
             android:id="@+id/difficultyLevelInput"
@@ -83,7 +85,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Comments:"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="?attr/colorOnSecondary" />
 
         <EditText
             android:id="@+id/commentsInput"

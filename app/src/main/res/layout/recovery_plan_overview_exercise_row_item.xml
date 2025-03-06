@@ -24,7 +24,7 @@
             android:layout_weight="2.5"
             android:text="@string/exerciseName"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Sets -->
@@ -35,7 +35,7 @@
             android:layout_weight="1"
             android:text="@string/sets"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Reps -->
@@ -46,7 +46,7 @@
             android:layout_weight="1"
             android:text="@string/reps"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Hold -->
@@ -57,7 +57,7 @@
             android:layout_weight="1"
             android:text="@string/hold"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Tension -->
@@ -68,7 +68,7 @@
             android:layout_weight="1"
             android:text="@string/tension"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Frequency -->
@@ -79,7 +79,7 @@
             android:layout_weight="1.5"
             android:text="@string/freq"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Percentage Completed -->
@@ -90,7 +90,7 @@
             android:layout_weight="1.6"
             android:text="@string/percentSymbol"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Start Exercise Button -->

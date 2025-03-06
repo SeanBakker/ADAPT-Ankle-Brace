@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="Test Rep Exercise:"
         android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSecondary"
         android:textStyle="bold"
         android:layout_gravity="center" />
 
@@ -34,7 +34,7 @@
             android:text="Exercise: "
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/black" />
+            android:textColor="?attr/colorOnSecondary" />
 
         <TextView
             android:id="@+id/exerciseName"
@@ -53,7 +53,8 @@
         android:gravity="bottom|center"
         android:text="0°"
         android:textSize="30sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="?attr/colorPrimaryVariant" />
 
     <ProgressBar
         android:id="@+id/testRepProgressBar"

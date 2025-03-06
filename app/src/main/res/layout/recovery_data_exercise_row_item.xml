@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2.5"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:text="@string/exerciseName"
             android:gravity="center" />
 
@@ -44,6 +44,8 @@
             android:layout_weight="1"
             android:hint="@string/sets"
             android:inputType="number"
+            android:textColorHint="@color/grey_3"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Reps -->
@@ -54,6 +56,8 @@
             android:layout_weight="1"
             android:hint="@string/reps"
             android:inputType="number"
+            android:textColorHint="@color/grey_3"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Hold -->
@@ -64,6 +68,8 @@
             android:layout_weight="1"
             android:hint="@string/hold"
             android:inputType="number"
+            android:textColorHint="@color/grey_3"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Tension -->
@@ -74,6 +80,8 @@
             android:layout_weight="1.2"
             android:hint="@string/tension"
             android:inputType="number"
+            android:textColorHint="@color/grey_3"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Completion Time -->
@@ -84,6 +92,8 @@
             android:layout_weight="1.5"
             android:hint="@string/time"
             android:inputType="text"
+            android:textColorHint="@color/grey_3"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Difficulty -->
@@ -94,6 +104,8 @@
             android:layout_weight="1.2"
             android:hint="@string/difficulty"
             android:inputType="number"
+            android:textColorHint="@color/grey_3"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
         <!-- Comments -->
@@ -104,6 +116,8 @@
             android:layout_weight="2.5"
             android:hint="@string/comments"
             android:inputType="text"
+            android:textColorHint="@color/grey_3"
+            android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

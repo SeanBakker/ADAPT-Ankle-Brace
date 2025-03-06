@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2.5"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:text="@string/exerciseName"
             android:textStyle="bold"
             android:gravity="center" />
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:text="@string/sets"
             android:textStyle="bold"
             android:gravity="center" />
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:text="@string/reps"
             android:textStyle="bold"
             android:gravity="center" />
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:text="@string/holdSecs"
             android:textStyle="bold"
             android:gravity="center" />
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:text="@string/tension"
             android:textStyle="bold"
             android:gravity="center" />
@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:text="@string/freq"
             android:textStyle="bold"
             android:gravity="center" />
@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.6"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:text="@string/percentCompleted"
             android:textStyle="bold"
             android:gravity="center" />
@@ -100,7 +100,7 @@
             android:padding="0dp"
             android:layout_marginHorizontal="10dp"
             android:textSize="16sp"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorOnPrimary"
             android:text="@string/startExerciseBtn"
             android:textStyle="bold"
             android:gravity="center" />

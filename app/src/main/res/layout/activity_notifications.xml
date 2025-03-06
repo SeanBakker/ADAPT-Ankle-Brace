@@ -49,7 +49,7 @@
             android:text="Weekly Goal Reminder"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnPrimary"
+            android:textColor="?attr/colorOnBackground"
             android:paddingBottom="8dp" />
 
         <LinearLayout
@@ -72,6 +72,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Select Day"
+                android:textColor="?attr/colorOnPrimary"
+                android:textColorHint="?attr/colorOnPrimary"
                 android:focusable="false"
                 android:drawableEnd="@drawable/baseline_edit_calendar_24"
                 android:padding="8dp"
@@ -87,6 +89,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Select Time"
+                android:textColor="?attr/colorOnPrimary"
+                android:textColorHint="?attr/colorOnPrimary"
                 android:focusable="false"
                 android:drawableEnd="@drawable/baseline_access_time_24"
                 android:padding="8dp"
@@ -103,7 +107,7 @@
             android:text="Daily Workout Reminder"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnPrimary"
+            android:textColor="?attr/colorOnBackground"
             android:paddingTop="16dp"
             android:paddingBottom="8dp" />
 
@@ -127,6 +131,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Select Time"
+                android:textColor="?attr/colorOnPrimary"
+                android:textColorHint="?attr/colorOnPrimary"
                 android:focusable="false"
                 android:drawableEnd="@drawable/baseline_access_time_24"
                 android:padding="8dp"

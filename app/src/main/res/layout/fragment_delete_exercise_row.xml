@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:text="Deletion of Exercise Data Warning!"
         android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnSecondary"
         android:layout_gravity="center" />
 
     <ImageView
@@ -24,7 +26,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSecondary"
         android:textStyle="bold"
         android:text="All selected data will be deleted and lost forever!"
         android:textSize="16sp"

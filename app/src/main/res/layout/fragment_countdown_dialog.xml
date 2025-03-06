@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textSize="36sp"
         android:textStyle="bold"
-        android:textColor="?attr/colorOnBackground"
+        android:textColor="?attr/colorTertiary"
         android:text="@string/defaultZero"
         android:gravity="center" />
 </LinearLayout>

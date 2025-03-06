@@ -52,6 +52,7 @@
                 android:text="Nov 20th, 2025"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                android:textColor="?attr/colorOnSecondary"
                 android:paddingStart="0dp"
                 android:paddingEnd="10dp"/>
 
@@ -89,7 +90,8 @@
                         android:layout_marginStart="4dp"
                         android:layout_marginEnd="10dp"
                         android:textSize="20sp"
-                        android:text="@string/difficultyText" />
+                        android:text="@string/difficultyText"
+                        android:textColor="?attr/colorOnSecondary" />
 
                     <ProgressBar
                         android:id="@+id/difficultyProgressBar"
@@ -110,14 +112,17 @@
                         android:layout_marginStart="4dp"
                         android:layout_marginEnd="10dp"
                         android:textSize="20sp"
-                        android:text="1/10" />
+                        android:text="1/10"
+                        android:textColor="?attr/colorOnSecondary" />
                 </LinearLayout>
 
                 <EditText
                     android:id="@+id/commentsEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/comments" />
+                    android:hint="@string/comments"
+                    android:textColorHint="@color/grey_3"
+                    android:textColor="?attr/colorOnSecondary" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
