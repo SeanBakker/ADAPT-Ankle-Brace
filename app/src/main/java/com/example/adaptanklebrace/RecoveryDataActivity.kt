@@ -70,6 +70,7 @@ class RecoveryDataActivity : BaseActivity(), RecoveryDataExerciseTableRowAdapter
         setContentView(R.layout.activity_recovery_data)
 
         // Initialize views
+        val rootLayout = findViewById<ConstraintLayout>(R.id.recoveryDataRootLayout)
         dateTextView = findViewById(R.id.dateText)
         datePickerButton = findViewById(R.id.datePickerButton)
         difficultyProgressBar = findViewById(R.id.difficultyProgressBar)
@@ -80,6 +81,16 @@ class RecoveryDataActivity : BaseActivity(), RecoveryDataExerciseTableRowAdapter
         importButton = findViewById(R.id.importButton)
         addRowButton = findViewById(R.id.addRowButton)
         deleteRowButton = findViewById(R.id.deleteRowButton)
+
+        // Clear focus on tables
+        rootLayout.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                commentsEditText.clearFocus()
+                exerciseRecyclerView.clearFocus()
+                metricRecyclerView.clearFocus()
+            }
+            false
+        }
 
         // Initialize the adapters and pass the activity as a callback
         exerciseAdapter = RecoveryDataExerciseTableRowAdapter(exercises, this)
