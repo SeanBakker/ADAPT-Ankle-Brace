@@ -90,8 +90,8 @@ class ConnectDeviceFragment(
                     bluetoothService.readDeviceData()
                     bluetoothService.deviceLiveData.observe(this) { pair ->
                         pair?.let { value ->
-                            val deviceTension1 = value.first.toInt()
-                            val deviceTension2 = value.second.toInt()
+                            val deviceTension1 = value.first.toInt() // plantar/dorsiflexion tensioner
+                            val deviceTension2 = value.second.toInt() // inversion/eversion tensioner
 
                             /* Check if the tension level may be correct (330 degrees potentiometer)
                                 - 1 and 5 will appear as the same

@@ -36,10 +36,10 @@ class TensionLevelWarningFragment(
         expectedTensionText.text = exercise.tension.toString()
 
         val actualTensionText1: TextView = view.findViewById(R.id.actualTension1)
-        actualTensionText1.text = actualTensionLevel1.toString()
+        actualTensionText1.text = actualTensionLevel1.toString() // plantar/dorsiflexion tensioner
 
         val actualTensionText2: TextView = view.findViewById(R.id.actualTension2)
-        actualTensionText2.text = actualTensionLevel2.toString()
+        actualTensionText2.text = actualTensionLevel2.toString() // inversion/eversion tensioner
 
         val startButton: Button = view.findViewById(R.id.startBtn)
         startButton.setOnClickListener {
