@@ -85,7 +85,7 @@ class ConnectDeviceFragment(
                     Handler(Looper.getMainLooper()).postDelayed({
                         bluetoothService.readDeviceData()
                     }, 50)
-                    Thread.sleep(100) // Wait for device to load
+                    Thread.sleep(500) // Wait for device to load
 
                     bluetoothService.readDeviceData()
                     bluetoothService.deviceLiveData.observe(this) { pair ->

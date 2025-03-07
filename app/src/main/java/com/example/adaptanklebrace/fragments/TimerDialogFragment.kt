@@ -68,8 +68,7 @@ class TimerDialogFragment(
                 val seconds = millisUntilFinished / 1000
                 val milliseconds = (millisUntilFinished % 1000) / 10  // Convert to two-digit format
 
-                val totalSeconds = totalTestDurationMillis / 1000
-                timerText.text = String.format("%02d:%02d / %02d:00", seconds, milliseconds, totalSeconds)
+                timerText.text = String.format("%02d:%02d", seconds, milliseconds)
             }
 
             override fun onFinish() {
