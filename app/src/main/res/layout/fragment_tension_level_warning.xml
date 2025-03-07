@@ -62,13 +62,37 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Actual Tension: "
+            android:text="Actual Tension (front of shin): "
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="?attr/colorOnSecondary" />
 
         <TextView
-            android:id="@+id/actualTension"
+            android:id="@+id/actualTension1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/red_1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Actual Tension (side of shin): "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSecondary" />
+
+        <TextView
+            android:id="@+id/actualTension2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"

@@ -22,7 +22,8 @@ class TensionLevelWarningFragment(
     private val targetActivity: Class<*>,
     private val bluetoothService: BluetoothService,
     private val exercise: Exercise,
-    private val actualTensionLevel: Int
+    private val actualTensionLevel1: Int,
+    private val actualTensionLevel2: Int
 ) : DialogFragment() {
 
     override fun onCreateView(
@@ -34,8 +35,11 @@ class TensionLevelWarningFragment(
         val expectedTensionText: TextView = view.findViewById(R.id.expectedTension)
         expectedTensionText.text = exercise.tension.toString()
 
-        val actualTensionText: TextView = view.findViewById(R.id.actualTension)
-        actualTensionText.text = actualTensionLevel.toString()
+        val actualTensionText1: TextView = view.findViewById(R.id.actualTension1)
+        actualTensionText1.text = actualTensionLevel1.toString()
+
+        val actualTensionText2: TextView = view.findViewById(R.id.actualTension2)
+        actualTensionText2.text = actualTensionLevel2.toString()
 
         val startButton: Button = view.findViewById(R.id.startBtn)
         startButton.setOnClickListener {
