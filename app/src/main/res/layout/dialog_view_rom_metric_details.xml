@@ -6,8 +6,8 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Metric Name -->
     <TextView
+        android:id="@+id/recordedDetails"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/recordedMetricsText"
@@ -56,4 +56,24 @@
             android:textColor="?attr/colorTertiary"
             android:layout_marginStart="4dp" />
     </LinearLayout>
+
+    <!-- Comments -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        android:text="@string/commentsText"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorTertiary" />
+
+    <EditText
+        android:id="@+id/comments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/noComments"
+        android:inputType="text"
+        android:textSize="14sp"
+        android:textColorHint="@color/grey_3"
+        android:textColor="?attr/colorTertiary" />
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.CheckBox
 import android.widget.TextView
@@ -23,6 +24,7 @@ class RecoveryDataExerciseTableRowAdapter(
     // Define the callback interface
     interface RecoveryDataCallback {
         fun saveCurrentDateExerciseData()
+        fun onClickViewExerciseDetails(exercise: Exercise, view: View)
     }
 
     init {
@@ -49,7 +51,7 @@ class RecoveryDataExerciseTableRowAdapter(
         val tension: View = view.findViewById(R.id.tension)
         val time: View = view.findViewById(R.id.time)
         val difficulty: View = view.findViewById(R.id.difficulty)
-        val comments: View = view.findViewById(R.id.comments)
+        private val viewDetailsButton: View = view.findViewById(R.id.viewDetailsBtn)
         private val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
 
         // Bind method will update based on the view type
@@ -64,7 +66,7 @@ class RecoveryDataExerciseTableRowAdapter(
                 (tension as? TextView)?.text = getString(context, R.string.tension)
                 (time as? TextView)?.text = getString(context, R.string.timeOfCompletion)
                 (difficulty as? TextView)?.text = getString(context, R.string.difficulty)
-                (comments as? TextView)?.text = getString(context, R.string.comments)
+                (viewDetailsButton as? TextView)?.text = getString(context, R.string.viewDetails)
             } else {
                 // Bind editable fields for exercise data rows
                 (exerciseName as? TextView)?.text = exercise?.name
@@ -75,7 +77,7 @@ class RecoveryDataExerciseTableRowAdapter(
                 (time as? EditText)?.setText(
                     exercise?.timeCompleted?.format(GeneralUtil.timeFormatter) ?: LocalTime.now().format(GeneralUtil.timeFormatter))
                 (difficulty as? EditText)?.setText(exercise?.difficulty.toString())
-                (comments as? EditText)?.setText(exercise?.comments)
+                (viewDetailsButton as? Button)?.text = getString(context, R.string.viewBtn)
                 (selectRowCheckBox as? CheckBox)?.isChecked = exercise?.isSelected ?: false
 
                 // Set up listeners for editable fields
@@ -222,18 +224,10 @@ class RecoveryDataExerciseTableRowAdapter(
                         }
                     }
                 }
-                (comments as? EditText)?.apply {
-                    // Remove previous listener to avoid duplicate events
-                    val currentWatcher = tag as? TextWatcher
-                    if (currentWatcher != null) {
-                        removeTextChangedListener(currentWatcher)
+                (viewDetailsButton as? Button)?.setOnClickListener {
+                    exercise?.let {
+                        recoveryDataCallback.onClickViewExerciseDetails(it, viewDetailsButton)
                     }
-
-                    val newWatcher = addTextChangedListener {
-                        exercise?.comments = it.toString()
-                        markAsChanged()
-                    }
-                    tag = newWatcher
                 }
                 (selectRowCheckBox as? CheckBox)?.setOnCheckedChangeListener { _, isChecked ->
                     exercise?.isSelected = isChecked
@@ -314,13 +308,6 @@ class RecoveryDataExerciseTableRowAdapter(
             }
         }
         (holder.difficulty as? EditText)?.apply {
-            val currentWatcher = tag as? TextWatcher
-            if (currentWatcher != null) {
-                removeTextChangedListener(currentWatcher)
-                tag = null
-            }
-        }
-        (holder.comments as? EditText)?.apply {
             val currentWatcher = tag as? TextWatcher
             if (currentWatcher != null) {
                 removeTextChangedListener(currentWatcher)

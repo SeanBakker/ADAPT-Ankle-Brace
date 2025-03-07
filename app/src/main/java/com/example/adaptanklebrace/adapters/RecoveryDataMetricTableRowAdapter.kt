@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat.getString
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
-import com.example.adaptanklebrace.SettingsActivity
 import com.example.adaptanklebrace.data.Metric
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.utils.GeneralUtil
@@ -49,9 +48,8 @@ class RecoveryDataMetricTableRowAdapter(
         // These will be either EditText or TextView based on row type
         val metricName: View = view.findViewById(R.id.metricName)
         val time: View = view.findViewById(R.id.time)
-        private val viewMetricsButton: View = view.findViewById(R.id.viewMetricsBtn)
+        private val viewDetailsButton: View = view.findViewById(R.id.viewDetailsBtn)
         val difficulty: View = view.findViewById(R.id.difficulty)
-        val comments: View = view.findViewById(R.id.comments)
         private val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
 
         // Bind method will update based on the view type
@@ -61,35 +59,16 @@ class RecoveryDataMetricTableRowAdapter(
                 // Cast to TextView for header
                 (metricName as? TextView)?.text = getString(context, R.string.metricName)
                 (time as? TextView)?.text = getString(context, R.string.timeOfCompletion)
-                (viewMetricsButton as? TextView)?.text = getString(context, R.string.viewMetrics)
+                (viewDetailsButton as? TextView)?.text = getString(context, R.string.viewMetrics)
                 (difficulty as? TextView)?.text = getString(context, R.string.difficulty)
-                (comments as? TextView)?.text = getString(context, R.string.comments)
             } else {
                 // Bind editable fields for metric data rows
                 (metricName as? TextView)?.text = metric?.name
                 (time as? EditText)?.setText(
                     metric?.timeCompleted?.format(GeneralUtil.timeFormatter) ?: LocalTime.now().format(GeneralUtil.timeFormatter))
-                (viewMetricsButton as? Button)?.text = getString(context, R.string.viewBtn)
+                (viewDetailsButton as? Button)?.text = getString(context, R.string.viewBtn)
                 (difficulty as? EditText)?.setText(metric?.difficulty.toString())
-                (comments as? EditText)?.setText(metric?.comments)
                 (selectRowCheckBox as? CheckBox)?.isChecked = metric?.isSelected ?: false
-
-                // Update color of viewMetricsButton
-                if (metric != null) {
-                    if (metric.isManuallyRecorded) {
-                        (viewMetricsButton as? Button)?.apply {
-                            setBackgroundColor(context.getColor(R.color.grey_1))
-                        }
-                    } else {
-                        (viewMetricsButton as? Button)?.apply {
-                            if (SettingsActivity.nightMode) {
-                                setBackgroundColor(context.getColor(R.color.nightPrimary))
-                            } else {
-                                setBackgroundColor(context.getColor(R.color.lightPrimary))
-                            }
-                        }
-                    }
-                }
 
                 // Set up listeners for editable fields
                 (time as? EditText)?.apply {
@@ -108,22 +87,18 @@ class RecoveryDataMetricTableRowAdapter(
                         }
                     }
                 }
-                (viewMetricsButton as? Button)?.setOnClickListener {
+                (viewDetailsButton as? Button)?.setOnClickListener {
                     metric?.let {
-                        if (!it.isManuallyRecorded) {
-                            if (it.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
-                                recoveryDataCallback.onClickViewROMMetricDetails(
-                                    it,
-                                    viewMetricsButton
-                                )
-                            } else if (it.name == ExerciseType.GAIT_TEST.exerciseName) {
-                                recoveryDataCallback.onClickViewGaitMetricDetails(
-                                    it,
-                                    viewMetricsButton
-                                )
-                            }
-                        } else {
-                            GeneralUtil.showToast(context, LayoutInflater.from(context), context.getString(R.string.noMetricsAvailableToast))
+                        if (it.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
+                            recoveryDataCallback.onClickViewROMMetricDetails(
+                                it,
+                                viewDetailsButton
+                            )
+                        } else if (it.name == ExerciseType.GAIT_TEST.exerciseName) {
+                            recoveryDataCallback.onClickViewGaitMetricDetails(
+                                it,
+                                viewDetailsButton
+                            )
                         }
                     }
                 }
@@ -170,19 +145,6 @@ class RecoveryDataMetricTableRowAdapter(
                             markAsChanged()
                         }
                     }
-                }
-                (comments as? EditText)?.apply {
-                    // Remove previous listener to avoid duplicate events
-                    val currentWatcher = tag as? TextWatcher
-                    if (currentWatcher != null) {
-                        removeTextChangedListener(currentWatcher)
-                    }
-
-                    val newWatcher = addTextChangedListener {
-                        metric?.comments = it.toString()
-                        markAsChanged()
-                    }
-                    tag = newWatcher
                 }
                 (selectRowCheckBox as? CheckBox)?.setOnCheckedChangeListener { _, isChecked ->
                     metric?.isSelected = isChecked
@@ -235,13 +197,6 @@ class RecoveryDataMetricTableRowAdapter(
     override fun onViewRecycled(holder: MetricViewHolder) {
         super.onViewRecycled(holder)
         (holder.difficulty as? EditText)?.apply {
-            val currentWatcher = tag as? TextWatcher
-            if (currentWatcher != null) {
-                removeTextChangedListener(currentWatcher)
-                tag = null
-            }
-        }
-        (holder.comments as? EditText)?.apply {
             val currentWatcher = tag as? TextWatcher
             if (currentWatcher != null) {
                 removeTextChangedListener(currentWatcher)

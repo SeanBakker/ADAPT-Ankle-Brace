@@ -30,7 +30,7 @@
             android:id="@+id/metricName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2.5"
+            android:layout_weight="2"
             android:textSize="16sp"
             android:textColor="?attr/colorOnPrimary"
             android:text="@string/metricName"
@@ -48,17 +48,6 @@
             android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
-        <!-- View Metrics Button -->
-        <Button
-            android:id="@+id/viewMetricsBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.2"
-            android:layout_marginHorizontal="10dp"
-            android:backgroundTint="?attr/colorPrimary"
-            android:text="@string/viewBtn"
-            android:gravity="center" />
-
         <!-- Difficulty -->
         <EditText
             android:id="@+id/difficulty"
@@ -71,16 +60,15 @@
             android:textColor="?attr/colorOnPrimary"
             android:gravity="center" />
 
-        <!-- Comments -->
-        <EditText
-            android:id="@+id/comments"
+        <!-- View Details Button -->
+        <Button
+            android:id="@+id/viewDetailsBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2.5"
-            android:hint="@string/comments"
-            android:inputType="text"
-            android:textColorHint="@color/grey_3"
-            android:textColor="?attr/colorOnPrimary"
+            android:layout_weight="1.2"
+            android:layout_marginHorizontal="10dp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:text="@string/viewBtn"
             android:gravity="center" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

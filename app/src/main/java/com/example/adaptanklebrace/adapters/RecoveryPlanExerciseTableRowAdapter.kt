@@ -29,6 +29,7 @@ class RecoveryPlanExerciseTableRowAdapter(
         fun onFocusFrequencyText(exercise: Exercise, position: Int)
         fun onClickStartExerciseWithWarning(exercise: Exercise)
         fun onClickStartExerciseWithoutWarning(exercise: Exercise)
+        fun onClickViewExerciseDetails(exercise: Exercise, view: View)
     }
 
     init {
@@ -56,7 +57,7 @@ class RecoveryPlanExerciseTableRowAdapter(
         val frequency: View = view.findViewById(R.id.frequency)
         private val percentageCompleted: View = view.findViewById(R.id.percentageCompleted)
         private val startExerciseButton: View = view.findViewById(R.id.startExerciseBtn)
-        val comments: View = view.findViewById(R.id.comments)
+        private val viewDetailsButton: View = view.findViewById(R.id.viewDetailsBtn)
         private val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
 
         // Bind method will update based on the view type
@@ -75,7 +76,7 @@ class RecoveryPlanExerciseTableRowAdapter(
                     getString(context, R.string.percentCompleted)
                 (startExerciseButton as? TextView)?.text =
                     getString(context, R.string.startExerciseBtn)
-                (comments as? TextView)?.text = getString(context, R.string.comments)
+                (viewDetailsButton as? TextView)?.text = getString(context, R.string.viewDetails)
             } else {
                 // Bind editable fields for exercise data rows
                 (exerciseName as? TextView)?.text = exercise?.name
@@ -87,7 +88,7 @@ class RecoveryPlanExerciseTableRowAdapter(
                 (percentageCompleted as? TextView)?.text =
                     String.format("%.0f%%", exercise?.percentageCompleted)
                 (startExerciseButton as? Button)?.text = getString(context, R.string.startBtn)
-                (comments as? EditText)?.setText(exercise?.comments)
+                (viewDetailsButton as? Button)?.text = getString(context, R.string.viewBtn)
                 (selectRowCheckBox as? CheckBox)?.isChecked = exercise?.isSelected ?: false
 
                 // Update color of startExerciseButton
@@ -216,18 +217,10 @@ class RecoveryPlanExerciseTableRowAdapter(
                         }
                     }
                 }
-                (comments as? EditText)?.apply {
-                    // Remove previous listener to avoid duplicate events
-                    val currentWatcher = tag as? TextWatcher
-                    if (currentWatcher != null) {
-                        removeTextChangedListener(currentWatcher)
+                (viewDetailsButton as? Button)?.setOnClickListener {
+                    exercise?.let {
+                        recoveryPlanCallback.onClickViewExerciseDetails(it, viewDetailsButton)
                     }
-
-                    val newWatcher = addTextChangedListener {
-                        exercise?.comments = it.toString()
-                        markAsChanged()
-                    }
-                    tag = newWatcher
                 }
                 (selectRowCheckBox as? CheckBox)?.setOnCheckedChangeListener { _, isChecked ->
                     exercise?.isSelected = isChecked
@@ -301,13 +294,6 @@ class RecoveryPlanExerciseTableRowAdapter(
             }
         }
         (holder.tension as? EditText)?.apply {
-            val currentWatcher = tag as? TextWatcher
-            if (currentWatcher != null) {
-                removeTextChangedListener(currentWatcher)
-                tag = null
-            }
-        }
-        (holder.comments as? EditText)?.apply {
             val currentWatcher = tag as? TextWatcher
             if (currentWatcher != null) {
                 removeTextChangedListener(currentWatcher)

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -254,50 +255,137 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
     }
 
     @SuppressLint("DefaultLocale", "InflateParams")
+    override fun onClickViewExerciseDetails(exercise: Exercise, view: View) {
+        // Inflate the popup layout
+        val inflater = LayoutInflater.from(this)
+        val popupView = inflater.inflate(R.layout.dialog_view_exercise_details, null)
+
+        // Initialize views
+        val minAngleValue = popupView.findViewById<TextView>(R.id.minAngle)
+        val maxAngleValue = popupView.findViewById<TextView>(R.id.maxAngle)
+        val comments = popupView.findViewById<EditText>(R.id.comments)
+
+        if (exercise.isManuallyRecorded) {
+            // Hide exercise details
+            popupView.findViewById<TextView>(R.id.recordedDetails).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.minAngleText).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.maxAngleText).visibility = View.GONE
+            minAngleValue.visibility = View.GONE
+            maxAngleValue.visibility = View.GONE
+        } else {
+            // Set text fields to be averages
+            popupView.findViewById<TextView>(R.id.minAngleText).text =
+                ContextCompat.getString(this, R.string.minAngleAverageText)
+            popupView.findViewById<TextView>(R.id.maxAngleText).text =
+                ContextCompat.getString(this, R.string.maxAngleAverageText)
+
+            // Get the exercise data saved for the chosen week
+            val week = dateTextView.text.toString()
+            val savedExercises = getWeeklyExerciseDataByName(week, exercise.name)
+
+            // Calculate the averages
+            var totalMinAngle = 0
+            var totalMaxAngle = 0
+            for (exerciseData in savedExercises) {
+                totalMinAngle += exerciseData.minAngle
+                totalMaxAngle += exerciseData.maxAngle
+            }
+            exercise.minAngle = totalMinAngle.floorDiv(savedExercises.size)
+            exercise.maxAngle = totalMaxAngle.floorDiv(savedExercises.size)
+
+            // Set exercise data in the popup
+            minAngleValue.text = String.format("%d°", exercise.minAngle)
+            maxAngleValue.text = String.format("%d°", exercise.maxAngle)
+        }
+        comments.setText(exercise.comments)
+
+        // Create a PopupWindow
+        val popupWindow = PopupWindow(
+            popupView,
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 250f, resources.displayMetrics).toInt(),
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        )
+        // Set background drawable
+        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_exercise_details_background))
+        popupWindow.isClippingEnabled = false
+
+        // Save comments when popup is closed
+        popupWindow.setOnDismissListener {
+            exercise.comments = comments.text.toString()
+            saveExerciseComments(exercise)
+        }
+
+        // Show the popup directly under the clicked button
+        popupWindow.showAsDropDown(view, -155, -10) // Position popup below the button
+    }
+
+    @SuppressLint("DefaultLocale", "InflateParams")
     override fun onClickViewAllROMMetricDetails(metric: Metric, view: View) {
         // Inflate the popup layout
         val inflater = LayoutInflater.from(this)
         val popupView = inflater.inflate(R.layout.dialog_view_rom_metric_details, null)
 
-        // Set text fields to be averages
-        popupView.findViewById<TextView>(R.id.romPlantarDorsiflexionRangeText).text =
-            ContextCompat.getString(this, R.string.plantarDorsiflexionAverageTotalRangeText)
-        popupView.findViewById<TextView>(R.id.romInversionEversionRangeText).text =
-            ContextCompat.getString(this, R.string.inverEverAverageTotalRangeText)
+        // Initialize views
+        val romPlantarDorsiflexionRangeValue = popupView.findViewById<TextView>(R.id.romPlantarDorsiflexionRange)
+        val romInversionEversionRangeValue = popupView.findViewById<TextView>(R.id.romInversionEversionRange)
+        val comments = popupView.findViewById<EditText>(R.id.comments)
 
-        // Get the metric data saved for the chosen week
-        val week = dateTextView.text.toString()
-        val savedMetrics = getWeeklyMetricDataByName(week, ExerciseType.RANGE_OF_MOTION.exerciseName)
+        if (metric.isManuallyRecorded) {
+            // Hide metric details
+            popupView.findViewById<TextView>(R.id.recordedDetails).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.romPlantarDorsiflexionRangeText).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.romInversionEversionRangeText).visibility = View.GONE
+            romPlantarDorsiflexionRangeValue.visibility = View.GONE
+            romInversionEversionRangeValue.visibility = View.GONE
+        } else {
+            // Set text fields to be averages
+            popupView.findViewById<TextView>(R.id.romPlantarDorsiflexionRangeText).text =
+                ContextCompat.getString(this, R.string.plantarDorsiflexionAverageTotalRangeText)
+            popupView.findViewById<TextView>(R.id.romInversionEversionRangeText).text =
+                ContextCompat.getString(this, R.string.inverEverAverageTotalRangeText)
 
-        // Calculate the average total ranges
-        var totalPlantarDorsiflexionRange = 0.0
-        var totalInversionEversionRange = 0.0
-        for (metricData in savedMetrics) {
-            totalPlantarDorsiflexionRange += metricData.romPlantarDorsiflexionRange
-            totalInversionEversionRange += metricData.romInversionEversionRange
+            // Get the metric data saved for the chosen week
+            val week = dateTextView.text.toString()
+            val savedMetrics = getWeeklyMetricDataByName(week, ExerciseType.RANGE_OF_MOTION.exerciseName)
+
+            // Calculate the averages
+            var totalPlantarDorsiflexionRange = 0.0
+            var totalInversionEversionRange = 0.0
+            for (metricData in savedMetrics) {
+                totalPlantarDorsiflexionRange += metricData.romPlantarDorsiflexionRange
+                totalInversionEversionRange += metricData.romInversionEversionRange
+            }
+            metric.romPlantarDorsiflexionRange = totalPlantarDorsiflexionRange / savedMetrics.size
+            metric.romInversionEversionRange = totalInversionEversionRange / savedMetrics.size
+
+            // Set metric data in the popup
+            romPlantarDorsiflexionRangeValue.text =
+                String.format("%.1f°", metric.romPlantarDorsiflexionRange)
+            romInversionEversionRangeValue.text =
+                String.format("%.1f°", metric.romInversionEversionRange)
         }
-        metric.romPlantarDorsiflexionRange = totalPlantarDorsiflexionRange / savedMetrics.size
-        metric.romInversionEversionRange = totalInversionEversionRange / savedMetrics.size
-
-        // Set metric data in the popup
-        popupView.findViewById<TextView>(R.id.romPlantarDorsiflexionRange).text =
-            String.format("%.1f°", metric.romPlantarDorsiflexionRange)
-        popupView.findViewById<TextView>(R.id.romInversionEversionRange).text =
-            String.format("%.1f°", metric.romInversionEversionRange)
+        comments.setText(metric.comments)
 
         // Create a PopupWindow
         val popupWindow = PopupWindow(
             popupView,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 350f, resources.displayMetrics).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT,
             true
         )
         // Set background drawable
-        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_metric_background))
+        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_metric_details_background_plan))
         popupWindow.isClippingEnabled = false
 
+        // Save comments when popup is closed
+        popupWindow.setOnDismissListener {
+            metric.comments = comments.text.toString()
+            saveMetricComments(metric)
+        }
+
         // Show the popup directly under the clicked button
-        popupWindow.showAsDropDown(view, -115, -10) // Position popup below the button
+        popupWindow.showAsDropDown(view, -225, -10) // Position popup below the button
     }
 
     @SuppressLint("DefaultLocale", "InflateParams")
@@ -306,59 +394,82 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
         val inflater = LayoutInflater.from(this)
         val popupView = inflater.inflate(R.layout.dialog_view_gait_metric_details, null)
 
-        // Set text fields to be averages
-        popupView.findViewById<TextView>(R.id.gaitNumStepsText).text =
-            ContextCompat.getString(this, R.string.numStepsAverageText)
-        popupView.findViewById<TextView>(R.id.gaitCadenceText).text =
-            ContextCompat.getString(this, R.string.cadenceAverageText)
-        popupView.findViewById<TextView>(R.id.gaitImpactForceText).text =
-            ContextCompat.getString(this, R.string.impactForceAverageText)
-        popupView.findViewById<TextView>(R.id.gaitSwingStanceRatioText).text =
-            ContextCompat.getString(this, R.string.swingStanceRatioAverageText)
+        // Initialize views
+        val gaitNumStepsValue = popupView.findViewById<TextView>(R.id.gaitNumSteps)
+        val gaitCadenceValue = popupView.findViewById<TextView>(R.id.gaitCadence)
+        val gaitImpactForceValue = popupView.findViewById<TextView>(R.id.gaitImpactForce)
+        val gaitSwingStanceRatioValue = popupView.findViewById<TextView>(R.id.gaitSwingStanceRatio)
+        val comments = popupView.findViewById<EditText>(R.id.comments)
 
-        // Get the metric data saved for the chosen week
-        val week = dateTextView.text.toString()
-        val savedMetrics = getWeeklyMetricDataByName(week, ExerciseType.GAIT_TEST.exerciseName)
+        if (metric.isManuallyRecorded) {
+            // Hide metric details
+            popupView.findViewById<TextView>(R.id.recordedDetails).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.gaitNumStepsText).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.gaitCadenceText).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.gaitImpactForceText).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.gaitSwingStanceRatioText).visibility = View.GONE
+            gaitNumStepsValue.visibility = View.GONE
+            gaitCadenceValue.visibility = View.GONE
+            gaitImpactForceValue.visibility = View.GONE
+            gaitSwingStanceRatioValue.visibility = View.GONE
+        } else {
+            // Set text fields to be averages
+            popupView.findViewById<TextView>(R.id.gaitNumStepsText).text =
+                ContextCompat.getString(this, R.string.numStepsAverageText)
+            popupView.findViewById<TextView>(R.id.gaitCadenceText).text =
+                ContextCompat.getString(this, R.string.cadenceAverageText)
+            popupView.findViewById<TextView>(R.id.gaitImpactForceText).text =
+                ContextCompat.getString(this, R.string.impactForceAverageText)
+            popupView.findViewById<TextView>(R.id.gaitSwingStanceRatioText).text =
+                ContextCompat.getString(this, R.string.swingStanceRatioAverageText)
 
-        // Calculate the average total ranges
-        var totalNumSteps = 0
-        var totalCadence = 0.0
-        var totalImpactForce = 0.0
-        var totalSwingStanceRatio = 0.0
-        for (metricData in savedMetrics) {
-            totalNumSteps += metricData.gaitNumSteps
-            totalCadence += metricData.gaitCadence
-            totalImpactForce += metricData.gaitImpactForce
-            totalSwingStanceRatio += metricData.gaitSwingStanceRatio
+            // Get the metric data saved for the chosen week
+            val week = dateTextView.text.toString()
+            val savedMetrics = getWeeklyMetricDataByName(week, ExerciseType.GAIT_TEST.exerciseName)
+
+            // Calculate the averages
+            var totalNumSteps = 0
+            var totalCadence = 0.0
+            var totalImpactForce = 0.0
+            var totalSwingStanceRatio = 0.0
+            for (metricData in savedMetrics) {
+                totalNumSteps += metricData.gaitNumSteps
+                totalCadence += metricData.gaitCadence
+                totalImpactForce += metricData.gaitImpactForce
+                totalSwingStanceRatio += metricData.gaitSwingStanceRatio
+            }
+            metric.gaitNumSteps = totalNumSteps.floorDiv(savedMetrics.size)
+            metric.gaitCadence = totalCadence / savedMetrics.size
+            metric.gaitImpactForce = totalImpactForce / savedMetrics.size
+            metric.gaitSwingStanceRatio = totalSwingStanceRatio / savedMetrics.size
+
+            // Set metric data in the popup
+            gaitNumStepsValue.text = String.format("%d", metric.gaitNumSteps)
+            gaitCadenceValue.text = String.format("%.1f", metric.gaitCadence)
+            gaitImpactForceValue.text = String.format("%.1f", metric.gaitImpactForce)
+            gaitSwingStanceRatioValue.text = String.format("%.1f", metric.gaitSwingStanceRatio)
         }
-        metric.gaitNumSteps = totalNumSteps.floorDiv(savedMetrics.size)
-        metric.gaitCadence = totalCadence / savedMetrics.size
-        metric.gaitImpactForce = totalImpactForce / savedMetrics.size
-        metric.gaitSwingStanceRatio = totalSwingStanceRatio / savedMetrics.size
-
-        // Set metric data in the popup
-        popupView.findViewById<TextView>(R.id.gaitNumSteps).text =
-            String.format("%d", metric.gaitNumSteps)
-        popupView.findViewById<TextView>(R.id.gaitCadence).text =
-            String.format("%.1f", metric.gaitCadence)
-        popupView.findViewById<TextView>(R.id.gaitImpactForce).text =
-            String.format("%.1f", metric.gaitImpactForce)
-        popupView.findViewById<TextView>(R.id.gaitSwingStanceRatio).text =
-            String.format("%.1f", metric.gaitSwingStanceRatio)
+        comments.setText(metric.comments)
 
         // Create a PopupWindow
         val popupWindow = PopupWindow(
             popupView,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300f, resources.displayMetrics).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT,
             true
         )
         // Set background drawable
-        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_metric_background))
+        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_metric_details_background_plan))
         popupWindow.isClippingEnabled = false
 
+        // Save comments when popup is closed
+        popupWindow.setOnDismissListener {
+            metric.comments = comments.text.toString()
+            saveMetricComments(metric)
+        }
+
         // Show the popup directly under the clicked button
-        popupWindow.showAsDropDown(view, -90, -10) // Position popup below the button
+        popupWindow.showAsDropDown(view, -175, -10) // Position popup below the button
     }
 
     override fun onChooseActivityExercise() {
@@ -440,6 +551,20 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
         adapter.setMetrics(metrics)
     }
 
+    // Return the list of exercise data saved for the given week and exercise type
+    private fun getWeeklyExerciseDataByName(week: String, exerciseName: String): List<Exercise> {
+        // Get the exercise data saved for the chosen week
+        val daysInWeek = getDaysInWeek(week)
+        val savedExercises = mutableListOf<Exercise>()
+
+        for (day in daysInWeek) {
+            val dailyExercises = ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE)
+                .getExercisesForDate(day).filter { it.name == exerciseName && !it.isManuallyRecorded }
+            savedExercises.addAll(dailyExercises) // Add exercises saved for each day
+        }
+        return savedExercises
+    }
+
     // Return the list of metric data saved for the given week and metric type
     private fun getWeeklyMetricDataByName(week: String, metricName: String): List<Metric> {
         // Get the metric data saved for the chosen week
@@ -452,6 +577,37 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
             savedMetrics.addAll(dailyMetrics) // Add metrics saved for each day
         }
         return savedMetrics
+    }
+
+    // Updates the isManuallyRecorded property of exercise plans
+    private fun updateExercisesIsManuallyRecorded(exercises: List<Exercise>, week: String): List<Exercise> {
+        // Get exercise data for the week
+        val plantarExerciseData = getWeeklyExerciseDataByName(week, ExerciseType.PLANTAR_FLEXION.exerciseName)
+        val dorsiExerciseData = getWeeklyExerciseDataByName(week, ExerciseType.DORSIFLEXION.exerciseName)
+        val inverExerciseData = getWeeklyExerciseDataByName(week, ExerciseType.INVERSION.exerciseName)
+        val everExerciseData = getWeeklyExerciseDataByName(week, ExerciseType.EVERSION.exerciseName)
+
+        // Check if exercise data is empty (no exercises available to view)
+        for (exercise in exercises) {
+            when (exercise.name) {
+                ExerciseType.PLANTAR_FLEXION.exerciseName -> {
+                    exercise.isManuallyRecorded = plantarExerciseData.isEmpty()
+                }
+                ExerciseType.DORSIFLEXION.exerciseName -> {
+                    exercise.isManuallyRecorded = dorsiExerciseData.isEmpty()
+                }
+                ExerciseType.INVERSION.exerciseName -> {
+                    exercise.isManuallyRecorded = inverExerciseData.isEmpty()
+                }
+                ExerciseType.EVERSION.exerciseName -> {
+                    exercise.isManuallyRecorded = everExerciseData.isEmpty()
+                }
+                else -> {
+                    exercise.isManuallyRecorded = true
+                }
+            }
+        }
+        return exercises
     }
 
     // Updates the isManuallyRecorded property of metric plans
@@ -514,12 +670,17 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
     }
 
     private fun addExerciseRow(exercise: Exercise) {
-        exerciseAdapter.addExerciseRow(exercise)
+        val week = dateTextView.text.toString()
+
+        // Update isManuallyRecorded property
+        val updatedExercise = updateExercisesIsManuallyRecorded(listOf(exercise), week).first()
+
+        // Add exercise row
+        exerciseAdapter.addExerciseRow(updatedExercise)
         saveCurrentDateExerciseData() // Save data after adding new row
 
         // Fill details of exercise completion
-        val week = dateTextView.text.toString()
-        calculateExerciseCompletionForRow(this, exerciseAdapter, exercise, week)
+        calculateExerciseCompletionForRow(this, exerciseAdapter, updatedExercise, week)
 
         // Update visibility of recycler view table
         updateExerciseTableVisibility()
@@ -540,6 +701,18 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
 
         // Update visibility of recycler view table
         updateMetricTableVisibility()
+    }
+
+    // Saves exercise comments
+    private fun saveExerciseComments(exercise: Exercise) {
+        val updatedExercise = exercises.first { it.id == exercise.id }
+        updatedExercise.comments = exercise.comments
+    }
+
+    // Saves metric comments
+    private fun saveMetricComments(metric: Metric) {
+        val updatedMetric = metrics.first { it.id == metric.id }
+        updatedMetric.comments = metric.comments
     }
 
     private fun showDatePicker() {
@@ -586,6 +759,10 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
 
         // Load the metrics for the week
         loadMetricWeekData(this, metricAdapter, week)
+
+        // Update manually recorded property of exercises
+        val updatedExercises = updateExercisesIsManuallyRecorded(exerciseAdapter.getExercises(), week)
+        exerciseAdapter.setExercises(updatedExercises)
 
         // Update manually recorded property of metrics
         val updatedMetrics = updateMetricsIsManuallyRecorded(metricAdapter.getMetrics(), week)

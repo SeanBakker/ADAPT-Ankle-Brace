@@ -36,6 +36,7 @@
     <string name="difficulty">Difficulty</string>
     <string name="comments">Comments</string>
     <string name="viewMetrics">View Metrics</string>
+    <string name="viewDetails">View Details</string>
     <string name="tensionRange">Tension Level (1–6):</string>
     <string name="difficultyRange">Difficulty Level (1–10):</string>
     <string name="defaultZero">0</string>
@@ -88,10 +89,15 @@
     <!-- Fragments -->
     <string name="requiredFieldsFormText">Fields marked with * are required.</string>
     <string name="recordedMetricsText">Recorded Metrics:</string>
+    <string name="recordedDetailsText">Recorded Calibration Details:</string>
     <string name="plantarDorsiflexionTotalRangeText">Plantar/Dorsiflexion Total Range:</string>
     <string name="plantarDorsiflexionAverageTotalRangeText">Plantar/Dorsiflexion Average Total Range:</string>
     <string name="inverEverTotalRangeText">Inversion/Eversion Total Range:</string>
     <string name="inverEverAverageTotalRangeText">Inversion/Eversion Average Total Range:</string>
+    <string name="minAngleText">Min Angle:</string>
+    <string name="maxAngleText">Max Angle:</string>
+    <string name="minAngleAverageText">Average Min Angle:</string>
+    <string name="maxAngleAverageText">Average Max Angle:</string>
     <string name="numStepsText">Number of Steps:</string>
     <string name="numStepsAverageText">Average Number of Steps:</string>
     <string name="cadenceText">Cadence (steps/min):</string>
@@ -102,6 +108,8 @@
     <string name="swingStanceRatioAverageText">Average Swing to Stance Ratio (%):</string>
     <string name="startExerciseWarning">Start Exercise Warning!</string>
     <string name="startMetricWarning">Start Metric Warning!</string>
+    <string name="commentsText">Comments:</string>
+    <string name="noComments">No Comments</string>
 
     <!-- Toasts -->
     <string name="bluetoothPermissionsDisabledToast">Bluetooth permissions disabled.</string>

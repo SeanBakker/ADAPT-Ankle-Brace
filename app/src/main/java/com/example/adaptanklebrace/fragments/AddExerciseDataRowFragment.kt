@@ -97,7 +97,8 @@ class AddExerciseDataRowFragment(
                     tension = tensionLevel,
                     timeCompleted = LocalTime.parse(timeOfCompletion, GeneralUtil.timeFormatter),
                     difficulty = difficultyLevel ?: 0,
-                    comments = comments
+                    comments = comments,
+                    isManuallyRecorded = true
                 )
 
                 // Add the exercise to RecoveryDataActivity

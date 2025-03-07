@@ -1,7 +1,6 @@
 package com.example.adaptanklebrace.adapters
 
 import android.annotation.SuppressLint
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +9,11 @@ import android.widget.EditText
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.core.content.ContextCompat.getString
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.SettingsActivity
 import com.example.adaptanklebrace.data.Metric
 import com.example.adaptanklebrace.enums.ExerciseType
-import com.example.adaptanklebrace.utils.GeneralUtil
 
 class RecoveryPlanMetricTableRowAdapter(
     private val metrics: MutableList<Metric>,
@@ -53,9 +50,8 @@ class RecoveryPlanMetricTableRowAdapter(
         val metricName: View = view.findViewById(R.id.metricName)
         val frequency: View = view.findViewById(R.id.frequency)
         private val percentageCompleted: View = view.findViewById(R.id.percentageCompleted)
-        private val viewMetricsButton: View = view.findViewById(R.id.viewMetricsBtn)
+        private val viewDetailsButton: View = view.findViewById(R.id.viewDetailsBtn)
         private val startMetricButton: View = view.findViewById(R.id.startMetricBtn)
-        val comments: View = view.findViewById(R.id.comments)
         private val selectRowCheckBox: View = view.findViewById(R.id.selectRowCheckBox)
 
         // Bind method will update based on the view type
@@ -68,19 +64,17 @@ class RecoveryPlanMetricTableRowAdapter(
                 (frequency as? TextView)?.text = getString(context, R.string.freq)
                 (percentageCompleted as? TextView)?.text =
                     getString(context, R.string.percentCompleted)
-                (viewMetricsButton as? TextView)?.text = getString(context, R.string.viewMetrics)
+                (viewDetailsButton as? TextView)?.text = getString(context, R.string.viewDetails)
                 (startMetricButton as? TextView)?.text =
                     getString(context, R.string.startMetricBtn)
-                (comments as? TextView)?.text = getString(context, R.string.comments)
             } else {
                 // Bind editable fields for metric data rows
                 (metricName as? TextView)?.text = metric?.name
                 (frequency as? EditText)?.setText(metric?.frequency)
                 (percentageCompleted as? TextView)?.text =
                     String.format("%.0f%%", metric?.percentageCompleted)
-                (viewMetricsButton as? Button)?.text = getString(context, R.string.viewBtn)
+                (viewDetailsButton as? Button)?.text = getString(context, R.string.viewBtn)
                 (startMetricButton as? Button)?.text = getString(context, R.string.startBtn)
-                (comments as? EditText)?.setText(metric?.comments)
                 (selectRowCheckBox as? CheckBox)?.isChecked = metric?.isSelected ?: false
 
                 // Update color of buttons
@@ -92,21 +86,6 @@ class RecoveryPlanMetricTableRowAdapter(
                         }
                     } else {
                         (startMetricButton as? Button)?.apply {
-                            if (SettingsActivity.nightMode) {
-                                setBackgroundColor(context.getColor(R.color.nightPrimary))
-                            } else {
-                                setBackgroundColor(context.getColor(R.color.lightPrimary))
-                            }
-                        }
-                    }
-
-                    // Color of viewMetricsButton
-                    if (metric.isManuallyRecorded) {
-                        (viewMetricsButton as? Button)?.apply {
-                            setBackgroundColor(context.getColor(R.color.grey_1))
-                        }
-                    } else {
-                        (viewMetricsButton as? Button)?.apply {
                             if (SettingsActivity.nightMode) {
                                 setBackgroundColor(context.getColor(R.color.nightPrimary))
                             } else {
@@ -132,22 +111,18 @@ class RecoveryPlanMetricTableRowAdapter(
                         }
                     }
                 }
-                (viewMetricsButton as? Button)?.setOnClickListener {
+                (viewDetailsButton as? Button)?.setOnClickListener {
                     metric?.let {
-                        if (!it.isManuallyRecorded) {
-                            if (it.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
-                                recoveryPlanCallback.onClickViewAllROMMetricDetails(
-                                    it,
-                                    viewMetricsButton
-                                )
-                            } else if (it.name == ExerciseType.GAIT_TEST.exerciseName) {
-                                recoveryPlanCallback.onClickViewAllGaitMetricDetails(
-                                    it,
-                                    viewMetricsButton
-                                )
-                            }
-                        } else {
-                            GeneralUtil.showToast(context, LayoutInflater.from(context), context.getString(R.string.noMetricsAvailableToast))
+                        if (it.name == ExerciseType.RANGE_OF_MOTION.exerciseName) {
+                            recoveryPlanCallback.onClickViewAllROMMetricDetails(
+                                it,
+                                viewDetailsButton
+                            )
+                        } else if (it.name == ExerciseType.GAIT_TEST.exerciseName) {
+                            recoveryPlanCallback.onClickViewAllGaitMetricDetails(
+                                it,
+                                viewDetailsButton
+                            )
                         }
                     }
                 }
@@ -159,19 +134,6 @@ class RecoveryPlanMetricTableRowAdapter(
                             recoveryPlanCallback.onClickStartMetricWithoutWarning(it)
                         }
                     }
-                }
-                (comments as? EditText)?.apply {
-                    // Remove previous listener to avoid duplicate events
-                    val currentWatcher = tag as? TextWatcher
-                    if (currentWatcher != null) {
-                        removeTextChangedListener(currentWatcher)
-                    }
-
-                    val newWatcher = addTextChangedListener {
-                        metric?.comments = it.toString()
-                        markAsChanged()
-                    }
-                    tag = newWatcher
                 }
                 (selectRowCheckBox as? CheckBox)?.setOnCheckedChangeListener { _, isChecked ->
                     metric?.isSelected = isChecked
@@ -217,18 +179,6 @@ class RecoveryPlanMetricTableRowAdapter(
             holder.bind(null, 0, VIEW_TYPE_HEADER) // No metric data for header
         } else if (position != RecyclerView.NO_POSITION) {
             holder.bind(metrics[position - 1], position, VIEW_TYPE_ITEM) // Bind data for metric rows
-        }
-    }
-
-    // Ensure listeners are properly cleared when view is detached from the window
-    override fun onViewRecycled(holder: MetricViewHolder) {
-        super.onViewRecycled(holder)
-        (holder.comments as? EditText)?.apply {
-            val currentWatcher = tag as? TextWatcher
-            if (currentWatcher != null) {
-                removeTextChangedListener(currentWatcher)
-                tag = null
-            }
         }
     }
 

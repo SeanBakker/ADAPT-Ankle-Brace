@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -188,30 +189,97 @@ class RecoveryDataActivity : BaseActivity(), RecoveryDataExerciseTableRowAdapter
     }
 
     @SuppressLint("DefaultLocale", "InflateParams")
+    override fun onClickViewExerciseDetails(exercise: Exercise, view: View) {
+        // Inflate the popup layout
+        val inflater = LayoutInflater.from(this)
+        val popupView = inflater.inflate(R.layout.dialog_view_exercise_details, null)
+
+        // Initialize views
+        val minAngleValue = popupView.findViewById<TextView>(R.id.minAngle)
+        val maxAngleValue = popupView.findViewById<TextView>(R.id.maxAngle)
+        val comments = popupView.findViewById<EditText>(R.id.comments)
+
+        if (exercise.isManuallyRecorded) {
+            // Hide exercise details
+            popupView.findViewById<TextView>(R.id.recordedDetails).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.minAngleText).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.maxAngleText).visibility = View.GONE
+            minAngleValue.visibility = View.GONE
+            maxAngleValue.visibility = View.GONE
+        } else {
+            // Set exercise data in the popup
+            minAngleValue.text = String.format("%d°", exercise.minAngle)
+            maxAngleValue.text = String.format("%d°", exercise.maxAngle)
+        }
+        comments.setText(exercise.comments)
+
+        // Create a PopupWindow
+        val popupWindow = PopupWindow(
+            popupView,
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 250f, resources.displayMetrics).toInt(),
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        )
+        // Set background drawable
+        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_exercise_details_background))
+        popupWindow.isClippingEnabled = false
+
+        // Save comments when popup is closed
+        popupWindow.setOnDismissListener {
+            exercise.comments = comments.text.toString()
+            saveExerciseComments(exercise)
+        }
+
+        // Show the popup directly under the clicked button
+        popupWindow.showAsDropDown(view, -150, -10) // Position popup below the button
+    }
+
+    @SuppressLint("DefaultLocale", "InflateParams")
     override fun onClickViewROMMetricDetails(metric: Metric, view: View) {
         // Inflate the popup layout
         val inflater = LayoutInflater.from(this)
         val popupView = inflater.inflate(R.layout.dialog_view_rom_metric_details, null)
 
-        // Set metric data in the popup
-        popupView.findViewById<TextView>(R.id.romPlantarDorsiflexionRange).text =
-            String.format("%.1f°", metric.romPlantarDorsiflexionRange)
-        popupView.findViewById<TextView>(R.id.romInversionEversionRange).text =
-            String.format("%.1f°", metric.romInversionEversionRange)
+        // Initialize views
+        val romPlantarDorsiflexionRangeValue = popupView.findViewById<TextView>(R.id.romPlantarDorsiflexionRange)
+        val romInversionEversionRangeValue = popupView.findViewById<TextView>(R.id.romInversionEversionRange)
+        val comments = popupView.findViewById<EditText>(R.id.comments)
+
+        if (metric.isManuallyRecorded) {
+            // Hide metric details
+            popupView.findViewById<TextView>(R.id.recordedDetails).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.romPlantarDorsiflexionRangeText).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.romInversionEversionRangeText).visibility = View.GONE
+            romPlantarDorsiflexionRangeValue.visibility = View.GONE
+            romInversionEversionRangeValue.visibility = View.GONE
+        } else {
+            // Set metric data in the popup
+            romPlantarDorsiflexionRangeValue.text =
+                String.format("%.1f°", metric.romPlantarDorsiflexionRange)
+            romInversionEversionRangeValue.text =
+                String.format("%.1f°", metric.romInversionEversionRange)
+        }
+        comments.setText(metric.comments)
 
         // Create a PopupWindow
         val popupWindow = PopupWindow(
             popupView,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300f, resources.displayMetrics).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT,
             true
         )
         // Set background drawable
-        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_metric_background))
+        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_metric_details_background_data))
         popupWindow.isClippingEnabled = false
 
+        // Save comments when popup is closed
+        popupWindow.setOnDismissListener {
+            metric.comments = comments.text.toString()
+            saveMetricComments(metric)
+        }
+
         // Show the popup directly under the clicked button
-        popupWindow.showAsDropDown(view, -85, -10) // Position popup below the button
+        popupWindow.showAsDropDown(view, -140, -10) // Position popup below the button
     }
 
     @SuppressLint("DefaultLocale", "InflateParams")
@@ -220,29 +288,52 @@ class RecoveryDataActivity : BaseActivity(), RecoveryDataExerciseTableRowAdapter
         val inflater = LayoutInflater.from(this)
         val popupView = inflater.inflate(R.layout.dialog_view_gait_metric_details, null)
 
-        // Set metric data in the popup
-        popupView.findViewById<TextView>(R.id.gaitNumSteps).text =
-            String.format("%d", metric.gaitNumSteps)
-        popupView.findViewById<TextView>(R.id.gaitCadence).text =
-            String.format("%.1f", metric.gaitCadence)
-        popupView.findViewById<TextView>(R.id.gaitImpactForce).text =
-            String.format("%.1f", metric.gaitImpactForce)
-        popupView.findViewById<TextView>(R.id.gaitSwingStanceRatio).text =
-            String.format("%.1f", metric.gaitSwingStanceRatio)
+        // Initialize views
+        val gaitNumStepsValue = popupView.findViewById<TextView>(R.id.gaitNumSteps)
+        val gaitCadenceValue = popupView.findViewById<TextView>(R.id.gaitCadence)
+        val gaitImpactForceValue = popupView.findViewById<TextView>(R.id.gaitImpactForce)
+        val gaitSwingStanceRatioValue = popupView.findViewById<TextView>(R.id.gaitSwingStanceRatio)
+        val comments = popupView.findViewById<EditText>(R.id.comments)
+
+        if (metric.isManuallyRecorded) {
+            // Hide metric details
+            popupView.findViewById<TextView>(R.id.recordedDetails).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.gaitNumStepsText).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.gaitCadenceText).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.gaitImpactForceText).visibility = View.GONE
+            popupView.findViewById<TextView>(R.id.gaitSwingStanceRatioText).visibility = View.GONE
+            gaitNumStepsValue.visibility = View.GONE
+            gaitCadenceValue.visibility = View.GONE
+            gaitImpactForceValue.visibility = View.GONE
+            gaitSwingStanceRatioValue.visibility = View.GONE
+        } else {
+            // Set metric data in the popup
+            gaitNumStepsValue.text = String.format("%d", metric.gaitNumSteps)
+            gaitCadenceValue.text = String.format("%.1f", metric.gaitCadence)
+            gaitImpactForceValue.text = String.format("%.1f", metric.gaitImpactForce)
+            gaitSwingStanceRatioValue.text = String.format("%.1f", metric.gaitSwingStanceRatio)
+        }
+        comments.setText(metric.comments)
 
         // Create a PopupWindow
         val popupWindow = PopupWindow(
             popupView,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 250f, resources.displayMetrics).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT,
             true
         )
         // Set background drawable
-        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_metric_background))
+        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dialog_view_metric_details_background_data))
         popupWindow.isClippingEnabled = false
 
+        // Save comments when popup is closed
+        popupWindow.setOnDismissListener {
+            metric.comments = comments.text.toString()
+            saveMetricComments(metric)
+        }
+
         // Show the popup directly under the clicked button
-        popupWindow.showAsDropDown(view, -60, -10) // Position popup below the button
+        popupWindow.showAsDropDown(view, -90, -10) // Position popup below the button
     }
 
     override fun onChooseActivityExercise() {
@@ -300,6 +391,18 @@ class RecoveryDataActivity : BaseActivity(), RecoveryDataExerciseTableRowAdapter
 
         // Update visibility of recycler view table
         updateMetricTableVisibility()
+    }
+
+    // Saves exercise comments
+    private fun saveExerciseComments(exercise: Exercise) {
+        val updatedExercise = exercises.first { it.id == exercise.id }
+        updatedExercise.comments = exercise.comments
+    }
+
+    // Saves metric comments
+    private fun saveMetricComments(metric: Metric) {
+        val updatedMetric = metrics.first { it.id == metric.id }
+        updatedMetric.comments = metric.comments
     }
 
     private fun showDatePicker() {

@@ -10,91 +10,49 @@
         android:id="@+id/recordedDetails"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/recordedMetricsText"
+        android:text="@string/recordedDetailsText"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="?attr/colorTertiary" />
 
-    <!-- Gait Number of Steps -->
+    <!-- Test Rep Min Angle -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/gaitNumStepsText"
+            android:id="@+id/minAngleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/numStepsText"
+            android:text="@string/minAngleText"
             android:textColor="?attr/colorTertiary" />
 
         <TextView
-            android:id="@+id/gaitNumSteps"
+            android:id="@+id/minAngle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/defaultZero"
+            android:text="@string/zeroDegrees"
             android:textColor="?attr/colorTertiary"
             android:layout_marginStart="4dp" />
     </LinearLayout>
 
-    <!-- Gait Cadence -->
+    <!-- Test Rep Max Angle -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/gaitCadenceText"
+            android:id="@+id/maxAngleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/cadenceText"
+            android:text="@string/maxAngleText"
             android:textColor="?attr/colorTertiary" />
 
         <TextView
-            android:id="@+id/gaitCadence"
+            android:id="@+id/maxAngle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/defaultZero"
-            android:textColor="?attr/colorTertiary"
-            android:layout_marginStart="4dp" />
-    </LinearLayout>
-
-    <!-- Gait Impact Force -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/gaitImpactForceText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/impactForceText"
-            android:textColor="?attr/colorTertiary" />
-
-        <TextView
-            android:id="@+id/gaitImpactForce"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/defaultZero"
-            android:textColor="?attr/colorTertiary"
-            android:layout_marginStart="4dp" />
-    </LinearLayout>
-
-    <!-- Gait Swing Stance Ratio -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/gaitSwingStanceRatioText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/swingStanceRatioText"
-            android:textColor="?attr/colorTertiary" />
-
-        <TextView
-            android:id="@+id/gaitSwingStanceRatio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/defaultZero"
+            android:text="@string/zeroDegrees"
             android:textColor="?attr/colorTertiary"
             android:layout_marginStart="4dp" />
     </LinearLayout>

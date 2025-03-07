@@ -255,7 +255,9 @@ class StartSetActivity : AppCompatActivity() {
                 hold = exercise!!.hold,
                 tension = tension,
                 difficulty = difficulty,
-                comments = comments
+                comments = comments,
+                minAngle = minAngle,
+                maxAngle = maxAngle
             )
             ExerciseDataStore(this, RECOVERY_DATA_PREFERENCE).saveExercisesForDate(
                 currentDate,

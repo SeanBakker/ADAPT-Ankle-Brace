@@ -5,7 +5,8 @@
         <!-- Triangle Arrow at the Top -->
         <item android:drawable="@drawable/dialog_triangle"
             android:top="-6dp"
-            android:gravity="top|center_horizontal"/>
+            android:right="80dp"
+            android:gravity="top|end"/>
 
         <!-- Main Box -->
         <item>
