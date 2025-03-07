@@ -1,5 +1,6 @@
 package com.example.adaptanklebrace.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.Gravity
@@ -10,17 +11,17 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.example.adaptanklebrace.R
 
-class CountdownDialogFragment(
+class TimerDialogFragment(
     private val isROMMetric: Boolean = false,
     private val isGaitMetric: Boolean = false,
-    private val onCountdownFinished: () -> Unit
+    private val onTimerFinished: () -> Unit
 ) : DialogFragment() {
 
-    private lateinit var countdownText: TextView
+    private lateinit var timerText: TextView
+    private var totalTestDurationMillis: Long = 5000 // Default to 5s (ROM test)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Ensures the background outside the dialog is transparent
         setStyle(STYLE_NO_TITLE, android.R.style.Theme_Translucent_NoTitleBar)
     }
 
@@ -28,8 +29,8 @@ class CountdownDialogFragment(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.fragment_countdown_dialog, container, false)
-        countdownText = view.findViewById(R.id.countdownText)
+        val view = inflater.inflate(R.layout.fragment_timer_dialog, container, false)
+        timerText = view.findViewById(R.id.timerText)
         view.visibility = View.INVISIBLE
         return view
     }
@@ -37,16 +38,18 @@ class CountdownDialogFragment(
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-            setLayout(150, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setLayout(300, ViewGroup.LayoutParams.WRAP_CONTENT)
             setBackgroundDrawableResource(android.R.color.transparent)
 
             val params = attributes
-            params.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL // Move to bottom center
-            // Adjust vertical offset
+            params.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+
             if (isROMMetric) {
                 params.y = 200
+                totalTestDurationMillis = 5000 // 5 seconds for ROM test
             } else if (isGaitMetric) {
                 params.y = 350
+                totalTestDurationMillis = 10000 // 10 seconds for Gait test
             }
             attributes = params
         }
@@ -54,24 +57,27 @@ class CountdownDialogFragment(
         view?.postDelayed({
             view?.visibility = View.VISIBLE
         }, 200)
-        startCountdown()
+
+        startTimer()
     }
 
-    private fun startCountdown() {
-        // Configure 3s countdown + 1s of showing text: "Start!"
-        object : CountDownTimer(4000, 1000) {
+    @SuppressLint("DefaultLocale, SetTextI18n")
+    private fun startTimer() {
+        object : CountDownTimer(totalTestDurationMillis, 10) { // Update every 10ms
             override fun onTick(millisUntilFinished: Long) {
-                val secondsRemaining = millisUntilFinished / 1000
-                countdownText.text = if (secondsRemaining > 0) {
-                    secondsRemaining.toString()
-                } else {
-                    "Start!"
-                }
+                val seconds = millisUntilFinished / 1000
+                val milliseconds = (millisUntilFinished % 1000) / 10  // Convert to two-digit format
+
+                val totalSeconds = totalTestDurationMillis / 1000
+                timerText.text = String.format("%02d:%02d / %02d:00", seconds, milliseconds, totalSeconds)
             }
 
             override fun onFinish() {
-                dismiss()
-                onCountdownFinished()  // Notify when countdown ends
+                timerText.text = "Done!"
+                view?.postDelayed({
+                    dismiss() // Close after 1 second
+                    onTimerFinished()
+                }, 1000)
             }
         }.start()
     }

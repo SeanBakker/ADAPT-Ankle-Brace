@@ -22,6 +22,7 @@ import com.example.adaptanklebrace.data.Metric
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.fragments.AddDifficultyAndCommentsFragment
 import com.example.adaptanklebrace.fragments.CountdownDialogFragment
+import com.example.adaptanklebrace.fragments.TimerDialogFragment
 import com.example.adaptanklebrace.services.BluetoothService
 import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
@@ -115,7 +116,6 @@ class ROMMetricActivity : AppCompatActivity() {
         finishButton.visibility = View.GONE
 
         // Periodically read angle from ADAPT device
-        handler.post(updateAngleTask)
         bluetoothService.deviceLiveData.observe(this) { pair ->
             pair?.let {
                 // Check for if the test is complete
@@ -149,7 +149,15 @@ class ROMMetricActivity : AppCompatActivity() {
             val countdownDialog = CountdownDialogFragment(isROMMetric = true) {
                 // Send start_ROM flag to device to prepare metric data collection (of ROM Test)
                 // This happens after the countdown finishes
+                handler.post(updateAngleTask)
                 bluetoothService.writeDeviceData("start_ROM")
+                val timerDialog = TimerDialogFragment(isROMMetric = true) {
+                    // Send end_ROM flag to device to end metric data collection (of ROM Test)
+                    // This happens after the timer finishes
+                    handler.removeCallbacks(updateAngleTask)
+                    bluetoothService.writeDeviceData("end_ROM")
+                }
+                timerDialog.show(supportFragmentManager, "timer_dialog")
             }
             countdownDialog.show(supportFragmentManager, "countdown_dialog")
         }

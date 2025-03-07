@@ -19,6 +19,7 @@ import com.example.adaptanklebrace.data.Metric
 import com.example.adaptanklebrace.enums.ExerciseType
 import com.example.adaptanklebrace.fragments.AddDifficultyAndCommentsFragment
 import com.example.adaptanklebrace.fragments.CountdownDialogFragment
+import com.example.adaptanklebrace.fragments.TimerDialogFragment
 import com.example.adaptanklebrace.services.BluetoothService
 import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
@@ -178,6 +179,12 @@ class GaitMetricActivity : AppCompatActivity() {
                 // Send start_Gait flag to device to prepare metric data collection (of Gait Test)
                 // This happens after the countdown finishes
                 bluetoothService.writeDeviceData("start_Gait")
+                val timerDialog = TimerDialogFragment(isGaitMetric = true) {
+                    // Send end_Gait flag to device to end metric data collection (of Gait Test)
+                    // This happens after the timer finishes
+                    bluetoothService.writeDeviceData("end_Gait")
+                }
+                timerDialog.show(supportFragmentManager, "timer_dialog")
             }
             countdownDialog.show(supportFragmentManager, "countdown_dialog")
         }

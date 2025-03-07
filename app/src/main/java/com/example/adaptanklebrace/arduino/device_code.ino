@@ -45,7 +45,7 @@ bool testInProgress = false;
 bool timedTestComplete = false;
 float triggerTimedTestComplete = -1;
 unsigned long testStartTime = 0; // Start time of the test
-const unsigned long ROM_TEST_DURATION = 5000; // 5 seconds
+unsigned long romTestDuration = 0; // Test length calculated by app
 float maxPlantarDorsiAngle = -1e6; // Start with very low number
 float minPlantarDorsiAngle = 1e6; // Start with very high number
 float maxInversionEversionAngle = -1e6; // For tracking inversion/eversion
@@ -53,7 +53,6 @@ float minInversionEversionAngle = 1e6; // For tracking inversion/eversion
 
 
 /***** GAIT VARIABLES *****/
-const unsigned long GAIT_TEST_DURATION = 10000; // Test length: 10 seconds
 const unsigned long SAMPLING_INTERVAL = 10; // Sampling interval ~100 Hz
 const unsigned long MIN_STEP_INTERVAL_MS = 250; // Minimum time between valid steps (to avoid double-counting)
 const unsigned long MINIMUM_STANCE_MS = 400; // Minimum stance duration (avoid stance phases that end too quickly)
@@ -61,6 +60,7 @@ const float GYRO_STABILITY_THRESHOLD = 30.0f; // Gyro threshold for detecting fo
 const float ALPHA_GAIT = 0.7; // Low-pass filter factor for accelerometer
 const int MAX_STEPS = 50; // Data array sizes
 
+unsigned long gaitTestDuration = 0; // Test length calculated by app
 unsigned long lastSampleTime = 0;
 unsigned long lastHeelStrikeTime = 0; // Last time we detected a heel strike
 float azFiltered = 0.0f;
@@ -191,7 +191,7 @@ float computeCadence() {
         Serial.println("No valid steps for cadence calculation.");
     } else {
         unsigned long endTime = (finalStepTime == 0)
-                                ? (testStartTime + GAIT_TEST_DURATION)
+                                ? (testStartTime + gaitTestDuration)
                                 : finalStepTime;
         float elapsedSec = (float)(endTime - firstStepTime) / 1000.0f;
         if (elapsedSec > 0.0f) {
@@ -443,6 +443,7 @@ void performROMMetricRoutine() {
         if (!testInProgress) {
             testInProgress = true;
             testStartTime = millis();
+            romTestDuration = 0;
 
             // Reset angles for new test
             maxPlantarDorsiAngle = -1e6;
@@ -527,7 +528,19 @@ void performROMMetricRoutine() {
         }
 
         // 3. Check for test completion
-        if (testInProgress && millis() - testStartTime >= ROM_TEST_DURATION) {
+        String receivedData = "";
+        if (readCharacteristic.written()) {
+            receivedData = readCharacteristicData();
+            Serial.print("Data received from Bluetooth: ");
+            Serial.println(receivedData);
+
+            // Clear the value after reading
+            readCharacteristic.writeValue((uint8_t) 0);
+        }
+
+        // 4. Trigger test completion
+        if (testInProgress && receivedData == "end_ROM") {
+            romTestDuration = millis() - testStartTime;
             testInProgress = false;
             timedTestComplete = true;
 
@@ -544,7 +557,7 @@ void performROMMetricRoutine() {
             writeCharacteristicData(plantarDorsiRange, inversionEversionRange);
 
             // Output the test results
-            Serial.println("\n5-second Range of Motion Test Results:");
+            Serial.println("\nRange of Motion Test Results:");
             Serial.print("Maximum Plantar Flexion / Dorsiflexion Range (degrees): ");
             Serial.println(plantarDorsiRange, 2);
             Serial.print("Maximum Inversion / Eversion Range (degrees): ");
@@ -563,6 +576,7 @@ void performGaitMetricRoutine() {
         if (!testInProgress && currentState == GAIT_IDLE) {
             testInProgress = true;
             testStartTime = millis();
+            gaitTestDuration = 0;
             lastSampleTime = 0;
             currentState = WAIT_HEEL_STRIKE; // Move to waiting for first heel strike
             stepIndex = 0;
@@ -723,7 +737,19 @@ void performGaitMetricRoutine() {
         }
 
         // 3. Check for test completion
-        if (testInProgress && millis() - testStartTime >= GAIT_TEST_DURATION) {
+        String receivedData = "";
+        if (readCharacteristic.written()) {
+            receivedData = readCharacteristicData();
+            Serial.print("Data received from Bluetooth: ");
+            Serial.println(receivedData);
+
+            // Clear the value after reading
+            readCharacteristic.writeValue((uint8_t) 0);
+        }
+
+        // 4. Trigger test completion
+        if (testInProgress && receivedData == "end_Gait") {
+            gaitTestDuration = millis() - testStartTime;
             testInProgress = false;
             timedTestComplete = true;
 
