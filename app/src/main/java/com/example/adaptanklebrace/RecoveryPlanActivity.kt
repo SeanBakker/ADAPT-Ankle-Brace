@@ -245,6 +245,7 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
         val parcelableExercise = exercise as Parcelable
         startExerciseIntent.putExtra(ExerciseInfo.EXERCISE_KEY, parcelableExercise)
         ContextCompat.startActivity(context, startExerciseIntent, null)
+        finish()
     }
 
     override fun onStartMetricActivity(context: Context, metric: Metric) {
@@ -252,6 +253,7 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
         val parcelableMetric = metric as Parcelable
         startMetricIntent.putExtra(ExerciseInfo.METRIC_KEY, parcelableMetric)
         ContextCompat.startActivity(context, startMetricIntent, null)
+        finish()
     }
 
     @SuppressLint("DefaultLocale", "InflateParams")

@@ -62,8 +62,10 @@ class TensionLevelWarningFragment(
             val parcelableExercise = exercise as Parcelable
             startSetIntent.putExtra(ExerciseInfo.METRIC_KEY, parcelableExercise)
             ContextCompat.startActivity(context, startSetIntent, null)
+            activity?.finish()
         }
 
+        bluetoothService.resetLiveData() // Reset live data after tension is read
         dismiss() // Close the dialog
     }
 }

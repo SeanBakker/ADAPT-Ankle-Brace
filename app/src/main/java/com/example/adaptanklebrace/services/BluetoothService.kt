@@ -48,8 +48,8 @@ class BluetoothService : Service() {
     val deviceLiveData: LiveData<Pair<Float, Float>?> get() = _deviceLiveData
 
     private val handler = Handler(Looper.getMainLooper())
-    private val MAX_RETRIES = 3
-    private val RETRY_DELAY_MS = 200L // Delay before retrying
+    private val MAX_RETRIES = 5
+    private val RETRY_DELAY_MS = 300L // Delay before retrying
 
     companion object {
         var instance: BluetoothService? = null

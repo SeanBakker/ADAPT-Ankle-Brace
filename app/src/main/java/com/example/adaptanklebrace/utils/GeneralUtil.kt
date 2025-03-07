@@ -4,13 +4,10 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.Context
-import android.content.Intent
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
-import com.example.adaptanklebrace.MainActivity
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.enums.CalendarDay
 import java.text.SimpleDateFormat
@@ -125,17 +122,6 @@ class GeneralUtil {
         fun updateTimeInput(timeInput: TextView, calendar: Calendar): String {
             timeInput.text = Converters.convertDateToString(calendar.time)
             return timeInput.text.toString()
-        }
-
-        /**
-         * Returns the user to the main activity.
-         *
-         * @param context context of the activity that is currently active
-         */
-        fun returnToMainActivity(context: Context) {
-            val intent = Intent(context, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(context, intent, null)
         }
     }
 }

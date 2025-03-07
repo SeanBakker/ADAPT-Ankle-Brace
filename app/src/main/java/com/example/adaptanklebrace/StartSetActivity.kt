@@ -219,6 +219,7 @@ class StartSetActivity : AppCompatActivity() {
             } else {
                 // Redirect the user back to the Recovery Data page
                 startActivity(Intent(this, RecoveryDataActivity::class.java))
+                finish()
             }
         }
     }

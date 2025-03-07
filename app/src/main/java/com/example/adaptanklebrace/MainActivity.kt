@@ -115,13 +115,19 @@ class MainActivity : BaseActivity(), RecoveryPlanOverviewExerciseTableRowAdapter
 
         // Initialize edit goals button
         editGoalsBtn = findViewById(R.id.editGoalsBtn)
-        editGoalsBtn.setOnClickListener { startActivity(Intent(this, RecoveryPlanActivity::class.java)) }
+        editGoalsBtn.setOnClickListener {
+            startActivity(Intent(this, RecoveryPlanActivity::class.java))
+            finish()
+        }
 
         // Initialize buttons & text related to goal completion
         goalsCompletedText = findViewById(R.id.goalsCompletedText)
         noGoalsSetText = findViewById(R.id.noGoalsSetText)
         setGoalsBtn = findViewById(R.id.setGoalsBtn)
-        setGoalsBtn.setOnClickListener { startActivity(Intent(this, RecoveryPlanActivity::class.java)) }
+        setGoalsBtn.setOnClickListener {
+            startActivity(Intent(this, RecoveryPlanActivity::class.java))
+            finish()
+        }
     }
 
     override fun onResume() {

@@ -75,6 +75,8 @@ class ConnectDeviceFragment(
             // Check and request bluetooth permissions to ADAPT device
             if (/*true || */bluetoothService.checkAndRequestBluetoothPermissions(requireActivity())) {
                 if (/*true || */bluetoothService.connectToBluetoothDevice(it)) {
+                    bluetoothService.resetLiveData() // Reset live data before reading tension
+
                     Thread.sleep(2000) // Wait for device to load
                     bluetoothService.writeDeviceData("ready")
                     Thread.sleep(2000) // Wait for device to load
@@ -106,6 +108,7 @@ class ConnectDeviceFragment(
                                 isTensionCorrect = true
                             }
                         }
+                        bluetoothService.resetLiveData() // Reset live data after tension is read
                         proceedAfterTensionCheck(isTensionCorrect, it, targetActivity, bluetoothService, exercise)
                     }
                 }
@@ -117,16 +120,18 @@ class ConnectDeviceFragment(
 
     private fun proceedAfterTensionCheck(isTensionCorrect: Boolean, it: Context, targetActivity: Class<*>, bluetoothService: BluetoothService, exercise: Exercise) {
         // Only show other dialogs if tension is correct
-        if (/* true || */isTensionCorrect) {
+        if (isTensionCorrect) {
             // Send test rep flag to device to prepare exercise data collection (of test rep)
             if (targetActivity == StartSetActivity::class.java) {
                 val testRepFragment = TestRepFragment(it, bluetoothService, exercise)
                 testRepFragment.show(parentFragmentManager, "test_rep")
             } else {
-                Thread.sleep(2000) // Wait for device to load
+                Thread.sleep(1000) // Wait for device to load
 
                 // Send no_test_rep flag to device to skip test rep
                 bluetoothService.writeDeviceData("no_test_rep")
+
+                Thread.sleep(1000) // Wait for device to load
 
                 // Start target activity to perform sets
                 // Use METRIC_KEY since only metrics will start the target activity through this execution path
@@ -134,6 +139,7 @@ class ConnectDeviceFragment(
                 val parcelableExercise = exercise as Parcelable
                 startSetIntent.putExtra(ExerciseInfo.METRIC_KEY, parcelableExercise)
                 ContextCompat.startActivity(it, startSetIntent, null)
+                activity?.finish()
             }
         }
         // Manually close fragment

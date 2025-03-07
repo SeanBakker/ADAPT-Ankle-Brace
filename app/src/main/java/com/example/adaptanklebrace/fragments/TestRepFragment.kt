@@ -41,6 +41,11 @@ class TestRepFragment(
         val exerciseNameText: TextView = view.findViewById(R.id.exerciseName)
         exerciseNameText.text = exercise.name
 
+        // Initialize the progress
+        val progressLiveDataText: TextView = view.findViewById(R.id.testRepProgressLiveDataText)
+        val progressBar: ProgressBar = view.findViewById(R.id.testRepProgressBar)
+        updateProgress(progressBar, progressLiveDataText, 0.0)
+
         // Configure start button
         val startTestRepButton: Button = view.findViewById(R.id.startTestRepBtn)
         startTestRepButton.setOnClickListener {
@@ -73,7 +78,7 @@ class TestRepFragment(
 
         // Periodically read angle from ADAPT device
         handler.post(updateAngleTask)
-        bluetoothService.deviceLiveData.observe(this) { pair ->
+        bluetoothService.deviceLiveData.observe(viewLifecycleOwner) { pair ->
             pair?.let {
                 updateProgress(progressBar, progressLiveDataText, it.first.toDouble())
                 Log.i("TEST_REP", "Angle data received: ${it.first}")
@@ -85,7 +90,7 @@ class TestRepFragment(
     private fun endTestRep() {
         Thread.sleep(1000) // Wait for device to load
         // Remove observers (no longer collecting live data)
-        bluetoothService.deviceLiveData.removeObservers(this)
+        bluetoothService.deviceLiveData.removeObservers(viewLifecycleOwner)
 
         // Send finish flag to device to end test rep
         bluetoothService.writeDeviceData("test_complete")
