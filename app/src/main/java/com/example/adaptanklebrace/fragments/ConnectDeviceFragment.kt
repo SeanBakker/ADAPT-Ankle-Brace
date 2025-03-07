@@ -57,8 +57,6 @@ class ConnectDeviceFragment(
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
 
-        // todo: fix bug with staying connected to bluetooth service even when no other activities open
-
         if (!isManuallyDismissed) {
             val bluetoothService = BluetoothService.instance
             bluetoothService?.disconnect() // Ensure Bluetooth service disconnects
@@ -135,6 +133,7 @@ class ConnectDeviceFragment(
                             }
                         }
                         bluetoothService.resetLiveData() // Reset live data after tension is read
+                        Thread.sleep(1000) // Wait for device to load
                         proceedAfterTensionCheck(isTensionCorrect, it, targetActivity, bluetoothService, exercise)
                     }
                 }

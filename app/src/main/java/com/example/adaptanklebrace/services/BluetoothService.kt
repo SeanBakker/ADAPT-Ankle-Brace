@@ -13,6 +13,7 @@ import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothManager
+import android.bluetooth.BluetoothProfile
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -294,11 +295,31 @@ class BluetoothService : Service() {
             ) {
                 resetLiveData()
                 bluetoothGatt?.disconnect()
-                bluetoothGatt?.close()
-                bluetoothGatt = null
             }
         } else {
             Log.w("Bluetooth", "No active Bluetooth connection to disconnect.")
+        }
+    }
+
+    private val gattCallback = object : BluetoothGattCallback() {
+        override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+            when (newState) {
+                BluetoothProfile.STATE_DISCONNECTED -> {
+                    Log.i("Bluetooth", "Device disconnected.")
+
+                    // Close GATT and clear the reference
+                    if (ActivityCompat.checkSelfPermission(
+                            this@BluetoothService,
+                            Manifest.permission.BLUETOOTH_CONNECT
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        gatt.close()
+                        bluetoothGatt = null
+                    }
+                }
+                BluetoothProfile.STATE_CONNECTING -> Log.i("Bluetooth", "Connecting...")
+                BluetoothProfile.STATE_CONNECTED -> Log.i("Bluetooth", "Connected!")
+            }
         }
     }
 
