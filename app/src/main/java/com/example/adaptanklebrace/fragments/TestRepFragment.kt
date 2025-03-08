@@ -45,6 +45,10 @@ class TestRepFragment(
         val progressLiveDataText: TextView = view.findViewById(R.id.testRepProgressLiveDataText)
         val progressBar: ProgressBar = view.findViewById(R.id.testRepProgressBar)
         updateProgress(progressBar, progressLiveDataText, 0.0)
+        handler.removeCallbacks(updateAngleTask)
+        bluetoothService.deviceLiveData.removeObservers(viewLifecycleOwner)
+        bluetoothService.resetLiveData()
+        Thread.sleep(1000) // Wait for device to load
 
         // Configure start button
         val startTestRepButton: Button = view.findViewById(R.id.startTestRepBtn)
@@ -89,8 +93,10 @@ class TestRepFragment(
     // Complete test rep and trigger sets to begin
     private fun endTestRep() {
         Thread.sleep(1000) // Wait for device to load
-        // Remove observers (no longer collecting live data)
+
+        // Cleanup
         bluetoothService.deviceLiveData.removeObservers(viewLifecycleOwner)
+        handler.removeCallbacks(updateAngleTask)
 
         // Send finish flag to device to end test rep
         bluetoothService.writeDeviceData("test_complete")

@@ -187,6 +187,7 @@ class StartSetActivity : AppCompatActivity() {
         // Configure end set button
         endSetButton.setOnClickListener {
             isLiveData = false
+            updateProgress(0.0) // Reset progress bar
 
             // Stop reading periodically from device
             handler.removeCallbacks(updateAngleTask)
@@ -222,6 +223,9 @@ class StartSetActivity : AppCompatActivity() {
                 finish()
             }
         }
+
+        // Reset progress bar
+        updateProgress(0.0)
     }
 
     /**

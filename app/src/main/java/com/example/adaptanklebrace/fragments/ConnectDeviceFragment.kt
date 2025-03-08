@@ -148,6 +148,7 @@ class ConnectDeviceFragment(
         if (isTensionCorrect) {
             // Send test rep flag to device to prepare exercise data collection (of test rep)
             if (targetActivity == StartSetActivity::class.java) {
+                bluetoothService.resetLiveData() // Reset live data after tension is read
                 val testRepFragment = TestRepFragment(it, bluetoothService, exercise)
                 testRepFragment.show(parentFragmentManager, "test_rep")
             } else {

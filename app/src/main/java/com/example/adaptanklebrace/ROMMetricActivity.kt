@@ -138,7 +138,7 @@ class ROMMetricActivity : AppCompatActivity() {
                 } else {
                     // Update live data
                     updateProgress(Pair(it.first.toDouble(), it.second.toDouble()))
-                    Log.i("ROM", "Angle data received: (${it.first},${it.second})")
+                    Log.i("ROM", "Angle data received: (${it.first}, ${it.second})")
                 }
             }
         }
