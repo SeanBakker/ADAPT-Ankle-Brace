@@ -229,16 +229,32 @@
                     android:gravity="center" />
 
                 <!-- Edit Exercise Goals -->
-                <Button
-                    android:id="@+id/setGoalsBtn"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/noGoalsSetText"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/setGoalsBtn"
-                    android:layout_gravity="center" />
+                    android:layout_marginTop="10dp">
+
+                    <Button
+                        android:id="@+id/setGoalsBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/copyGoalsBtn"
+                        android:layout_marginEnd="32dp"
+                        android:text="@string/setGoalsBtn" />
+
+                    <Button
+                        android:id="@+id/copyGoalsBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/setGoalsBtn"
+                        android:layout_marginStart="32dp"
+                        android:text="@string/copyGoalsBtn" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

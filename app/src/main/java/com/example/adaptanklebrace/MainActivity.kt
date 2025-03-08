@@ -17,11 +17,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.adaptanklebrace.RecoveryPlanActivity.Companion.RECOVERY_PLAN_PREFERENCE
 import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewExerciseTableRowAdapter
 import com.example.adaptanklebrace.adapters.RecoveryPlanOverviewMetricTableRowAdapter
 import com.example.adaptanklebrace.data.Exercise
 import com.example.adaptanklebrace.data.Metric
 import com.example.adaptanklebrace.services.BluetoothService
+import com.example.adaptanklebrace.utils.ExerciseDataStore
 import com.example.adaptanklebrace.utils.ExerciseUtil
 import com.example.adaptanklebrace.utils.GeneralUtil
 import com.example.adaptanklebrace.utils.SharedPreferencesUtil
@@ -38,6 +40,7 @@ class MainActivity : BaseActivity(), RecoveryPlanOverviewExerciseTableRowAdapter
     private lateinit var goalsCompletedText: TextView
     private lateinit var noGoalsSetText: TextView
     private lateinit var setGoalsBtn: Button
+    private lateinit var copyGoalsBtn: Button
 
     // Exercise table variables
     private lateinit var exerciseTableLayout: ConstraintLayout
@@ -124,9 +127,13 @@ class MainActivity : BaseActivity(), RecoveryPlanOverviewExerciseTableRowAdapter
         goalsCompletedText = findViewById(R.id.goalsCompletedText)
         noGoalsSetText = findViewById(R.id.noGoalsSetText)
         setGoalsBtn = findViewById(R.id.setGoalsBtn)
+        copyGoalsBtn = findViewById(R.id.copyGoalsBtn)
         setGoalsBtn.setOnClickListener {
             startActivity(Intent(this, RecoveryPlanActivity::class.java))
             finish()
+        }
+        copyGoalsBtn.setOnClickListener {
+            copyGoalsFromPreviousWeek(exerciseAdapter, metricAdapter, currentWeek)
         }
     }
 
@@ -199,6 +206,41 @@ class MainActivity : BaseActivity(), RecoveryPlanOverviewExerciseTableRowAdapter
     }
 
     /**
+     * Copy goals from the previous week to the current week.
+     *
+     * @param exerciseAdapter adapter for exercise table
+     * @param metricAdapter adapter for metric table
+     * @param week current week
+     */
+    private fun copyGoalsFromPreviousWeek(exerciseAdapter: RecoveryPlanOverviewExerciseTableRowAdapter, metricAdapter: RecoveryPlanOverviewMetricTableRowAdapter, week: String) {
+        // Get exercises and metrics from previous week
+        val previousWeek = recoveryPlanActivity.calculatePreviousWeek(week)
+        val exercises = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getExercisesForDate(previousWeek)
+        val metrics = ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).getMetricsForDate(previousWeek)
+
+        // Set the new exercises and metrics
+        exerciseAdapter.setExercises(exercises)
+        metricAdapter.setMetrics(metrics)
+
+        // Save to storage
+        ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveExercisesForDate(week, exercises)
+        ExerciseDataStore(this, RECOVERY_PLAN_PREFERENCE).saveMetricsForDate(week, metrics)
+
+        // Update weekly progress
+        calculateWeeklyProgress(week)
+
+        // Update tables on MainActivity
+        exerciseRecyclerView.post {
+            ExerciseUtil.updateRecyclerViewOverviewVisibility(exerciseAdapter, exerciseTableLayout)
+            checkIfBothRecyclerViewsCompleted()
+        }
+        metricRecyclerView.post {
+            ExerciseUtil.updateRecyclerViewOverviewVisibility(metricAdapter, metricTableLayout)
+            checkIfBothRecyclerViewsCompleted()
+        }
+    }
+
+    /**
      * Sets the visibility of various text views and buttons related to
      * when no goals are set or all goals are completed.
      *
@@ -211,9 +253,11 @@ class MainActivity : BaseActivity(), RecoveryPlanOverviewExerciseTableRowAdapter
         if (noGoals) {
             noGoalsSetText.visibility = View.VISIBLE
             setGoalsBtn.visibility = View.VISIBLE
+            copyGoalsBtn.visibility = View.VISIBLE
         } else {
             noGoalsSetText.visibility = View.GONE
             setGoalsBtn.visibility = View.GONE
+            copyGoalsBtn.visibility = View.GONE
         }
     }
 

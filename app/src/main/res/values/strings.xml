@@ -46,8 +46,8 @@
     <!-- Page Text -->
     <string name="weeklyGoalProgressText">Weekly Goal Progress:</string>
     <string name="overviewRecoveryPlanGoalsText">Overview of Recovery Plan Goals:</string>
-    <string name="congratulationsGoalsCompletedText">Congratulations! All goals have been completed for this week!\n New goals can be added from the Recovery Plan page.</string>
-    <string name="noGoalsSetText">There are no goals set for this week, click below to set new goals!</string>
+    <string name="congratulationsGoalsCompletedText">Congratulations! All goals have been completed for this week!\nNew goals can be added from the Recovery Plan page.</string>
+    <string name="noGoalsSetText">There are no goals set for this week.\nClick below to set new goals or copy your goals from last week!</string>
     <string name="totalROMText">Total ROM:</string>
     <string name="difficultyText">Difficulty:</string>
     <string name="gaitTestResultsText">Gait Test Results:</string>
@@ -77,6 +77,7 @@
     <string name="finishMetricBtn">Finish &amp; Save Metric</string>
     <string name="editGoalsBtn">Edit Goals</string>
     <string name="setGoalsBtn">Set Goals</string>
+    <string name="copyGoalsBtn">Copy Goals</string>
     <string name="viewMetricsBtn">View Metrics</string>
     <string name="viewBtn">View</string>
     <string name="saveDataBtn">Save Data</string>

@@ -553,6 +553,24 @@ class RecoveryPlanActivity : BaseActivity(), RecoveryPlanExerciseTableRowAdapter
         adapter.setMetrics(metrics)
     }
 
+    // Get the previous week string from the current week
+    fun calculatePreviousWeek(currentWeek: String): String {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val dates = currentWeek.split(" - ") // Extract start and end dates from the given range
+        if (dates.size != 2) return "Invalid Date Range" // Ensure valid input
+
+        val calendar = Calendar.getInstance()
+        val startDate = dateFormat.parse(dates[0]) // Parse the start date of the current week
+
+        if (startDate != null) {
+            calendar.time = startDate
+            calendar.add(Calendar.DATE, -7) // Move back by one week
+
+            return calculateWeekRange(calendar) // Use existing function to format the previous week
+        }
+        return "Invalid Date Range"
+    }
+
     // Return the list of exercise data saved for the given week and exercise type
     private fun getWeeklyExerciseDataByName(week: String, exerciseName: String): List<Exercise> {
         // Get the exercise data saved for the chosen week
