@@ -39,5 +39,17 @@
             android:text="@string/reps"
             android:textStyle="bold"
             android:gravity="center" />
+
+        <!-- Hold time -->
+        <TextView
+            android:id="@+id/holdTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:textColor="?attr/colorOnPrimary"
+            android:text="@string/holdSecs"
+            android:textStyle="bold"
+            android:gravity="center" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adaptanklebrace.R
 import com.example.adaptanklebrace.data.ExerciseSet
 import com.example.adaptanklebrace.utils.GeneralUtil
+import kotlin.math.floor
 
 class ExerciseSetsTableRowAdapter(
     private val sets: MutableList<ExerciseSet>,
@@ -35,6 +36,7 @@ class ExerciseSetsTableRowAdapter(
     inner class SetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val setNumber: View = view.findViewById(R.id.setNumber)
         val repsCount: View = view.findViewById(R.id.repsCount)
+        val holdTime: View = view.findViewById(R.id.holdTime)
 
         // Bind method will update based on the view type
         fun bind(set: ExerciseSet?, viewType: Int) {
@@ -43,10 +45,12 @@ class ExerciseSetsTableRowAdapter(
                 // Header titles
                 (setNumber as? TextView)?.text = getString(context, R.string.setNumber)
                 (repsCount as? TextView)?.text = getString(context, R.string.reps)
+                (holdTime as? TextView)?.text = getString(context, R.string.holdSecs)
             } else {
                 // Row data
                 (setNumber as? TextView)?.text = set?.id.toString()
                 (repsCount as? EditText)?.setText(set?.reps.toString())
+                (holdTime as? EditText)?.setText(set?.hold.toString())
 
                 // Set up listeners for editable fields
                 (repsCount as? EditText)?.apply {
@@ -59,11 +63,30 @@ class ExerciseSetsTableRowAdapter(
                     val newWatcher = addTextChangedListener {
                         val currentReps = it.toString().toIntOrNull()
 
-                        // Restrict reps count to be >0
+                        // Restrict reps count to be >=0
                         if (currentReps == null || currentReps < 0) {
                             GeneralUtil.showToast(context, LayoutInflater.from(context), "Please enter a reps count greater than or equal to 0.")
                         } else {
                             set?.reps = currentReps
+                        }
+                    }
+                    tag = newWatcher
+                }
+                (holdTime as? EditText)?.apply {
+                    // Remove previous listener to avoid duplicate events
+                    val currentWatcher = tag as? TextWatcher
+                    if (currentWatcher != null) {
+                        removeTextChangedListener(currentWatcher)
+                    }
+
+                    val newWatcher = addTextChangedListener {
+                        val currentHold = it.toString().toDoubleOrNull()
+
+                        // Restrict hold time to be >=0
+                        if (currentHold == null || currentHold < 0) {
+                            GeneralUtil.showToast(context, LayoutInflater.from(context), "Please enter a hold time greater than or equal to 0.")
+                        } else {
+                            set?.hold = currentHold
                         }
                     }
                     tag = newWatcher
@@ -108,6 +131,13 @@ class ExerciseSetsTableRowAdapter(
     override fun onViewRecycled(holder: SetViewHolder) {
         super.onViewRecycled(holder)
         (holder.repsCount as? EditText)?.apply {
+            val currentWatcher = tag as? TextWatcher
+            if (currentWatcher != null) {
+                removeTextChangedListener(currentWatcher)
+                tag = null
+            }
+        }
+        (holder.holdTime as? EditText)?.apply {
             val currentWatcher = tag as? TextWatcher
             if (currentWatcher != null) {
                 removeTextChangedListener(currentWatcher)
@@ -175,7 +205,7 @@ class ExerciseSetsTableRowAdapter(
      * Retrieves the average number of reps for all sets completed.
      * Floor the resulting average to an integer.
      *
-     * @return integer item count
+     * @return integer average reps
      */
     fun getAverageReps(): Int {
         val sets = getSetsWithNonZeroReps()
@@ -185,6 +215,25 @@ class ExerciseSetsTableRowAdapter(
                 repsTotal += set.reps
             }
             return repsTotal.floorDiv(sets.size)
+        } else {
+            return 0
+        }
+    }
+
+    /**
+     * Retrieves the average hold time for all sets completed.
+     * Floor the resulting average to an integer.
+     *
+     * @return integer average hold time
+     */
+    fun getAverageHoldTime(): Int {
+        val sets = getSetsWithNonZeroReps()
+        if (sets.isNotEmpty()) {
+            var holdTotal = 0.0
+            for (set in sets) {
+                holdTotal += set.hold
+            }
+            return floor(holdTotal / sets.size).toInt()
         } else {
             return 0
         }

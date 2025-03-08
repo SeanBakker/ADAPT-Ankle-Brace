@@ -20,6 +20,11 @@ BLECharacteristic readCharacteristic("f8c2f5f0-4e8c-4a95-b9c1-3c8c33b457c4", BLE
 
 /***** EXERCISE VARIABLES *****/
 float repsCount = 0;
+float holdTime = 0;
+unsigned long holdStartTime = 0;
+float totalHoldTime = 0;
+float averageHoldTime = 0;
+bool isHolding = false;
 bool repsCounted = false; // Variable to keep track of counting the current rep
 float previousPlantarDorsiAngle = 0;
 float previousInversionEversionAngle = 0;
@@ -324,6 +329,10 @@ void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false)
     if (!testInProgress) {
         repsCounted = false;
         testInProgress = true;
+        holdTime = 0;
+        totalHoldTime = 0;
+        averageHoldTime = 0;
+        isHolding = false;
 
         // Reset angles for new test
         if (isTestRep) {
@@ -403,23 +412,56 @@ void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false)
                     }
 
                     // Check if a rep is completed (user reached near max and was moving upward)
-                    if (plantarDorsiAngle >= (maxPlantarDorsiAngle - repMaxRange) &&
-                            plantarDorsiAngle > previousPlantarDorsiAngle) {  // Ensure movement is upward
-                        repsCount++;
-                        repsCounted = true;
-                        Serial.print("Reps counted: ");
-                        Serial.println(String(repsCount));
+                    if (plantarDorsiAngle >= (maxPlantarDorsiAngle - repMaxRange)) {
+                        // Increase hold time
+                        if (!isHolding) {
+                            holdStartTime = millis(); // Start timing
+                            isHolding = true;
+                        }
+                        holdTime = (millis() - holdStartTime) / 1000.0f; // Convert to seconds
+                        Serial.print("Hold time: ");
+                        Serial.println(String(holdTime));
+
+                        if (plantarDorsiAngle > previousPlantarDorsiAngle) {  // Ensure movement is upward
+                            // Calculate rep
+                            repsCount++;
+                            repsCounted = true;
+                            Serial.print("Reps counted: ");
+                            Serial.println(String(repsCount));
+                        }
                     }
                 } else {
+                    // Calculate rep max range
+                    float repMaxRange = REP_MIN_RANGE;
+                    if (maxPlantarDorsiAngle * 0.1 > REP_MIN_RANGE) {
+                        repMaxRange = (maxPlantarDorsiAngle * 0.1);
+                    }
                     // Calculate rep min range
                     float repMinRange = REP_MIN_RANGE;
                     if (minPlantarDorsiAngle * 0.1 > REP_MIN_RANGE) {
                         repMinRange = (minPlantarDorsiAngle * 0.1);
                     }
 
+                    // Calculate hold time when near max angle
+                    if (plantarDorsiAngle >= (maxPlantarDorsiAngle - repMaxRange)) {
+                        // Increase hold time
+                        if (!isHolding) {
+                            isHolding = true;
+                        }
+                        holdTime = (millis() - holdStartTime) / 1000.0f; // Convert to seconds
+                        Serial.print("Hold time: ");
+                        Serial.println(String(holdTime));
+                    } else {
+                        isHolding = false;
+                    }
+
                     // Check if the next rep is started (user moved downward past the min threshold)
                     if (plantarDorsiAngle <= (minPlantarDorsiAngle + repMinRange) &&
                             plantarDorsiAngle < previousPlantarDorsiAngle) {  // Ensure movement is downward
+                        // Calculate total hold time
+                        totalHoldTime += holdTime;
+                        holdTime = 0;
+
                         repsCounted = false;
                         Serial.println("Starting next rep!");
                     }
@@ -446,23 +488,56 @@ void performExerciseRoutine(bool isPlantarDorsiExercise, bool isTestRep = false)
                     }
 
                     // Check if a rep is completed (user reached near max and was moving upward)
-                    if (inversionEversionAngle >= (maxInversionEversionAngle - repMaxRange) &&
-                            inversionEversionAngle > previousInversionEversionAngle) {
-                        repsCount++;
-                        repsCounted = true;
-                        Serial.print("Reps counted: ");
-                        Serial.println(String(repsCount));
+                    if (inversionEversionAngle >= (maxInversionEversionAngle - repMaxRange)) {
+                        // Increase hold time
+                        if (!isHolding) {
+                            holdStartTime = millis(); // Start timing
+                            isHolding = true;
+                        }
+                        holdTime = (millis() - holdStartTime) / 1000.0f; // Convert to seconds
+                        Serial.print("Hold time: ");
+                        Serial.println(String(holdTime));
+
+                        if (inversionEversionAngle > previousInversionEversionAngle) {  // Ensure movement is upward
+                            // Calculate rep
+                            repsCount++;
+                            repsCounted = true;
+                            Serial.print("Reps counted: ");
+                            Serial.println(String(repsCount));
+                        }
                     }
                 } else {
+                    // Calculate rep max range
+                    float repMaxRange = REP_MIN_RANGE;
+                    if (maxInversionEversionAngle * 0.1 > REP_MIN_RANGE) {
+                        repMaxRange = (maxInversionEversionAngle * 0.1);
+                    }
                     // Calculate rep min range
                     float repMinRange = REP_MIN_RANGE;
                     if (minInversionEversionAngle * 0.1 > REP_MIN_RANGE) {
                         repMinRange = (minInversionEversionAngle * 0.1);
                     }
 
+                    // Calculate hold time when near max angle
+                    if (inversionEversionAngle >= (maxInversionEversionAngle - repMaxRange)) {
+                        // Increase hold time
+                        if (!isHolding) {
+                            isHolding = true;
+                        }
+                        holdTime = (millis() - holdStartTime) / 1000.0f; // Convert to seconds
+                        Serial.print("Hold time: ");
+                        Serial.println(String(holdTime));
+                    } else {
+                        isHolding = false;
+                    }
+
                     // Check if the next rep is started (user moved downward past the min threshold)
                     if (inversionEversionAngle <= (minInversionEversionAngle + repMinRange) &&
                             inversionEversionAngle < previousInversionEversionAngle) {
+                        // Calculate total hold time
+                        totalHoldTime += holdTime;
+                        holdTime = 0;
+
                         repsCounted = false;
                         Serial.println("Starting next rep!");
                     }
@@ -1078,6 +1153,7 @@ void loop() {
                             if (receivedData == "start_plantar") {
                                 // Setup variables for exercise
                                 repsCount = 0;
+                                averageHoldTime = 0;
 
                                 Serial.println("Device is starting Plantar Flexion exercise!");
                                 delay(50);
@@ -1100,10 +1176,15 @@ void loop() {
 
                                         if (receivedData == "end_set") {
                                             /***** SET - SEND REPS COMPLETED *****/
+                                            if (repsCounted) {
+                                                // Add extra hold time
+                                                totalHoldTime += holdTime;
+                                            }
+                                            averageHoldTime = totalHoldTime / repsCount;
                                             Serial.println("Set Complete!");
-                                            writeCharacteristicData(repsCount);
-                                            Serial.print("Sending reps count: ");
-                                            Serial.println(String(repsCount));
+                                            writeCharacteristicData(repsCount, averageHoldTime);
+                                            Serial.print("Sending reps count / hold time: ");
+                                            Serial.println("(" + String(repsCount) + ", " + String(averageHoldTime) + ")");
                                             break;
                                         }
                                     }
@@ -1111,6 +1192,7 @@ void loop() {
                             } else if (receivedData == "start_dorsiflexion") {
                                 // Setup variables for exercise
                                 repsCount = 0;
+                                averageHoldTime = 0;
 
                                 Serial.println("Device is starting Dorsiflexion exercise!");
                                 delay(50);
@@ -1133,10 +1215,15 @@ void loop() {
 
                                         if (receivedData == "end_set") {
                                             /***** SET - SEND REPS COMPLETED *****/
+                                            if (repsCounted) {
+                                                // Add extra hold time
+                                                totalHoldTime += holdTime;
+                                            }
+                                            averageHoldTime = totalHoldTime / repsCount;
                                             Serial.println("Set Complete!");
-                                            writeCharacteristicData(repsCount);
-                                            Serial.print("Sending reps count: ");
-                                            Serial.println(String(repsCount));
+                                            writeCharacteristicData(repsCount, averageHoldTime);
+                                            Serial.print("Sending reps count / hold time: ");
+                                            Serial.println("(" + String(repsCount) + ", " + String(averageHoldTime) + ")");
                                             break;
                                         }
                                     }
@@ -1144,6 +1231,7 @@ void loop() {
                             } else if (receivedData == "start_inversion") {
                                 // Setup variables for exercise
                                 repsCount = 0;
+                                averageHoldTime = 0;
 
                                 Serial.println("Device is starting Inversion exercise!");
                                 delay(50);
@@ -1166,10 +1254,15 @@ void loop() {
 
                                         if (receivedData == "end_set") {
                                             /***** SET - SEND REPS COMPLETED *****/
+                                            if (repsCounted) {
+                                                // Add extra hold time
+                                                totalHoldTime += holdTime;
+                                            }
+                                            averageHoldTime = totalHoldTime / repsCount;
                                             Serial.println("Set Complete!");
-                                            writeCharacteristicData(repsCount);
-                                            Serial.print("Sending reps count: ");
-                                            Serial.println(String(repsCount));
+                                            writeCharacteristicData(repsCount, averageHoldTime);
+                                            Serial.print("Sending reps count / hold time: ");
+                                            Serial.println("(" + String(repsCount) + ", " + String(averageHoldTime) + ")");
                                             break;
                                         }
                                     }
@@ -1177,6 +1270,7 @@ void loop() {
                             } else if (receivedData == "start_eversion") {
                                 // Setup variables for exercise
                                 repsCount = 0;
+                                averageHoldTime = 0;
 
                                 Serial.println("Device is starting Eversion exercise!");
                                 delay(50);
@@ -1199,10 +1293,15 @@ void loop() {
 
                                         if (receivedData == "end_set") {
                                             /***** SET - SEND REPS COMPLETED *****/
+                                            if (repsCounted) {
+                                                // Add extra hold time
+                                                totalHoldTime += holdTime;
+                                            }
+                                            averageHoldTime = totalHoldTime / repsCount;
                                             Serial.println("Set Complete!");
-                                            writeCharacteristicData(repsCount);
-                                            Serial.print("Sending reps count: ");
-                                            Serial.println(String(repsCount));
+                                            writeCharacteristicData(repsCount, averageHoldTime);
+                                            Serial.print("Sending reps count / hold time: ");
+                                            Serial.println("(" + String(repsCount) + ", " + String(averageHoldTime) + ")");
                                             break;
                                         }
                                     }

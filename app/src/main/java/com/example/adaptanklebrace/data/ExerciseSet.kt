@@ -6,17 +6,20 @@ import java.io.Serializable
 
 data class ExerciseSet(
     val id: Int, // Unique identifier for tables
-    var reps: Int = 0
+    var reps: Int = 0,
+    var hold: Double = 0.0
 ) : Parcelable, Serializable {
 
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
-        parcel.readInt()
+        parcel.readInt(),
+        parcel.readDouble()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
         parcel.writeInt(reps)
+        parcel.writeDouble(hold)
     }
 
     override fun describeContents(): Int {

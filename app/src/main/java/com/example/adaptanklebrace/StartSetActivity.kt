@@ -59,7 +59,7 @@ class StartSetActivity : AppCompatActivity() {
     private var sets: MutableList<ExerciseSet> = mutableListOf()
 
     @Suppress("DEPRECATION")
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "DefaultLocale")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start_set)
@@ -157,7 +157,8 @@ class StartSetActivity : AppCompatActivity() {
                     isSetCompleted = false
                     // Updates rep count when set is completed
                     Log.i("SET", "Rep count received: ${it.first}")
-                    updateRepCount(it.first.toInt())
+                    Log.i("SET", "Hold time received: ${it.second}")
+                    updateRowData(it.first.toInt(), String.format("%.1f", it.second.toDouble()).toDouble())
                 } else if (isLiveData) {
                     // Updates live data
                     updateProgress(it.first.toDouble())
@@ -249,15 +250,18 @@ class StartSetActivity : AppCompatActivity() {
         // Calculate reps completed as an average of all >0 reps in the table
         val repsCompleted = setsAdapter.getAverageReps()
 
-        // Sets and reps must be >0 to save data
-        if (setsCompleted > 0 && repsCompleted > 0) {
+        // Calculate hold time as an average of all >0 hold times in the table
+        val holdTimeCompleted = setsAdapter.getAverageHoldTime()
+
+        // Sets/reps/hold must be >0 to save data
+        if (setsCompleted > 0 && repsCompleted > 0 && holdTimeCompleted > 0) {
             // Save the exercise data to the Recovery Data table
             val completedExercise = Exercise(
                 id = ExerciseUtil.generateNewExerciseId(existingExercises),
                 name = exercise!!.name,
                 sets = setsCompleted,
                 reps = repsCompleted,
-                hold = exercise!!.hold,
+                hold = holdTimeCompleted,
                 tension = tension,
                 difficulty = difficulty,
                 comments = comments,
@@ -297,24 +301,27 @@ class StartSetActivity : AppCompatActivity() {
     }
 
     /**
-     * Updates the rep count of the corresponding set row in the table.
+     * Updates the rep count and hold time of the corresponding set row in the table.
      * If all rows are non-zero, a new row is added to the table.
      *
      * @param newRepCount reps counted from the device to store
+     * @param newHoldTime average hold time calculated from the device to store
      */
-    private fun updateRepCount(newRepCount: Int) {
+    private fun updateRowData(newRepCount: Int, newHoldTime: Double) {
         val exerciseSet = setsAdapter.getNextSetWithZeroReps()
 
         if (exerciseSet != null) {
-            // Row exists, update the reps count
+            // Row exists, update the reps count & hold time
             exerciseSet.reps = newRepCount
+            exerciseSet.hold = newHoldTime
             setsAdapter.notifyItemChanged(exerciseSet.id)
         } else {
             // All rows are non-zero, create new row
             setsAdapter.addSetRow(
                 ExerciseSet(
                     id = ExerciseUtil.generateNewSetId(sets),
-                    reps = newRepCount
+                    reps = newRepCount,
+                    hold = newHoldTime
                 )
             )
         }
