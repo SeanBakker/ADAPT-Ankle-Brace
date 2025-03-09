@@ -50,7 +50,7 @@ class AddDifficultyAndCommentsFragment(
             val difficultyLevel = difficultyLevelInput.text.toString().toIntOrNull()
             val comments = commentsInput.text.toString()
 
-            if (tensionLevel != null && tensionLevel !in 1..6) {
+            if (tensionLevel != null && tensionLevel !in 1..5) {
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterTensionOnDeviceToast))
             } else if (difficultyLevel != null && difficultyLevel !in 0..10) {
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterDifficultyLevelToast))

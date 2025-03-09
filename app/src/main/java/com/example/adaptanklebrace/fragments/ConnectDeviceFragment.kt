@@ -93,12 +93,10 @@ class ConnectDeviceFragment(
 
                             /* Check if the tension level may be correct (330 degrees potentiometer)
                                 - 1 and 5 will appear as the same
-                                - 2 and 6 will appear as the same
                              */
                             val tensionLevel1Correct: Boolean = if (deviceTension1 != exercise.tension && deviceTension1 in 0..6) {
                                 when (exercise.tension) {
                                     5 -> { deviceTension1 == 1 }
-                                    6 -> { deviceTension1 == 2 }
                                     else -> false
                                 }
                             } else {
@@ -107,7 +105,6 @@ class ConnectDeviceFragment(
                             val tensionLevel2Correct: Boolean = if (deviceTension2 != exercise.tension && deviceTension2 in 0..6) {
                                 when (exercise.tension) {
                                     5 -> { deviceTension2 == 1 }
-                                    6 -> { deviceTension2 == 2 }
                                     else -> false
                                 }
                             } else {

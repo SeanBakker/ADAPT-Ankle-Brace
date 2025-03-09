@@ -83,7 +83,7 @@ class AddExerciseGoalRowFragment(
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidRepsToast))
             } else if (holdDuration == null || holdDuration < 0) {
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidHoldToast))
-            } else if (tensionLevel == null || tensionLevel !in 1..6) {
+            } else if (tensionLevel == null || tensionLevel !in 1..5) {
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidTensionToast))
             } else if (freqNumber == null || freqNumber <= 0) {
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterValidFrequencyNumberToast))

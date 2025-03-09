@@ -37,7 +37,7 @@
     <string name="comments">Comments</string>
     <string name="viewMetrics">View Metrics</string>
     <string name="viewDetails">View Details</string>
-    <string name="tensionRange">Tension Level (1–6):</string>
+    <string name="tensionRange">Tension Level (1–5):</string>
     <string name="difficultyRange">Difficulty Level (1–10):</string>
     <string name="defaultZero">0</string>
     <string name="noData">---</string>
@@ -128,8 +128,8 @@
     <string name="enterValidSetsToast">Please enter a valid number of sets.</string>
     <string name="enterValidRepsToast">Please enter a valid number of reps.</string>
     <string name="enterValidHoldToast">Please enter a valid hold duration.</string>
-    <string name="enterValidTensionToast">Please enter a tension level between 1 and 6.</string>
-    <string name="enterTensionOnDeviceToast">Please enter the tension level between 1 and 6 that is set on the device.</string>
+    <string name="enterValidTensionToast">Please enter a tension level between 1 and 5.</string>
+    <string name="enterTensionOnDeviceToast">Please enter the tension level between 1 and 5 that is set on the device.</string>
     <string name="exerciseAlreadyExistsToast">This exercise already exists in the table, please edit the goal instead.</string>
     <string name="metricAlreadyExistsToast">This metric already exists in the table, please edit the goal instead.</string>
     <string name="enableNotificationsToast">Please enable notification permissions in the settings.</string>

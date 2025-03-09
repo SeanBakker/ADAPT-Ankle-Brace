@@ -134,8 +134,8 @@ class RecoveryDataExerciseTableRowAdapter(
                     val newWatcher = addTextChangedListener {
                         val currentTension = text.toString().toIntOrNull()
 
-                        // Restrict tension level between 1-6
-                        if (currentTension == null || currentTension !in 1..6) {
+                        // Restrict tension level between 1-5
+                        if (currentTension == null || currentTension !in 1..5) {
                             GeneralUtil.showToast(context, LayoutInflater.from(context), context.getString(R.string.enterValidTensionToast))
                         } else {
                             exercise?.tension = currentTension
@@ -153,7 +153,7 @@ class RecoveryDataExerciseTableRowAdapter(
                             val currentTension = text.toString().toIntOrNull()
 
                             // If the input is invalid, reset to the original tension value
-                            if (currentTension !in 1..6) {
+                            if (currentTension !in 1..5) {
                                 // Use the initial value when focus was first gained
                                 initialTension?.let {
                                     exercise?.tension = it
