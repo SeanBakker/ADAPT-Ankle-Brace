@@ -105,8 +105,8 @@ int tensionLevel1 = 0; // Tension level for Plantar/Dorsiflexion to send to app
 int tensionLevel2 = 0; // Tension level for Inversion/Eversion to send to app
 
 // Define the analog input pins
-const int potPin1 = A0;  // First potentiometer on A0 (plantar/dorsiflexion)
-const int potPin2 = A1;  // Second potentiometer on A1 (inversion/eversion)
+const int potPin1 = A1;  // First potentiometer on A0 (plantar/dorsiflexion)
+const int potPin2 = A0;  // Second potentiometer on A1 (inversion/eversion)
 const float referenceVoltage = 3.3;  // Nano 33 BLE operates at 3.3V
 const int adcResolution = 1024;  // 10-bit ADC (0-1023)
 
@@ -251,14 +251,28 @@ float computeImpactForce() {
 }
 
 // Helper function to determine the level from the degree value
-int getTensionLevel(float degrees) {
-    if (degrees >= 0 && degrees < 90) {
+int getTensionLevel1(float degrees) {
+    if (degrees >= 70 && degrees < 160) {
         return 1; //"Level 1 or Level 5"
-    } else if (degrees >= 90 && degrees < 180) {
+    } else if (degrees >= 160 && degrees < 255) {
         return 2; //"Level 2 or Level 6"
-    } else if (degrees >= 180 && degrees < 270) {
+    } else if (degrees >= 255 || degrees < 10) {
         return 3; //"Level 3"
-    } else if (degrees >= 270 && degrees <= 330) {
+    } else if (degrees >= 10 && degrees < 70) {
+        return 4; //"Level 4"
+    }
+    return 0;
+}
+
+// Helper function to determine the level from the degree value
+int getTensionLevel2(float degrees) {
+    if (degrees >= 250 && degrees < 330) {
+        return 1; //"Level 1 or Level 5"
+    } else if (degrees >= 330 || degrees < 40) {
+        return 2; //"Level 2 or Level 6"
+    } else if (degrees >= 40 && degrees < 110) {
+        return 3; //"Level 3"
+    } else if (degrees >= 110 && degrees <= 250) {
         return 4; //"Level 4"
     }
     return 0;
@@ -308,6 +322,9 @@ void setup() {
     if (!externalIMU.begin_I2C(0x6A)) {  // Use I2C address 0x6A
         Serial.println("Failed to initialize external IMU!");
         while (1);
+    }
+    Serial.println("Success.");
+
 
     /***** POTENTIOMETER SETUP *****/
     // Setup input pins
@@ -925,14 +942,14 @@ void readPotentiometerTension(int &tension1, int &tension2) {
     // Determine degree values (set to 0° if unstable or out of range)
     float degrees1 = (adcValue1 >= minADC && adcValue1 <= maxADC && !isUnstable1)
                      ? map(adcValue1, minADC, maxADC, minDegrees, maxDegrees)
-                     : 0;
+                     : 2; // Unstable level
     float degrees2 = (adcValue2 >= minADC && adcValue2 <= maxADC && !isUnstable2)
                      ? map(adcValue2, minADC, maxADC, minDegrees, maxDegrees)
-                     : 0;
+                     : 2; // Unstable level
 
     // Determine levels
-    tension1 = getTensionLevel(degrees1);
-    tension2 = getTensionLevel(degrees2);
+    tension1 = getTensionLevel2(degrees2);  // todo: getTensionLevel1, degrees2
+    tension2 = getTensionLevel2(degrees2);
 
     // Print output for both potentiometers
     Serial.print("POT 1 | ADC: ");
