@@ -51,7 +51,7 @@
         <!-- Exercise Video -->
         <VideoView
             android:id="@+id/exerciseVideo"
-            android:layout_width="400dp"
+            android:layout_width="300dp"
             android:layout_height="300dp"
             app:videoFromResourceId="@{exerciseInfo.videoId}"
             android:layout_below="@id/exerciseSteps"

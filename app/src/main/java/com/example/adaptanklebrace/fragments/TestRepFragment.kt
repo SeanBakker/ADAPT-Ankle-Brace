@@ -29,6 +29,7 @@ class TestRepFragment(
     private val exercise: Exercise,
 ) : DialogFragment() {
 
+    private var isFirstRun = true
     private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
@@ -53,6 +54,7 @@ class TestRepFragment(
         // Configure start button
         val startTestRepButton: Button = view.findViewById(R.id.startTestRepBtn)
         startTestRepButton.setOnClickListener {
+            isFirstRun = true
             startTestRep(view)
         }
 
@@ -84,8 +86,14 @@ class TestRepFragment(
         handler.post(updateAngleTask)
         bluetoothService.deviceLiveData.observe(viewLifecycleOwner) { pair ->
             pair?.let {
-                updateProgress(progressBar, progressLiveDataText, it.first.toDouble())
-                Log.i("TEST_REP", "Angle data received: ${it.first}")
+                if (isFirstRun) {
+                    isFirstRun = false // Mark that the first run is complete
+                    Thread.sleep(1000) // Wait for device to load
+                    Log.i("TEST_REP", "Delaying shortly")
+                } else {
+                    updateProgress(progressBar, progressLiveDataText, it.first.toDouble())
+                    Log.i("TEST_REP", "Angle data received: ${it.first}")
+                }
             }
         }
     }
