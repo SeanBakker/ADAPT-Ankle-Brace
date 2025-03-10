@@ -292,13 +292,13 @@ int getTensionLevel1(float degrees) {
 
 // Helper function to determine the level from the degree value
 int getTensionLevel2(float degrees) {
-    if (degrees >= 250 && degrees < 330) {
+    if (degrees >= 240 && degrees < 320) {
         return 1; //"Level 1 or Level 5"
-    } else if (degrees >= 330 || degrees < 40) {
+    } else if (degrees >= 320 || degrees < 50) {
         return 2; //"Level 2"
-    } else if (degrees >= 40 && degrees < 110) {
+    } else if (degrees >= 50 && degrees < 100) {
         return 3; //"Level 3"
-    } else if (degrees >= 110 && degrees <= 250) {
+    } else if (degrees >= 100 && degrees <= 240) {
         return 4; //"Level 4"
     }
     return 0;
