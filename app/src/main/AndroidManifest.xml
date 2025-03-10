@@ -39,7 +39,7 @@
             android:foregroundServiceType="dataSync" />
 
         <!-- Notification Receiver -->
-        <receiver android:name=".NotificationReceiver" />
+        <receiver android:name=".NotificationReceiver" android:exported="false" />
 
         <!-- Main Activity -->
         <activity

@@ -1,6 +1,7 @@
 package com.example.adaptanklebrace.fragments
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -26,6 +27,8 @@ class TensionLevelWarningFragment(
     private val actualTensionLevel2: Int
 ) : DialogFragment() {
 
+    private var isManuallyDismissed: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,6 +52,15 @@ class TensionLevelWarningFragment(
         return view
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+
+        if (!isManuallyDismissed) {
+            val bluetoothService = BluetoothService.instance
+            bluetoothService?.disconnect() // Ensure Bluetooth service disconnects
+        }
+    }
+
     private fun startExerciseOrMetric() {
         // Send test rep flag to device to prepare exercise data collection (of test rep)
         if (targetActivity == StartSetActivity::class.java) {
@@ -70,6 +82,8 @@ class TensionLevelWarningFragment(
         }
 
         bluetoothService.resetLiveData() // Reset live data after tension is read
+        // Manually close fragment
+        isManuallyDismissed = true
         dismiss() // Close the dialog
     }
 }

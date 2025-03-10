@@ -2,6 +2,7 @@ package com.example.adaptanklebrace.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -30,6 +31,7 @@ class TestRepFragment(
 ) : DialogFragment() {
 
     private var isFirstRun = true
+    private var isManuallyDismissed: Boolean = false
     private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
@@ -65,6 +67,15 @@ class TestRepFragment(
         }
 
         return view
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+
+        if (!isManuallyDismissed) {
+            val bluetoothService = BluetoothService.instance
+            bluetoothService?.disconnect() // Ensure Bluetooth service disconnects
+        }
     }
 
     // Collect live data of test rep
@@ -120,6 +131,8 @@ class TestRepFragment(
 
         // Start activity
         ContextCompat.startActivity(context, startSetIntent, null)
+        // Manually close fragment
+        isManuallyDismissed = true
         dismiss() // Close the dialog
     }
 

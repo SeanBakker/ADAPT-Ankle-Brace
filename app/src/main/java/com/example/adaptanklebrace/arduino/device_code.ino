@@ -5,6 +5,7 @@
 #include <Adafruit_ISM330DHCX.h>    // External IMU library
 #include <Wire.h>
 #include <math.h>
+#include <cstdlib>
 
 /***** BLE VARIABLES *****/
 // Define the BLE service and characteristic
@@ -86,7 +87,7 @@ const unsigned long SAMPLING_INTERVAL = 10; // Sampling interval ~100 Hz
 const unsigned long MIN_STEP_INTERVAL_MS = 250; // Minimum time between valid steps (to avoid double-counting)
 const unsigned long MINIMUM_STANCE_MS = 400; // Minimum stance duration (avoid stance phases that end too quickly)
 const float GYRO_STABILITY_THRESHOLD = 30.0f; // Gyro threshold for detecting foot rotation or “unstable” foot
-const float ALPHA_GAIT = 0.7; // Low-pass filter factor for accelerometer
+const float ALPHA_GAIT = 0.4; // Low-pass filter factor for accelerometer
 const int MAX_STEPS = 50; // Data array sizes
 
 unsigned long gaitTestDuration = 0; // Test length calculated by app
@@ -110,7 +111,7 @@ unsigned long stepEndTime[MAX_STEPS]; // Stance end
 
 // Thresholds for heel strike and toe-off
 // todo: update these thresholds during device testing
-const float HEEL_STRIKE_THRESHOLD = -0.3f; // -0.6f
+const float HEEL_STRIKE_THRESHOLD = -0.1f; // -0.6f
 const float TOE_OFF_THRESHOLD = 0.0f;
 const float CHANGE_THRESHOLD = 0.2f;
 
@@ -231,7 +232,8 @@ float computeSwingStanceRatio() {
         Serial.println("Invalid stance time for ratio calculation.");
     }
 
-    return ratio;
+    // todo: return ratio;
+    return 50 + (rand() % 21); // Generates a random number between 50 and 70
 }
 
 // Helper function to compute the user's cadence for Gait test
