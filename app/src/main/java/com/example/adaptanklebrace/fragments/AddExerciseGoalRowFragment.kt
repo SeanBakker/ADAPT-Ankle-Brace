@@ -69,8 +69,6 @@ class AddExerciseGoalRowFragment(
             // Get the list of exercise goals currently in the table
             val exerciseGoals = recoveryPlanActivity?.getExerciseGoals(exerciseAdapter) ?: listOf()
 
-            //todo: add option to add goal for current week or all future weeks or choose weeks
-
             if (exerciseName.isEmpty()) {
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterExerciseNameToast))
             } else if (exerciseGoals.any { exercise: Exercise ->

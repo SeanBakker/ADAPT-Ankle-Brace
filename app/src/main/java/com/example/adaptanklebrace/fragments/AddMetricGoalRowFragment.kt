@@ -59,8 +59,6 @@ class AddMetricGoalRowFragment(
             // Get the list of metric goals currently in the table
             val metricGoals = recoveryPlanActivity?.getMetricGoals(metricAdapter) ?: listOf()
 
-            //todo: add option to add goal for current week or all future weeks or choose weeks
-
             if (metricName.isEmpty()) {
                 GeneralUtil.showToast(context, layoutInflater, getString(R.string.enterMetricNameToast))
             } else if (metricGoals.any { metric: Metric ->
