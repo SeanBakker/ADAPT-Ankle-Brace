@@ -121,7 +121,7 @@
                     android:id="@+id/commentsEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/comments"
+                    android:hint="@string/noComments"
                     android:textColorHint="@color/grey_3"
                     android:textColor="?attr/colorOnSecondary" />
             </LinearLayout>
