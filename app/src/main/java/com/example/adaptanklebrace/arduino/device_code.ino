@@ -29,6 +29,7 @@ bool isHolding = false;
 bool repsCounted = false; // Variable to keep track of counting the current rep
 float previousPlantarDorsiAngle = 0;
 float previousInversionEversionAngle = 0;
+unsigned long testRepDuration = 1000; // Test length calculated by app
 const float REP_MIN_RANGE = 5.0; // degrees range at minimum to count as rep
 
 struct ExerciseOptions {
@@ -292,13 +293,13 @@ int getTensionLevel1(float degrees) {
 
 // Helper function to determine the level from the degree value
 int getTensionLevel2(float degrees) {
-    if (degrees >= 240 && degrees < 320) {
+    if (degrees >= 210 && degrees < 320) {
         return 1; //"Level 1 or Level 5"
     } else if (degrees >= 320 || degrees < 50) {
         return 2; //"Level 2"
     } else if (degrees >= 50 && degrees < 100) {
         return 3; //"Level 3"
-    } else if (degrees >= 100 && degrees <= 240) {
+    } else if (degrees >= 100 && degrees <= 210) {
         return 4; //"Level 4"
     }
     return 0;
@@ -376,6 +377,7 @@ void performExerciseRoutine(const ExerciseOptions& options) {
         totalHoldTime = 0;
         averageHoldTime = 0;
         isHolding = false;
+        testStartTime = millis();
 
         // Reset angles for new test
         if (options.isTestRep) {
@@ -442,9 +444,13 @@ void performExerciseRoutine(const ExerciseOptions& options) {
     if (testInProgress) {
         if (options.isPlantarExercise || options.isDorsiExercise) {
             if (options.isTestRep) {
-                // Update range tracking
-                maxPlantarDorsiAngle = max(maxPlantarDorsiAngle, plantarDorsiAngle);
-                minPlantarDorsiAngle = min(minPlantarDorsiAngle, plantarDorsiAngle);
+                // Delay reading angles for a short period
+                unsigned long currentTime = millis();
+                if (currentTime - testStartTime >= testRepDuration) {
+                    // Update range tracking
+                    maxPlantarDorsiAngle = max(maxPlantarDorsiAngle, plantarDorsiAngle);
+                    minPlantarDorsiAngle = min(minPlantarDorsiAngle, plantarDorsiAngle);
+                }
             } else {
                 // Calculate rep max range
                 float repMaxRange = REP_MIN_RANGE;
@@ -563,9 +569,13 @@ void performExerciseRoutine(const ExerciseOptions& options) {
             Serial.println(String(plantarDorsiAngle));
         } else if (options.isInverExercise || options.isEverExercise) {
             if (options.isTestRep) {
-                // Update range tracking
-                maxInversionEversionAngle = max(maxInversionEversionAngle, inversionEversionAngle);
-                minInversionEversionAngle = min(minInversionEversionAngle, inversionEversionAngle);
+                // Delay reading angles for a short period
+                unsigned long currentTime = millis();
+                if (currentTime - testStartTime >= testRepDuration) {
+                    // Update range tracking
+                    maxInversionEversionAngle = max(maxInversionEversionAngle, inversionEversionAngle);
+                    minInversionEversionAngle = min(minInversionEversionAngle, inversionEversionAngle);
+                }
             } else {
                 // Calculate rep max range
                 float repMaxRange = REP_MIN_RANGE;
