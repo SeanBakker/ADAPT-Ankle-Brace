@@ -84,7 +84,7 @@ class BluetoothService : Service() {
         bluetoothDevice = pairedDevices?.firstOrNull { it.name == "ADAPT" } // Sometimes named: Arduino
 
         if (bluetoothDevice == null) {
-            GeneralUtil.showToast(context, LayoutInflater.from(context), "A.D.A.P.T. device not found")
+            GeneralUtil.showToast(context, LayoutInflater.from(context), "ADAPT device not found")
             return false
         }
 

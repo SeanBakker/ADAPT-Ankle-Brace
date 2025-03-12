@@ -27,7 +27,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1. Wear the A.D.A.P.T. Brace"
+        android:text="1. Wear the ADAPT Brace"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="?attr/colorOnSecondary" />
@@ -58,7 +58,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="3. Turn on the A.D.A.P.T. Brace"
+        android:text="3. Turn on the ADAPT Brace"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="?attr/colorOnSecondary" />

@@ -74,7 +74,7 @@ enum class ExerciseType(val exerciseName: String, val description: String, val s
     "Exercise data is unable to be retrieved for the selected exercise. Therefore, we are unable to connect to the device and provide automatic data collection for this exercise.",
         """
         1. You can still perform this exercise manually.
-        2. Wear the A.D.A.P.T. device (the device can be left off)
+        2. Wear the ADAPT device (the device can be left off)
         3. Set the tension level manually to the specified tension level for your exercise goal.
         4. Perform the specified number of reps.
         5. Then repeat for the specified number of sets.
