@@ -1,6 +1,6 @@
 // Define the analog input pins
-const int potPin1 = A0;  // First potentiometer on A0
-const int potPin2 = A1;  // Second potentiometer on A1
+const int potPin1 = A1;  // First potentiometer on A0
+const int potPin2 = A0;  // Second potentiometer on A1
 const float referenceVoltage = 3.3;  // Nano 33 BLE operates at 3.3V
 const int adcResolution = 1024;  // 10-bit ADC (0-1023)
 
@@ -116,14 +116,23 @@ void runPotentiometerTest() {
 
 // Function to determine the level from the degree value
 String getLevel(float degrees) {
-    if (degrees >= 0 && degrees < 90) {
+    if (degrees >= 70 && degrees < 160) {
         return "Level 1 or Level 5";
-    } else if (degrees >= 90 && degrees < 180) {
+    } else if (degrees >= 160 && degrees < 255) {
         return "Level 2 or Level 6";
-    } else if (degrees >= 180 && degrees < 270) {
+    } else if (degrees >= 255 || degrees < 10) {
         return "Level 3";
-    } else if (degrees >= 270 && degrees <= 330) {
+    } else if (degrees >= 10 && degrees < 70) {
         return "Level 4";
     }
+//    if (degrees >= 0 && degrees < 90) {
+//        return "Level 1 or Level 5";
+//    } else if (degrees >= 90 && degrees < 180) {
+//        return "Level 2 or Level 6";
+//    } else if (degrees >= 180 && degrees < 270) {
+//        return "Level 3";
+//    } else if (degrees >= 270 && degrees <= 330) {
+//        return "Level 4";
+//    }
     return "Unknown";
 }
