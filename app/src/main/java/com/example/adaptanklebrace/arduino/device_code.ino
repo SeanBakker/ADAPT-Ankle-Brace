@@ -1,7 +1,5 @@
 #include <ArduinoBLE.h>
 #include <Arduino_BMI270_BMM150.h>  // Library for the built-in IMU
-//#include <Arduino_LSM6DS3.h>
-//#include <Arduino_LSM9DS1.h>        // For single IMU
 #include <Adafruit_ISM330DHCX.h>    // External IMU library
 #include <Wire.h>
 #include <math.h>
@@ -111,8 +109,7 @@ unsigned long stepStartTime[MAX_STEPS]; // Stance start
 unsigned long stepEndTime[MAX_STEPS]; // Stance end
 
 // Thresholds for heel strike and toe-off
-// todo: update these thresholds during device testing
-const float HEEL_STRIKE_THRESHOLD = -0.1f; // -0.6f
+const float HEEL_STRIKE_THRESHOLD = -0.1f;
 const float TOE_OFF_THRESHOLD = 0.0f;
 const float CHANGE_THRESHOLD = 0.2f;
 
@@ -146,7 +143,6 @@ const float maxDegrees = 330; // End of rotation range (degrees)
 const int stabilityCheckCount = 5;  // Number of past readings to monitor
 int lastReadings1[stabilityCheckCount];  // Circular buffer for Potentiometer 1
 int lastReadings2[stabilityCheckCount];  // Circular buffer for Potentiometer 2
-int stabilityIndex = 0;  // Index for storing readings
 
 
 /***** GENERAL HELPER FUNCTIONS *****/
@@ -233,8 +229,7 @@ float computeSwingStanceRatio() {
         Serial.println("Invalid stance time for ratio calculation.");
     }
 
-    // todo: return ratio;
-    return 50 + (rand() % 21); // Generates a random number between 50 and 70
+    return ratio;
 }
 
 // Helper function to compute the user's cadence for Gait test
@@ -1073,7 +1068,7 @@ void readPotentiometerTension(int &tension1, int &tension2) {
                      : 2; // Unstable level
 
     // Determine levels
-    tension1 = getTensionLevel2(degrees2);  // todo: getTensionLevel1, degrees2
+    tension1 = getTensionLevel1(degrees1);
     tension2 = getTensionLevel2(degrees2);
 
     // Print output for both potentiometers

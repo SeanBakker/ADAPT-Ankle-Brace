@@ -161,7 +161,6 @@ class RecoveryDataActivity : BaseActivity(), RecoveryDataExerciseTableRowAdapter
         dateTextView.text = currentDate
         loadDateData(currentDate)
 
-        // todo: fix import/export
         importButton.visibility = View.GONE
         exportButton.visibility = View.GONE
     }
@@ -510,8 +509,6 @@ class RecoveryDataActivity : BaseActivity(), RecoveryDataExerciseTableRowAdapter
             ExerciseUtil.updateRecyclerViewVisibility(metricAdapter, metricTableLayout)
         }
     }
-
-    //todo: fix export/import functions for the table
 
     // Function to export table data to Excel
     private fun exportDataToExcel() {
